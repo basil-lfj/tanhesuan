@@ -1,0 +1,394 @@
+{
+  "categories": [
+    {
+      "id": "coal_co2",
+      "name": "化石燃料燃烧-煤炭-二氧化碳",
+      "gasType": "CO2",
+      "fuelCategory": "煤炭",
+      "description": "煤炭燃烧产生的二氧化碳排放",
+      "factors": [
+        { "fuelType": "电煤", "factor": 96.2, "unit": "tCO2/TJ", "lowerHeatingValue": 176.4, "heatingValueUnit": "TJ/10⁴t" },
+        { "fuelType": "无烟煤", "factor": 98.3, "unit": "tCO2/TJ" },
+        { "fuelType": "炼焦烟煤", "factor": 94.6, "unit": "tCO2/TJ" },
+        { "fuelType": "一般烟煤", "factor": 94.6, "unit": "tCO2/TJ" },
+        { "fuelType": "褐煤", "factor": 101.2, "unit": "tCO2/TJ" },
+        { "fuelType": "煤制品", "factor": 97.5, "unit": "tCO2/TJ" },
+        { "fuelType": "焦炭", "factor": 107.1, "unit": "tCO2/TJ" },
+        { "fuelType": "焦炉煤气", "factor": 44.4, "unit": "tCO2/TJ" },
+        { "fuelType": "高炉煤气", "factor": 259.6, "unit": "tCO2/TJ" },
+        { "fuelType": "转炉煤气", "factor": 181.9, "unit": "tCO2/TJ" },
+        { "fuelType": "其他煤气", "factor": 44.4, "unit": "tCO2/TJ" }
+      ]
+    },
+    {
+      "id": "coal_ch4_energy",
+      "name": "化石燃料燃烧-煤炭-甲烷-能源工业",
+      "gasType": "CH4",
+      "fuelCategory": "煤炭",
+      "sector": "能源工业",
+      "description": "煤炭燃烧产生的甲烷排放-能源工业",
+      "factors": [
+        { "fuelType": "无烟煤", "factor": 1, "unit": "kgCH4/TJ" },
+        { "fuelType": "炼焦烟煤", "factor": 1, "unit": "kgCH4/TJ" },
+        { "fuelType": "一般烟煤", "factor": 1, "unit": "kgCH4/TJ" },
+        { "fuelType": "褐煤", "factor": 1, "unit": "kgCH4/TJ" },
+        { "fuelType": "煤制品", "factor": 1, "unit": "kgCH4/TJ" },
+        { "fuelType": "焦炭", "factor": 1, "unit": "kgCH4/TJ" },
+        { "fuelType": "焦炉煤气", "factor": 1, "unit": "kgCH4/TJ" },
+        { "fuelType": "高炉煤气", "factor": 1, "unit": "kgCH4/TJ" },
+        { "fuelType": "转炉煤气", "factor": 1, "unit": "kgCH4/TJ" },
+        { "fuelType": "其他煤气", "factor": 1, "unit": "kgCH4/TJ" }
+      ]
+    },
+    {
+      "id": "coal_ch4_manufacturing",
+      "name": "化石燃料燃烧-煤炭-甲烷-制造业和建筑业",
+      "gasType": "CH4",
+      "fuelCategory": "煤炭",
+      "sector": "制造业和建筑业",
+      "description": "煤炭燃烧产生的甲烷排放-制造业和建筑业",
+      "factors": [
+        { "fuelType": "无烟煤", "factor": 10, "unit": "kgCH4/TJ" },
+        { "fuelType": "炼焦烟煤", "factor": 10, "unit": "kgCH4/TJ" },
+        { "fuelType": "一般烟煤", "factor": 10, "unit": "kgCH4/TJ" },
+        { "fuelType": "褐煤", "factor": 10, "unit": "kgCH4/TJ" },
+        { "fuelType": "煤制品", "factor": 10, "unit": "kgCH4/TJ" },
+        { "fuelType": "焦炭", "factor": 10, "unit": "kgCH4/TJ" },
+        { "fuelType": "焦炉煤气", "factor": 1, "unit": "kgCH4/TJ" },
+        { "fuelType": "高炉煤气", "factor": 1, "unit": "kgCH4/TJ" },
+        { "fuelType": "转炉煤气", "factor": 1, "unit": "kgCH4/TJ" },
+        { "fuelType": "其他煤气", "factor": 1, "unit": "kgCH4/TJ" }
+      ]
+    },
+    {
+      "id": "coal_ch4_commercial",
+      "name": "化石燃料燃烧-煤炭-甲烷-商业、机构",
+      "gasType": "CH4",
+      "fuelCategory": "煤炭",
+      "sector": "商业、机构",
+      "description": "煤炭燃烧产生的甲烷排放-商业、机构",
+      "factors": [
+        { "fuelType": "无烟煤", "factor": 10, "unit": "kgCH4/TJ" },
+        { "fuelType": "炼焦烟煤", "factor": 10, "unit": "kgCH4/TJ" },
+        { "fuelType": "一般烟煤", "factor": 10, "unit": "kgCH4/TJ" },
+        { "fuelType": "褐煤", "factor": 10, "unit": "kgCH4/TJ" },
+        { "fuelType": "煤制品", "factor": 10, "unit": "kgCH4/TJ" },
+        { "fuelType": "焦炭", "factor": 10, "unit": "kgCH4/TJ" },
+        { "fuelType": "焦炉煤气", "factor": 5, "unit": "kgCH4/TJ" },
+        { "fuelType": "高炉煤气", "factor": 5, "unit": "kgCH4/TJ" },
+        { "fuelType": "转炉煤气", "factor": 5, "unit": "kgCH4/TJ" },
+        { "fuelType": "其他煤气", "factor": 5, "unit": "kgCH4/TJ" }
+      ]
+    },
+    {
+      "id": "coal_ch4_residential",
+      "name": "化石燃料燃烧-煤炭-甲烷-住宅、农林牧渔",
+      "gasType": "CH4",
+      "fuelCategory": "煤炭",
+      "sector": "住宅、农林牧渔",
+      "description": "煤炭燃烧产生的甲烷排放-住宅、农林牧渔",
+      "factors": [
+        { "fuelType": "无烟煤", "factor": 300, "unit": "kgCH4/TJ" },
+        { "fuelType": "炼焦烟煤", "factor": 300, "unit": "kgCH4/TJ" },
+        { "fuelType": "一般烟煤", "factor": 300, "unit": "kgCH4/TJ" },
+        { "fuelType": "褐煤", "factor": 300, "unit": "kgCH4/TJ" },
+        { "fuelType": "煤制品", "factor": 300, "unit": "kgCH4/TJ" },
+        { "fuelType": "焦炭", "factor": 300, "unit": "kgCH4/TJ" },
+        { "fuelType": "焦炉煤气", "factor": 5, "unit": "kgCH4/TJ" },
+        { "fuelType": "高炉煤气", "factor": 5, "unit": "kgCH4/TJ" },
+        { "fuelType": "转炉煤气", "factor": 5, "unit": "kgCH4/TJ" },
+        { "fuelType": "其他煤气", "factor": 5, "unit": "kgCH4/TJ" }
+      ]
+    },
+    {
+      "id": "coal_n2o",
+      "name": "化石燃料燃烧-煤炭-氧化亚氮",
+      "gasType": "N2O",
+      "fuelCategory": "煤炭",
+      "description": "煤炭燃烧产生的氧化亚氮排放",
+      "factors": [
+        { "fuelType": "无烟煤", "factor": 1.5, "unit": "kgN2O/TJ" },
+        { "fuelType": "炼焦烟煤", "factor": 1.5, "unit": "kgN2O/TJ" },
+        { "fuelType": "一般烟煤", "factor": 1.5, "unit": "kgN2O/TJ" },
+        { "fuelType": "褐煤", "factor": 1.5, "unit": "kgN2O/TJ" },
+        { "fuelType": "煤制品", "factor": 1.5, "unit": "kgN2O/TJ" },
+        { "fuelType": "焦炭", "factor": 1.5, "unit": "kgN2O/TJ" },
+        { "fuelType": "焦炉煤气", "factor": 0.1, "unit": "kgN2O/TJ" },
+        { "fuelType": "高炉煤气", "factor": 0.1, "unit": "kgN2O/TJ" },
+        { "fuelType": "转炉煤气", "factor": 0.1, "unit": "kgN2O/TJ" },
+        { "fuelType": "其他煤气", "factor": 0.1, "unit": "kgN2O/TJ" }
+      ]
+    },
+    {
+      "id": "oil_co2",
+      "name": "化石燃料燃烧-石油-二氧化碳",
+      "gasType": "CO2",
+      "fuelCategory": "石油",
+      "description": "石油燃烧产生的二氧化碳排放",
+      "factors": [
+        { "fuelType": "原油", "factor": 73.3, "unit": "tCO2/TJ" },
+        { "fuelType": "汽油", "factor": 69.3, "unit": "tCO2/TJ" },
+        { "fuelType": "航空汽油", "factor": 70.0, "unit": "tCO2/TJ" },
+        { "fuelType": "煤油", "factor": 71.9, "unit": "tCO2/TJ" },
+        { "fuelType": "喷气煤油(航空煤油)", "factor": 71.5, "unit": "tCO2/TJ" },
+        { "fuelType": "柴油", "factor": 74.1, "unit": "tCO2/TJ" },
+        { "fuelType": "燃料油", "factor": 77.4, "unit": "tCO2/TJ" },
+        { "fuelType": "石脑油", "factor": 73.3, "unit": "tCO2/TJ" },
+        { "fuelType": "润滑油", "factor": 73.3, "unit": "tCO2/TJ" },
+        { "fuelType": "石蜡", "factor": 73.3, "unit": "tCO2/TJ" },
+        { "fuelType": "溶剂油", "factor": 73.3, "unit": "tCO2/TJ" },
+        { "fuelType": "石油沥青", "factor": 80.7, "unit": "tCO2/TJ" },
+        { "fuelType": "石油焦", "factor": 97.5, "unit": "tCO2/TJ" },
+        { "fuelType": "液化石油气", "factor": 63.1, "unit": "tCO2/TJ" },
+        { "fuelType": "炼厂干气", "factor": 57.6, "unit": "tCO2/TJ" },
+        { "fuelType": "其他石油制品", "factor": 73.3, "unit": "tCO2/TJ" }
+      ]
+    },
+    {
+      "id": "oil_ch4_stationary_energy",
+      "name": "化石燃料燃烧-石油-甲烷-固定源燃烧-能源工业",
+      "gasType": "CH4",
+      "fuelCategory": "石油",
+      "sourceType": "固定源燃烧",
+      "sector": "能源工业",
+      "description": "石油固定源燃烧产生的甲烷排放-能源工业",
+      "factors": [
+        { "fuelType": "原油", "factor": 3, "unit": "kgCH4/TJ" },
+        { "fuelType": "汽油", "factor": 3, "unit": "kgCH4/TJ" },
+        { "fuelType": "煤油", "factor": 3, "unit": "kgCH4/TJ" },
+        { "fuelType": "柴油", "factor": 3, "unit": "kgCH4/TJ" },
+        { "fuelType": "燃料油", "factor": 3, "unit": "kgCH4/TJ" },
+        { "fuelType": "石脑油", "factor": 3, "unit": "kgCH4/TJ" },
+        { "fuelType": "润滑油", "factor": 3, "unit": "kgCH4/TJ" },
+        { "fuelType": "石蜡", "factor": 3, "unit": "kgCH4/TJ" },
+        { "fuelType": "溶剂油", "factor": 3, "unit": "kgCH4/TJ" },
+        { "fuelType": "石油沥青", "factor": 3, "unit": "kgCH4/TJ" },
+        { "fuelType": "石油焦", "factor": 3, "unit": "kgCH4/TJ" },
+        { "fuelType": "液化石油气", "factor": 1, "unit": "kgCH4/TJ" },
+        { "fuelType": "炼厂干气", "factor": 1, "unit": "kgCH4/TJ" },
+        { "fuelType": "其他石油制品", "factor": 3, "unit": "kgCH4/TJ" }
+      ]
+    },
+    {
+      "id": "oil_ch4_stationary_manufacturing",
+      "name": "化石燃料燃烧-石油-甲烷-固定源燃烧-制造业和建筑业",
+      "gasType": "CH4",
+      "fuelCategory": "石油",
+      "sourceType": "固定源燃烧",
+      "sector": "制造业和建筑业",
+      "description": "石油固定源燃烧产生的甲烷排放-制造业和建筑业",
+      "factors": [
+        { "fuelType": "原油", "factor": 3, "unit": "kgCH4/TJ" },
+        { "fuelType": "汽油", "factor": 3, "unit": "kgCH4/TJ" },
+        { "fuelType": "煤油", "factor": 3, "unit": "kgCH4/TJ" },
+        { "fuelType": "柴油", "factor": 3, "unit": "kgCH4/TJ" },
+        { "fuelType": "燃料油", "factor": 3, "unit": "kgCH4/TJ" },
+        { "fuelType": "石脑油", "factor": 3, "unit": "kgCH4/TJ" },
+        { "fuelType": "润滑油", "factor": 3, "unit": "kgCH4/TJ" },
+        { "fuelType": "石蜡", "factor": 3, "unit": "kgCH4/TJ" },
+        { "fuelType": "溶剂油", "factor": 3, "unit": "kgCH4/TJ" },
+        { "fuelType": "石油沥青", "factor": 3, "unit": "kgCH4/TJ" },
+        { "fuelType": "石油焦", "factor": 3, "unit": "kgCH4/TJ" },
+        { "fuelType": "液化石油气", "factor": 1, "unit": "kgCH4/TJ" },
+        { "fuelType": "炼厂干气", "factor": 1, "unit": "kgCH4/TJ" },
+        { "fuelType": "其他石油制品", "factor": 3, "unit": "kgCH4/TJ" }
+      ]
+    },
+    {
+      "id": "oil_ch4_stationary_commercial",
+      "name": "化石燃料燃烧-石油-甲烷-固定源燃烧-商业、机构",
+      "gasType": "CH4",
+      "fuelCategory": "石油",
+      "sourceType": "固定源燃烧",
+      "sector": "商业、机构",
+      "description": "石油固定源燃烧产生的甲烷排放-商业、机构",
+      "factors": [
+        { "fuelType": "原油", "factor": 10, "unit": "kgCH4/TJ" },
+        { "fuelType": "汽油", "factor": 10, "unit": "kgCH4/TJ" },
+        { "fuelType": "煤油", "factor": 10, "unit": "kgCH4/TJ" },
+        { "fuelType": "柴油", "factor": 10, "unit": "kgCH4/TJ" },
+        { "fuelType": "燃料油", "factor": 10, "unit": "kgCH4/TJ" },
+        { "fuelType": "石脑油", "factor": 10, "unit": "kgCH4/TJ" },
+        { "fuelType": "润滑油", "factor": 10, "unit": "kgCH4/TJ" },
+        { "fuelType": "石蜡", "factor": 10, "unit": "kgCH4/TJ" },
+        { "fuelType": "溶剂油", "factor": 10, "unit": "kgCH4/TJ" },
+        { "fuelType": "石油沥青", "factor": 10, "unit": "kgCH4/TJ" },
+        { "fuelType": "石油焦", "factor": 10, "unit": "kgCH4/TJ" },
+        { "fuelType": "液化石油气", "factor": 5, "unit": "kgCH4/TJ" },
+        { "fuelType": "炼厂干气", "factor": 5, "unit": "kgCH4/TJ" },
+        { "fuelType": "其他石油制品", "factor": 10, "unit": "kgCH4/TJ" }
+      ]
+    },
+    {
+      "id": "oil_ch4_stationary_residential",
+      "name": "化石燃料燃烧-石油-甲烷-固定源燃烧-住宅、农林牧渔",
+      "gasType": "CH4",
+      "fuelCategory": "石油",
+      "sourceType": "固定源燃烧",
+      "sector": "住宅、农林牧渔",
+      "description": "石油固定源燃烧产生的甲烷排放-住宅、农林牧渔",
+      "factors": [
+        { "fuelType": "原油", "factor": 10, "unit": "kgCH4/TJ" },
+        { "fuelType": "汽油", "factor": 10, "unit": "kgCH4/TJ" },
+        { "fuelType": "煤油", "factor": 10, "unit": "kgCH4/TJ" },
+        { "fuelType": "柴油", "factor": 10, "unit": "kgCH4/TJ" },
+        { "fuelType": "燃料油", "factor": 10, "unit": "kgCH4/TJ" },
+        { "fuelType": "石脑油", "factor": 10, "unit": "kgCH4/TJ" },
+        { "fuelType": "润滑油", "factor": 10, "unit": "kgCH4/TJ" },
+        { "fuelType": "石蜡", "factor": 10, "unit": "kgCH4/TJ" },
+        { "fuelType": "溶剂油", "factor": 10, "unit": "kgCH4/TJ" },
+        { "fuelType": "石油沥青", "factor": 10, "unit": "kgCH4/TJ" },
+        { "fuelType": "石油焦", "factor": 10, "unit": "kgCH4/TJ" },
+        { "fuelType": "液化石油气", "factor": 5, "unit": "kgCH4/TJ" },
+        { "fuelType": "炼厂干气", "factor": 5, "unit": "kgCH4/TJ" },
+        { "fuelType": "其他石油制品", "factor": 10, "unit": "kgCH4/TJ" }
+      ]
+    },
+    {
+      "id": "oil_ch4_mobile_water",
+      "name": "化石燃料燃烧-石油-甲烷-移动源燃烧-水上运输",
+      "gasType": "CH4",
+      "fuelCategory": "石油",
+      "sourceType": "移动源燃烧",
+      "sector": "水上运输",
+      "description": "石油移动源燃烧产生的甲烷排放-水上运输",
+      "factors": [
+        { "fuelType": "柴油", "factor": 7, "unit": "kgCH4/TJ" },
+        { "fuelType": "燃料油", "factor": 7, "unit": "kgCH4/TJ" },
+        { "fuelType": "液化石油气", "factor": 7, "unit": "kgCH4/TJ" }
+      ]
+    },
+    {
+      "id": "oil_ch4_mobile_rail",
+      "name": "化石燃料燃烧-石油-甲烷-移动源燃烧-铁路运输",
+      "gasType": "CH4",
+      "fuelCategory": "石油",
+      "sourceType": "移动源燃烧",
+      "sector": "铁路运输",
+      "description": "石油移动源燃烧产生的甲烷排放-铁路运输",
+      "factors": [
+        { "fuelType": "柴油", "factor": 4.15, "unit": "kgCH4/TJ" }
+      ]
+    },
+    {
+      "id": "oil_ch4_mobile_aviation",
+      "name": "化石燃料燃烧-石油-甲烷-移动源燃烧-航空运输",
+      "gasType": "CH4",
+      "fuelCategory": "石油",
+      "sourceType": "移动源燃烧",
+      "sector": "航空运输",
+      "description": "石油移动源燃烧产生的甲烷排放-航空运输",
+      "factors": [
+        { "fuelType": "航空汽油", "factor": 0.5, "unit": "kgCH4/TJ" },
+        { "fuelType": "喷气煤油(航空煤油)", "factor": 0.5, "unit": "kgCH4/TJ" }
+      ]
+    },
+    {
+      "id": "oil_ch4_mobile_road",
+      "name": "化石燃料燃烧-石油-甲烷-移动源燃烧-道路交通",
+      "gasType": "CH4",
+      "fuelCategory": "石油",
+      "sourceType": "移动源燃烧",
+      "sector": "道路交通",
+      "description": "石油移动源燃烧产生的甲烷排放-道路交通",
+      "factors": [
+        { "fuelType": "汽油车(无尾气控制技术)", "factor": 33, "unit": "kgCH4/TJ" },
+        { "fuelType": "汽油车(氧化催化技术)", "factor": 25, "unit": "kgCH4/TJ" },
+        { "fuelType": "汽油车(1995年后低里程轻型车)", "factor": 3.8, "unit": "kgCH4/TJ" },
+        { "fuelType": "柴油车", "factor": 3.9, "unit": "kgCH4/TJ" },
+        { "fuelType": "液化石油气车", "factor": 62, "unit": "kgCH4/TJ" }
+      ]
+    },
+    {
+      "id": "oil_n2o_stationary",
+      "name": "化石燃料燃烧-石油-氧化亚氮-固定源燃烧",
+      "gasType": "N2O",
+      "fuelCategory": "石油",
+      "sourceType": "固定源燃烧",
+      "description": "石油固定源燃烧产生的氧化亚氮排放",
+      "factors": [
+        { "fuelType": "原油", "factor": 0.6, "unit": "kgN2O/TJ" },
+        { "fuelType": "汽油", "factor": 0.6, "unit": "kgN2O/TJ" },
+        { "fuelType": "煤油", "factor": 0.6, "unit": "kgN2O/TJ" },
+        { "fuelType": "柴油", "factor": 0.6, "unit": "kgN2O/TJ" },
+        { "fuelType": "燃料油", "factor": 0.6, "unit": "kgN2O/TJ" },
+        { "fuelType": "石脑油", "factor": 0.6, "unit": "kgN2O/TJ" },
+        { "fuelType": "润滑油", "factor": 0.6, "unit": "kgN2O/TJ" },
+        { "fuelType": "石蜡", "factor": 0.6, "unit": "kgN2O/TJ" },
+        { "fuelType": "溶剂油", "factor": 0.6, "unit": "kgN2O/TJ" },
+        { "fuelType": "石油沥青", "factor": 0.6, "unit": "kgN2O/TJ" },
+        { "fuelType": "石油焦", "factor": 0.6, "unit": "kgN2O/TJ" },
+        { "fuelType": "液化石油气", "factor": 0.1, "unit": "kgN2O/TJ" },
+        { "fuelType": "炼厂干气", "factor": 0.1, "unit": "kgN2O/TJ" },
+        { "fuelType": "其他石油制品", "factor": 0.6, "unit": "kgN2O/TJ" }
+      ]
+    },
+    {
+      "id": "oil_n2o_mobile_water",
+      "name": "化石燃料燃烧-石油-氧化亚氮-移动源燃烧-水上运输",
+      "gasType": "N2O",
+      "fuelCategory": "石油",
+      "sourceType": "移动源燃烧",
+      "sector": "水上运输",
+      "description": "石油移动源燃烧产生的氧化亚氮排放-水上运输",
+      "factors": [
+        { "fuelType": "柴油", "factor": 2, "unit": "kgN2O/TJ" },
+        { "fuelType": "燃料油", "factor": 2, "unit": "kgN2O/TJ" },
+        { "fuelType": "液化石油气", "factor": 2, "unit": "kgN2O/TJ" }
+      ]
+    },
+    {
+      "id": "oil_n2o_mobile_rail",
+      "name": "化石燃料燃烧-石油-氧化亚氮-移动源燃烧-铁路运输",
+      "gasType": "N2O",
+      "fuelCategory": "石油",
+      "sourceType": "移动源燃烧",
+      "sector": "铁路运输",
+      "description": "石油移动源燃烧产生的氧化亚氮排放-铁路运输",
+      "factors": [
+        { "fuelType": "柴油", "factor": 28.6, "unit": "kgN2O/TJ" }
+      ]
+    },
+    {
+      "id": "oil_n2o_mobile_aviation",
+      "name": "化石燃料燃烧-石油-氧化亚氮-移动源燃烧-航空运输",
+      "gasType": "N2O",
+      "fuelCategory": "石油",
+      "sourceType": "移动源燃烧",
+      "sector": "航空运输",
+      "description": "石油移动源燃烧产生的氧化亚氮排放-航空运输",
+      "factors": [
+        { "fuelType": "航空汽油", "factor": 2, "unit": "kgN2O/TJ" },
+        { "fuelType": "喷气煤油(航空煤油)", "factor": 2, "unit": "kgN2O/TJ" }
+      ]
+    },
+    {
+      "id": "oil_n2o_mobile_road",
+      "name": "化石燃料燃烧-石油-氧化亚氮-移动源燃烧-道路交通",
+      "gasType": "N2O",
+      "fuelCategory": "石油",
+      "sourceType": "移动源燃烧",
+      "sector": "道路交通",
+      "description": "石油移动源燃烧产生的氧化亚氮排放-道路交通",
+      "factors": [
+        { "fuelType": "汽油车(无尾气控制技术)", "factor": 3.2, "unit": "kgN2O/TJ" },
+        { "fuelType": "汽油车(氧化催化技术)", "factor": 8.0, "unit": "kgN2O/TJ" },
+        { "fuelType": "汽油车(1995年后低里程轻型车)", "factor": 5.7, "unit": "kgN2O/TJ" },
+        { "fuelType": "柴油车", "factor": 3.9, "unit": "kgN2O/TJ" },
+        { "fuelType": "液化石油气车", "factor": 0.2, "unit": "kgN2O/TJ" }
+      ]
+    }
+  ],
+  "metadata": {
+    "version": "1.0",
+    "source": "国家碳排放因子库",
+    "referenceUrl": "https://data.ncsc.org.cn/factories/index",
+    "description": "中国碳排放核算因子库数据",
+    "GWP": {
+      "CO2": 1,
+      "CH4": 28,
+      "N2O": 265
+    },
+    "notes": "GWP值采用IPCC第五次评估报告100年尺度"
+  }
+}

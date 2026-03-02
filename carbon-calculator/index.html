@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>碳核算计算工具</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>碳核算计算工具</h1>
+            <p class="subtitle">基于国家碳排放因子库</p>
+        </header>
+
+        <main>
+            <section class="form-section">
+                <h2>排放源选择</h2>
+                
+                <div class="form-group">
+                    <label for="fuelCategory">燃料类别</label>
+                    <select id="fuelCategory">
+                        <option value="">-- 请选择燃料类别 --</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="gasType">气体类型</label>
+                    <select id="gasType">
+                        <option value="">-- 请选择气体类型 --</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="emissionScenario">排放场景</label>
+                    <select id="emissionScenario">
+                        <option value="">-- 请选择排放场景 --</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="fuelType">燃料类型</label>
+                    <select id="fuelType">
+                        <option value="">-- 请选择燃料类型 --</option>
+                    </select>
+                </div>
+            </section>
+
+            <section class="form-section">
+                <h2>排放量输入</h2>
+                
+                <div class="form-group">
+                    <label for="consumption">燃料消耗量</label>
+                    <div class="input-with-unit">
+                        <input type="number" id="consumption" placeholder="请输入燃料消耗量" min="0" step="0.01">
+                        <span class="unit">kg</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="lowerHeatingValue">低位发热量（可选）</label>
+                    <div class="input-with-unit">
+                        <input type="number" id="lowerHeatingValue" placeholder="默认使用标准值" min="0" step="0.01">
+                        <span class="unit">TJ/10⁴t</span>
+                    </div>
+                    <small class="hint">如不填写，将使用因子库中的默认值</small>
+                </div>
+            </section>
+
+            <section class="button-section">
+                <button id="calculateBtn" class="btn-primary">
+                    <span class="btn-icon">⚡</span>
+                    计算碳排放
+                </button>
+            </section>
+
+            <section class="result-section" id="resultSection" style="display: none;">
+                <h2>计算结果</h2>
+                
+                <div class="result-card">
+                    <div class="result-item highlight">
+                        <span class="result-label">CO₂当量（总量）</span>
+                        <span class="result-value" id="co2Equivalent">-</span>
+                        <span class="result-unit">tCO₂e</span>
+                    </div>
+                </div>
+
+                <div class="result-details">
+                    <h3>详细排放数据</h3>
+                    
+                    <div class="result-item" id="co2Result" style="display: none;">
+                        <span class="result-label">CO₂排放量</span>
+                        <span class="result-value" id="co2Emission">-</span>
+                        <span class="result-unit">tCO₂</span>
+                    </div>
+
+                    <div class="result-item" id="ch4Result" style="display: none;">
+                        <span class="result-label">CH₄排放量</span>
+                        <span class="result-value" id="ch4Emission">-</span>
+                        <span class="result-unit">kgCH₄</span>
+                    </div>
+
+                    <div class="result-item" id="n2oResult" style="display: none;">
+                        <span class="result-label">N₂O排放量</span>
+                        <span class="result-value" id="n2oEmission">-</span>
+                        <span class="result-unit">kgN₂O</span>
+                    </div>
+                </div>
+
+                <div class="result-info">
+                    <h3>计算参数</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">排放因子</span>
+                            <span class="info-value" id="factorUsed">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">因子单位</span>
+                            <span class="info-value" id="factorUnit">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">低位发热量</span>
+                            <span class="info-value" id="heatingValueUsed">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">燃料消耗量</span>
+                            <span class="info-value" id="consumptionUsed">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gwp-info">
+                    <p><strong>GWP说明：</strong>CH₄ = 28 tCO₂e/tCH₄, N₂O = 265 tCO₂e/tN₂O（IPCC第五次评估报告100年尺度）</p>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>数据来源：国家碳排放因子库 | <a href="https://data.ncsc.org.cn/factories/index" target="_blank">查看原始数据</a></p>
+        </footer>
+    </div>
+
+    <script src="js/data-loader.js"></script>
+    <script src="js/calculator.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
