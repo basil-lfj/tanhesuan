@@ -78,9 +78,9 @@ class CarbonCalculator {
         let heatingValue = customHeatingValue || factorInfo.lowerHeatingValue;
         
         if (!heatingValue) {
-            // 如果没有低位发热量数据，假设消耗量就是能量值（简化处理）
+            // 如果没有低位发热量数据，使用默认值并发出警告
             // 实际应用中应该要求用户输入能量值或提供低位发热量
-            // 这里我们假设消耗量的单位是t，并使用一个默认的低位发热量
+            console.warn('未提供低位发热量数据，使用默认值 20 TJ/10⁴t，可能影响计算精度');
             heatingValue = 20; // 默认20 TJ/10⁴t
         }
 

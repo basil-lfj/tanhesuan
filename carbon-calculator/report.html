@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>碳核算报告生成工具</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 导航栏 -->
+        <nav class="navbar">
+            <div class="nav-brand">
+                <i class="fas fa-leaf"></i>
+                <span>碳核算报告生成工具</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html"><i class="fas fa-calculator"></i> 碳核算计算器</a>
+                <a href="report.html" class="active"><i class="fas fa-file-word"></i> 报告生成</a>
+            </div>
+        </nav>
+
+        <!-- 行业选择页面 -->
+        <div id="step-industry" class="step-container active">
+            <div class="step-header">
+                <h2><i class="fas fa-industry"></i> 选择行业类型</h2>
+                <p>请选择您要生成报告的行业类型，系统将根据行业模板生成对应的填写表单</p>
+            </div>
+            
+            <div class="industry-grid">
+                <div class="industry-card" data-industry="power">
+                    <div class="industry-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>发电行业</h3>
+                    <p>火力发电 / 水力发电 / 光伏发电</p>
+                </div>
+                
+                <div class="industry-card" data-industry="steel">
+                    <div class="industry-icon">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <h3>钢铁行业</h3>
+                    <p>炼铁 / 炼钢 / 轧钢</p>
+                </div>
+                
+                <div class="industry-card" data-industry="cement">
+                    <div class="industry-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <h3>水泥行业</h3>
+                    <p>熟料生产 / 水泥生产</p>
+                </div>
+                
+                <div class="industry-card" data-industry="chemical">
+                    <div class="industry-icon">
+                        <i class="fas fa-flask"></i>
+                    </div>
+                    <h3>化工行业</h3>
+                    <p>石油化工 / 煤化工 / 精细化工</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 表单填写页面 -->
+        <div id="step-form" class="step-container">
+            <div class="step-header">
+                <h2><i class="fas fa-edit"></i> <span id="industry-title">填写报告信息</span></h2>
+                <p>请填写以下信息，带 <span class="required">*</span> 的为必填项</p>
+            </div>
+
+            <!-- 进度条 -->
+            <div class="progress-bar">
+                <div class="progress-fill" id="form-progress"></div>
+                <span class="progress-text" id="progress-text">0%</span>
+            </div>
+
+            <!-- 表单区域 -->
+            <form id="report-form" class="report-form">
+                <!-- 动态生成的表单内容 -->
+            </form>
+
+            <!-- 操作按钮 -->
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" id="btn-back">
+                    <i class="fas fa-arrow-left"></i> 返回选择
+                </button>
+                <button type="button" class="btn btn-outline" id="btn-save-draft">
+                    <i class="fas fa-save"></i> 保存草稿
+                </button>
+                <button type="button" class="btn btn-primary" id="btn-next">
+                    下一步 <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- 报告预览页面 -->
+        <div id="step-preview" class="step-container">
+            <div class="step-header">
+                <h2><i class="fas fa-eye"></i> 报告预览</h2>
+                <p>请确认以下信息，然后生成Word报告</p>
+            </div>
+
+            <!-- 预览区域 -->
+            <div class="preview-container">
+                <div class="preview-content" id="preview-content">
+                    <!-- 动态生成的预览内容 -->
+                </div>
+            </div>
+
+            <!-- 统计信息 -->
+            <div class="preview-stats">
+                <div class="stat-item">
+                    <span class="stat-label">已填写字段：</span>
+                    <span class="stat-value" id="filled-count">0/0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">必填字段完成：</span>
+                    <span class="stat-value" id="required-progress">0%</span>
+                </div>
+            </div>
+
+            <!-- 操作按钮 -->
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" id="btn-back-form">
+                    <i class="fas fa-arrow-left"></i> 返回修改
+                </button>
+                <button type="button" class="btn btn-primary" id="btn-generate">
+                    <i class="fas fa-file-word"></i> 一键生成Word报告
+                </button>
+            </div>
+        </div>
+
+        <!-- 加载状态 -->
+        <div id="loading-overlay" class="loading-overlay">
+            <div class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+                <span>正在生成报告...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 提示消息 -->
+    <div id="toast" class="toast"></div>
+
+    <!-- 脚本 -->
+    <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+    <script src="js/report/template-parser.js"></script>
+    <script src="js/report/data-manager.js"></script>
+    <script src="js/report/form-generator.js"></script>
+    <script src="js/report/report-generator.js"></script>
+    <script src="js/report-main.js"></script>
+</body>
+</html>
