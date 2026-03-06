@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全国碳市场价格</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', Tahoma, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            min-height: 100vh;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .price-card {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .market-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            background: linear-gradient(90deg, #10b981, #059669);
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 500;
+            margin-bottom: 15px;
+            letter-spacing: 0.5px;
+        }
+
+        .title {
+            font-size: 1.5em;
+            color: #94a3b8;
+            font-weight: 400;
+        }
+
+        .date-info {
+            margin-top: 8px;
+            color: #64748b;
+            font-size: 0.9em;
+        }
+
+        .main-price {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 25px;
+        }
+
+        .price-value {
+            font-size: 4em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #10b981 0%, #34d399 50%, #6ee7b7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+        }
+
+        .price-unit {
+            font-size: 0.3em;
+            color: #64748b;
+            display: block;
+            margin-top: 5px;
+            -webkit-text-fill-color: #64748b;
+        }
+
+        .change-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 1em;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .change-badge.up {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+        }
+
+        .change-badge.down {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+
+        .price-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .price-item {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .price-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateY(-2px);
+        }
+
+        .price-item-label {
+            font-size: 0.85em;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+
+        .price-item-value {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+
+        .price-item-value.high {
+            color: #10b981;
+        }
+
+        .price-item-value.low {
+            color: #ef4444;
+        }
+
+        .price-item-unit {
+            font-size: 0.6em;
+            color: #64748b;
+            margin-left: 2px;
+        }
+
+        .footer {
+            margin-top: 25px;
+            text-align: center;
+            color: #475569;
+            font-size: 0.8em;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px 0;
+            color: #64748b;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #10b981;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            text-align: center;
+            padding: 40px;
+            color: #ef4444;
+        }
+
+        /* 响应式 */
+        @media (max-width: 480px) {
+            .price-card {
+                padding: 25px;
+            }
+
+            .price-value {
+                font-size: 3em;
+            }
+
+            .price-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="price-card">
+        <div id="content">
+            <div class="loading">
+                <div class="loading-spinner"></div>
+                <p>正在加载碳价格数据...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API端点
+        const API = {
+            latestData: '/api/data/latest'
+        };
+
+        // 格式化数字
+        function formatNumber(num) {
+            if (num === null || num === undefined) return '--';
+            return typeof num === 'number' ? num.toFixed(2) : num;
+        }
+
+        // 获取涨跌幅样式
+        function getChangeClass(percent) {
+            if (percent > 0) return 'up';
+            if (percent < 0) return 'down';
+            return '';
+        }
+
+        // 获取涨跌幅箭头
+        function getChangeArrow(percent) {
+            if (percent > 0) return '↑';
+            if (percent < 0) return '↓';
+            return '';
+        }
+
+        // 渲染价格数据
+        function renderPriceData(data) {
+            const content = document.getElementById('content');
+            const changePercent = data.change_percent || 0;
+            const changeClass = getChangeClass(changePercent);
+            const changeArrow = getChangeArrow(changePercent);
+            const sign = changePercent >= 0 ? '+' : '';
+
+            content.innerHTML = `
+                <div class="header">
+                    <div class="market-badge">全国碳市场 CEA</div>
+                    <h1 class="title">碳排放配额价格</h1>
+                    <div class="date-info">${data.date || '--'}</div>
+                </div>
+
+                <div class="main-price">
+                    <div class="price-value">
+                        ${formatNumber(data.closing_price)}
+                        <span class="price-unit">元/吨</span>
+                    </div>
+                    <div class="change-badge ${changeClass}">
+                        ${changeArrow} ${sign}${formatNumber(changePercent)}%
+                    </div>
+                </div>
+
+                <div class="price-grid">
+                    <div class="price-item">
+                        <div class="price-item-label">最高价</div>
+                        <div class="price-item-value high">
+                            ${formatNumber(data.highest_price)}
+                            <span class="price-item-unit">元/吨</span>
+                        </div>
+                    </div>
+                    <div class="price-item">
+                        <div class="price-item-label">最低价</div>
+                        <div class="price-item-value low">
+                            ${formatNumber(data.lowest_price)}
+                            <span class="price-item-unit">元/吨</span>
+                        </div>
+                    </div>
+                    <div class="price-item">
+                        <div class="price-item-label">前收盘价</div>
+                        <div class="price-item-value">
+                            ${formatNumber(data.previous_close)}
+                            <span class="price-item-unit">元/吨</span>
+                        </div>
+                    </div>
+                    <div class="price-item">
+                        <div class="price-item-label">涨跌幅</div>
+                        <div class="price-item-value ${changeClass}">
+                            ${sign}${formatNumber(changePercent)}%
+                        </div>
+                    </div>
+                </div>
+
+                <div class="footer">
+                    数据来源：<a href="https://www.ccn.ac.cn/cets" target="_blank" style="color: #10b981; text-decoration: none;">全国碳市场综合价格行情</a>
+                </div>
+            `;
+        }
+
+        // 渲染错误信息
+        function renderError(message) {
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <div class="error-message">
+                    <p>⚠️ ${message}</p>
+                    <p style="margin-top: 10px; color: #64748b; font-size: 0.9em;">
+                        请确保服务器正在运行
+                    </p>
+                </div>
+            `;
+        }
+
+        // 加载数据
+        async function loadData() {
+            try {
+                const response = await fetch(API.latestData);
+                const result = await response.json();
+
+                if (result.success && result.data) {
+                    renderPriceData(result.data);
+                } else {
+                    renderError(result.message || '暂无数据');
+                }
+            } catch (error) {
+                renderError('无法连接到服务器');
+            }
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', loadData);
+
+        // 每30秒自动刷新
+        setInterval(loadData, 30000);
+    </script>
+</body>
+</html>

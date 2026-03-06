@@ -1,0 +1,15 @@
+{
+  "date": "2026年3月5日",
+  "market": "全国碳市场",
+  "product": "CEA (碳排放配额)",
+  "closing_price": 83.2,
+  "highest_price": 83.2,
+  "lowest_price": 80.5,
+  "previous_close": 81.85,
+  "change_percent": 1.43,
+  "unit": "元/吨",
+  "source": "全国碳市场综合价格行情",
+  "data_source": "上海环境能源交易所/全国碳市场",
+  "extraction_method": "CEA div解析",
+  "raw_sequence": "83.2083.2080.5081.851.43"
+}
