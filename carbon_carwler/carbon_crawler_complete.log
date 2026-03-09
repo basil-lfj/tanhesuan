@@ -1,0 +1,154 @@
+2026-03-07 10:33:35,090 - carbon_crawler_complete - INFO - ============================================================
+2026-03-07 10:33:35,090 - carbon_crawler_complete - INFO - 碳市场价格爬虫开始运行
+2026-03-07 10:33:35,090 - carbon_crawler_complete - INFO - ============================================================
+2026-03-07 10:33:35,090 - carbon_crawler_complete - INFO - 正在获取页面: https://www.ccn.ac.cn/cets
+2026-03-07 10:33:36,036 - carbon_crawler_complete - INFO - 成功获取页面，状态码: 200
+2026-03-07 10:33:36,040 - carbon_crawler_complete - INFO - 已保存页面到: debug_complete\page_20260307_103336.html
+2026-03-07 10:33:36,051 - carbon_crawler_complete - INFO - 找到CEA数据区域
+2026-03-07 10:33:36,052 - carbon_crawler_complete - INFO - 找到CCER数据区域
+2026-03-07 10:33:36,053 - carbon_crawler_complete - INFO - 
+============================================================
+2026-03-07 10:33:36,053 - carbon_crawler_complete - INFO - 成功提取碳价格数据:
+2026-03-07 10:33:36,053 - carbon_crawler_complete - INFO - ============================================================
+2026-03-07 10:33:36,053 - carbon_crawler_complete - INFO - 
+【全国碳市场综合价格行情（CEA）】
+2026-03-07 10:33:36,053 - carbon_crawler_complete - INFO -   date: 2026年3月6日
+2026-03-07 10:33:36,053 - carbon_crawler_complete - INFO -   open_price: 81.85
+2026-03-07 10:33:36,053 - carbon_crawler_complete - INFO -   high_price: 81.85
+2026-03-07 10:33:36,053 - carbon_crawler_complete - INFO -   low_price: 81.85
+2026-03-07 10:33:36,053 - carbon_crawler_complete - INFO -   close_price: 81.85
+2026-03-07 10:33:36,053 - carbon_crawler_complete - INFO -   change_percent: 81.85
+2026-03-07 10:33:36,053 - carbon_crawler_complete - INFO -   market: 全国碳市场
+2026-03-07 10:33:36,053 - carbon_crawler_complete - INFO -   product: CEA (碳排放配额)
+2026-03-07 10:33:36,053 - carbon_crawler_complete - INFO -   unit: 元/吨
+2026-03-07 10:33:36,053 - carbon_crawler_complete - INFO -   source: 上海环境能源交易所
+2026-03-07 10:33:36,053 - carbon_crawler_complete - INFO -   data_type: CEA
+2026-03-07 10:33:36,053 - carbon_crawler_complete - INFO - 
+【全国温室气体自愿减排交易行情（CCER）】
+2026-03-07 10:33:36,053 - carbon_crawler_complete - INFO -   date: 2026年3月6日
+2026-03-07 10:33:36,053 - carbon_crawler_complete - INFO -   volume: 20117687.0088
+2026-03-07 10:33:36,053 - carbon_crawler_complete - INFO -   amount: 20117687.0088
+2026-03-07 10:33:36,054 - carbon_crawler_complete - INFO -   avg_price: 20117687.0088
+2026-03-07 10:33:36,054 - carbon_crawler_complete - INFO -   change_percent: 81.85
+2026-03-07 10:33:36,054 - carbon_crawler_complete - INFO -   market: 全国温室气体自愿减排交易市场
+2026-03-07 10:33:36,054 - carbon_crawler_complete - INFO -   product: CCER (核证自愿减排量)
+2026-03-07 10:33:36,054 - carbon_crawler_complete - INFO -   unit: 元/吨
+2026-03-07 10:33:36,054 - carbon_crawler_complete - INFO -   source: 北京绿色交易所
+2026-03-07 10:33:36,054 - carbon_crawler_complete - INFO -   data_type: CCER
+2026-03-07 10:33:36,055 - carbon_crawler_complete - INFO - 
+数据已保存到: carbon_prices_complete_20260307_103336.json
+2026-03-07 10:39:24,440 - carbon_crawler_complete - INFO - ============================================================
+2026-03-07 10:39:24,440 - carbon_crawler_complete - INFO - 碳市场价格爬虫开始运行
+2026-03-07 10:39:24,440 - carbon_crawler_complete - INFO - ============================================================
+2026-03-07 10:39:24,440 - carbon_crawler_complete - INFO - 正在获取页面: https://www.ccn.ac.cn/cets
+2026-03-07 10:39:25,351 - carbon_crawler_complete - INFO - 成功获取页面，状态码: 200
+2026-03-07 10:39:25,353 - carbon_crawler_complete - INFO - 已保存页面到: debug_complete\page_20260307_103925.html
+2026-03-07 10:39:25,365 - carbon_crawler_complete - INFO - 找到CEA数据区域
+2026-03-07 10:39:25,365 - carbon_crawler_complete - INFO - CEA提取到的数值: ['81.85', '——', '——', '81.85', '201', '17687.00', '88.00']
+2026-03-07 10:39:25,366 - carbon_crawler_complete - INFO - 找到CCER数据区域
+2026-03-07 10:39:25,366 - carbon_crawler_complete - INFO - CCER提取到的数值: ['81.85', '——', '——', '81.85', '201', '17687.00', '88.00']
+2026-03-07 10:39:25,366 - carbon_crawler_complete - INFO - 
+============================================================
+2026-03-07 10:39:25,366 - carbon_crawler_complete - INFO - 成功提取碳价格数据:
+2026-03-07 10:39:25,366 - carbon_crawler_complete - INFO - ============================================================
+2026-03-07 10:39:25,366 - carbon_crawler_complete - INFO - 
+【全国碳市场综合价格行情（CEA）】
+2026-03-07 10:39:25,366 - carbon_crawler_complete - INFO -   date: 2026年3月6日
+2026-03-07 10:39:25,366 - carbon_crawler_complete - INFO -   open_price: 81.85
+2026-03-07 10:39:25,366 - carbon_crawler_complete - INFO -   high_price: None
+2026-03-07 10:39:25,366 - carbon_crawler_complete - INFO -   low_price: None
+2026-03-07 10:39:25,366 - carbon_crawler_complete - INFO -   close_price: 81.85
+2026-03-07 10:39:25,366 - carbon_crawler_complete - INFO -   change_percent: 201.0
+2026-03-07 10:39:25,366 - carbon_crawler_complete - INFO -   market: 全国碳市场
+2026-03-07 10:39:25,366 - carbon_crawler_complete - INFO -   product: CEA (碳排放配额)
+2026-03-07 10:39:25,366 - carbon_crawler_complete - INFO -   unit: 元/吨
+2026-03-07 10:39:25,366 - carbon_crawler_complete - INFO -   source: 上海环境能源交易所
+2026-03-07 10:39:25,366 - carbon_crawler_complete - INFO -   data_type: CEA
+2026-03-07 10:39:25,366 - carbon_crawler_complete - INFO - 
+【全国温室气体自愿减排交易行情（CCER）】
+2026-03-07 10:39:25,366 - carbon_crawler_complete - INFO -   date: 2026年3月6日
+2026-03-07 10:39:25,366 - carbon_crawler_complete - INFO -   volume: 81.85
+2026-03-07 10:39:25,367 - carbon_crawler_complete - INFO -   amount: None
+2026-03-07 10:39:25,367 - carbon_crawler_complete - INFO -   avg_price: None
+2026-03-07 10:39:25,367 - carbon_crawler_complete - INFO -   change_percent: 81.85
+2026-03-07 10:39:25,367 - carbon_crawler_complete - INFO -   market: 全国温室气体自愿减排交易市场
+2026-03-07 10:39:25,367 - carbon_crawler_complete - INFO -   product: CCER (核证自愿减排量)
+2026-03-07 10:39:25,367 - carbon_crawler_complete - INFO -   unit: 元/吨
+2026-03-07 10:39:25,367 - carbon_crawler_complete - INFO -   source: 北京绿色交易所
+2026-03-07 10:39:25,367 - carbon_crawler_complete - INFO -   data_type: CCER
+2026-03-07 10:39:25,368 - carbon_crawler_complete - INFO - 
+数据已保存到: carbon_prices_complete_20260307_103925.json
+2026-03-07 10:41:45,034 - carbon_crawler_complete - INFO - ============================================================
+2026-03-07 10:41:45,034 - carbon_crawler_complete - INFO - 碳市场价格爬虫开始运行
+2026-03-07 10:41:45,034 - carbon_crawler_complete - INFO - ============================================================
+2026-03-07 10:41:45,034 - carbon_crawler_complete - INFO - 正在获取页面: https://www.ccn.ac.cn/cets
+2026-03-07 10:41:45,936 - carbon_crawler_complete - INFO - 成功获取页面，状态码: 200
+2026-03-07 10:41:45,938 - carbon_crawler_complete - INFO - 已保存页面到: debug_complete\page_20260307_104145.html
+2026-03-07 10:41:45,950 - carbon_crawler_complete - INFO - 找到CEA标题区域
+2026-03-07 10:41:45,951 - carbon_crawler_complete - INFO - CEA提取到的数值: ['81.85', '——', '——', '81.85']
+2026-03-07 10:41:45,951 - carbon_crawler_complete - INFO - 找到CCER标题区域
+2026-03-07 10:41:45,952 - carbon_crawler_complete - INFO - CCER提取到的数值: ['201', '17687.00', '88.00']
+2026-03-07 10:41:45,952 - carbon_crawler_complete - INFO - 
+============================================================
+2026-03-07 10:41:45,952 - carbon_crawler_complete - INFO - 成功提取碳价格数据:
+2026-03-07 10:41:45,952 - carbon_crawler_complete - INFO - ============================================================
+2026-03-07 10:41:45,952 - carbon_crawler_complete - INFO - 
+【全国碳市场综合价格行情（CEA）】
+2026-03-07 10:41:45,952 - carbon_crawler_complete - INFO -   date: 2026年3月6日
+2026-03-07 10:41:45,952 - carbon_crawler_complete - INFO -   open_price: 81.85
+2026-03-07 10:41:45,952 - carbon_crawler_complete - INFO -   close_price: 81.85
+2026-03-07 10:41:45,952 - carbon_crawler_complete - INFO -   market: 全国碳市场
+2026-03-07 10:41:45,952 - carbon_crawler_complete - INFO -   product: CEA (碳排放配额)
+2026-03-07 10:41:45,952 - carbon_crawler_complete - INFO -   unit: 元/吨
+2026-03-07 10:41:45,952 - carbon_crawler_complete - INFO -   source: 上海环境能源交易所
+2026-03-07 10:41:45,953 - carbon_crawler_complete - INFO -   data_type: CEA
+2026-03-07 10:41:45,953 - carbon_crawler_complete - INFO - 
+【全国温室气体自愿减排交易行情（CCER）】
+2026-03-07 10:41:45,953 - carbon_crawler_complete - INFO -   date: 2026年3月6日
+2026-03-07 10:41:45,953 - carbon_crawler_complete - INFO -   volume: 201.0
+2026-03-07 10:41:45,953 - carbon_crawler_complete - INFO -   market: 全国温室气体自愿减排交易市场
+2026-03-07 10:41:45,953 - carbon_crawler_complete - INFO -   product: CCER (核证自愿减排量)
+2026-03-07 10:41:45,953 - carbon_crawler_complete - INFO -   unit: 元/吨
+2026-03-07 10:41:45,953 - carbon_crawler_complete - INFO -   source: 北京绿色交易所
+2026-03-07 10:41:45,953 - carbon_crawler_complete - INFO -   data_type: CCER
+2026-03-07 10:41:45,955 - carbon_crawler_complete - INFO - 
+数据已保存到: carbon_prices_complete_20260307_104145.json
+2026-03-07 10:44:11,702 - carbon_crawler_complete - INFO - ============================================================
+2026-03-07 10:44:11,702 - carbon_crawler_complete - INFO - 碳市场价格爬虫开始运行
+2026-03-07 10:44:11,702 - carbon_crawler_complete - INFO - ============================================================
+2026-03-07 10:44:11,702 - carbon_crawler_complete - INFO - 正在获取页面: https://www.ccn.ac.cn/cets
+2026-03-07 10:44:12,684 - carbon_crawler_complete - INFO - 成功获取页面，状态码: 200
+2026-03-07 10:44:12,685 - carbon_crawler_complete - INFO - 已保存页面到: debug_complete\page_20260307_104412.html
+2026-03-07 10:44:12,698 - carbon_crawler_complete - INFO - 找到CEA标题区域
+2026-03-07 10:44:12,699 - carbon_crawler_complete - INFO - CEA提取到的数值: ['81.85', '——', '——', '81.85'], 涨跌幅: None
+2026-03-07 10:44:12,699 - carbon_crawler_complete - INFO - 找到CCER标题区域
+2026-03-07 10:44:12,700 - carbon_crawler_complete - INFO - CCER提取到的数值: ['201', '17687.00', '88.00'], 涨跌幅: None
+2026-03-07 10:44:12,700 - carbon_crawler_complete - INFO - 
+============================================================
+2026-03-07 10:44:12,700 - carbon_crawler_complete - INFO - 成功提取碳价格数据:
+2026-03-07 10:44:12,700 - carbon_crawler_complete - INFO - ============================================================
+2026-03-07 10:44:12,700 - carbon_crawler_complete - INFO - 
+【全国碳市场综合价格行情（CEA）】
+2026-03-07 10:44:12,700 - carbon_crawler_complete - INFO -   date: 2026年3月6日
+2026-03-07 10:44:12,700 - carbon_crawler_complete - INFO -   open_price: 81.85
+2026-03-07 10:44:12,700 - carbon_crawler_complete - INFO -   high_price: None
+2026-03-07 10:44:12,700 - carbon_crawler_complete - INFO -   low_price: None
+2026-03-07 10:44:12,700 - carbon_crawler_complete - INFO -   close_price: 81.85
+2026-03-07 10:44:12,700 - carbon_crawler_complete - INFO -   market: 全国碳市场
+2026-03-07 10:44:12,700 - carbon_crawler_complete - INFO -   product: CEA (碳排放配额)
+2026-03-07 10:44:12,701 - carbon_crawler_complete - INFO -   unit: 元/吨
+2026-03-07 10:44:12,701 - carbon_crawler_complete - INFO -   source: 上海环境能源交易所
+2026-03-07 10:44:12,701 - carbon_crawler_complete - INFO -   data_type: CEA
+2026-03-07 10:44:12,701 - carbon_crawler_complete - INFO - 
+【全国温室气体自愿减排交易行情（CCER）】
+2026-03-07 10:44:12,701 - carbon_crawler_complete - INFO -   date: 2026年3月6日
+2026-03-07 10:44:12,701 - carbon_crawler_complete - INFO -   volume: 201.0
+2026-03-07 10:44:12,701 - carbon_crawler_complete - INFO -   amount: 17687.0
+2026-03-07 10:44:12,701 - carbon_crawler_complete - INFO -   avg_price: 88.0
+2026-03-07 10:44:12,701 - carbon_crawler_complete - INFO -   market: 全国温室气体自愿减排交易市场
+2026-03-07 10:44:12,701 - carbon_crawler_complete - INFO -   product: CCER (核证自愿减排量)
+2026-03-07 10:44:12,701 - carbon_crawler_complete - INFO -   unit: 元/吨
+2026-03-07 10:44:12,701 - carbon_crawler_complete - INFO -   source: 北京绿色交易所
+2026-03-07 10:44:12,701 - carbon_crawler_complete - INFO -   data_type: CCER
+2026-03-07 10:44:12,703 - carbon_crawler_complete - INFO - 
+数据已保存到: carbon_prices_complete_20260307_104412.json

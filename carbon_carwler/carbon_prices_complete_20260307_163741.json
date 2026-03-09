@@ -1,0 +1,27 @@
+{
+  "crawl_time": "2026-03-07 16:37:41",
+  "data_date": "2026年3月6日",
+  "cea": {
+    "date": "2026年3月6日",
+    "open_price": 81.85,
+    "high_price": null,
+    "low_price": null,
+    "close_price": 81.85,
+    "market": "全国碳市场",
+    "product": "CEA (碳排放配额)",
+    "unit": "元/吨",
+    "source": "上海环境能源交易所",
+    "data_type": "CEA"
+  },
+  "ccer": {
+    "date": "2026年3月6日",
+    "volume": 201.0,
+    "amount": 17687.0,
+    "avg_price": 88.0,
+    "market": "全国温室气体自愿减排交易市场",
+    "product": "CCER (核证自愿减排量)",
+    "unit": "元/吨",
+    "source": "北京绿色交易所",
+    "data_type": "CCER"
+  }
+}
