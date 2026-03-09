@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>碳资产管理系统</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 头部导航 -->
+        <header class="header">
+            <h1>碳资产管理系统</h1>
+            <p class="subtitle">企业碳履约与减排管理平台</p>
+        </header>
+
+        <!-- 核心指标卡片 -->
+        <section class="metrics-section">
+            <div class="metric-card">
+                <div class="metric-icon quota-icon">📊</div>
+                <div class="metric-content">
+                    <h3>配额余额</h3>
+                    <p class="metric-value" id="quotaBalance">--</p>
+                    <span class="metric-unit">吨CO₂</span>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon gap-icon">📈</div>
+                <div class="metric-content">
+                    <h3>配额缺口/盈余</h3>
+                    <p class="metric-value" id="quotaGap">--</p>
+                    <span class="metric-unit">吨CO₂</span>
+                </div>
+                <div class="metric-status" id="gapStatus"></div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon reduction-icon">🌱</div>
+                <div class="metric-content">
+                    <h3>累计减排量</h3>
+                    <p class="metric-value" id="totalReduction">--</p>
+                    <span class="metric-unit">吨CO₂</span>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon emission-icon">🏭</div>
+                <div class="metric-content">
+                    <h3>当前排放量</h3>
+                    <p class="metric-value" id="currentEmission">--</p>
+                    <span class="metric-unit">吨CO₂</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 预警提示区域 -->
+        <section class="alert-section" id="alertSection" style="display: none;">
+            <div class="alert warning" id="warningAlert">
+                <span class="alert-icon">⚠️</span>
+                <div class="alert-content">
+                    <h4>配额缺口预警</h4>
+                    <p id="warningMessage">您的碳配额存在缺口，请及时采取履约措施！</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 功能选项卡 -->
+        <section class="tabs-section">
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="quota">配额管理</button>
+                <button class="tab-btn" data-tab="reduction">减排成果</button>
+                <button class="tab-btn" data-tab="report">报表导出</button>
+            </div>
+
+            <!-- 配额管理面板 -->
+            <div class="tab-content active" id="quota-tab">
+                <div class="panel-header">
+                    <h2>配额管理</h2>
+                    <button class="btn btn-primary" id="addQuotaBtn">+ 新增配额</button>
+                </div>
+                
+                <!-- 配额录入表单 -->
+                <div class="form-panel" id="quotaForm" style="display: none;">
+                    <h3>录入配额信息</h3>
+                    <form id="quotaInputForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="quotaYear">年度</label>
+                                <input type="number" id="quotaYear" min="2020" max="2030" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="quotaType">配额类型</label>
+                                <select id="quotaType" required>
+                                    <option value="">请选择</option>
+                                    <option value="national">全国碳市场配额</option>
+                                    <option value="pilot">试点碳市场配额</option>
+                                    <option value="voluntary">自愿减排配额</option>
+                                    <option value="other">其他配额</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="quotaAmount">配额数量（吨CO₂）</label>
+                                <input type="number" id="quotaAmount" step="0.01" min="0" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="quotaDate">发放日期</label>
+                                <input type="date" id="quotaDate" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="quotaRemark">备注</label>
+                            <textarea id="quotaRemark" rows="2"></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">保存</button>
+                            <button type="button" class="btn btn-secondary" id="cancelQuotaBtn">取消</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- 配额明细表格 -->
+                <div class="table-panel">
+                    <h3>配额明细</h3>
+                    <table class="data-table" id="quotaTable">
+                        <thead>
+                            <tr>
+                                <th>年度</th>
+                                <th>配额类型</th>
+                                <th>配额数量（吨CO₂）</th>
+                                <th>已使用（吨CO₂）</th>
+                                <th>剩余（吨CO₂）</th>
+                                <th>发放日期</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="quotaTableBody">
+                            <!-- 动态填充 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 减排成果面板 -->
+            <div class="tab-content" id="reduction-tab">
+                <div class="panel-header">
+                    <h2>减排成果管理</h2>
+                    <button class="btn btn-primary" id="addReductionBtn">+ 新增减排</button>
+                </div>
+
+                <!-- 减排录入表单 -->
+                <div class="form-panel" id="reductionForm" style="display: none;">
+                    <h3>录入减排成果</h3>
+                    <form id="reductionInputForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="reductionYear">年度</label>
+                                <input type="number" id="reductionYear" min="2020" max="2030" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="reductionType">减排类型</label>
+                                <select id="reductionType" required>
+                                    <option value="">请选择</option>
+                                    <option value="energy">节能改造</option>
+                                    <option value="process">工艺改进</option>
+                                    <option value="renewable">可再生能源</option>
+                                    <option value="ccus">碳捕集利用与封存</option>
+                                    <option value="other">其他措施</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="reductionAmount">减排量（吨CO₂）</label>
+                                <input type="number" id="reductionAmount" step="0.01" min="0" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="reductionDate">实施日期</label>
+                                <input type="date" id="reductionDate" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="reductionDesc">措施描述</label>
+                            <textarea id="reductionDesc" rows="2"></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">保存</button>
+                            <button type="button" class="btn btn-secondary" id="cancelReductionBtn">取消</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- 减排明细表格 -->
+                <div class="table-panel">
+                    <h3>减排成果明细</h3>
+                    <table class="data-table" id="reductionTable">
+                        <thead>
+                            <tr>
+                                <th>年度</th>
+                                <th>减排类型</th>
+                                <th>减排量（吨CO₂）</th>
+                                <th>实施日期</th>
+                                <th>措施描述</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reductionTableBody">
+                            <!-- 动态填充 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 报表导出面板 -->
+            <div class="tab-content" id="report-tab">
+                <div class="panel-header">
+                    <h2>报表导出</h2>
+                </div>
+                
+                <div class="report-options">
+                    <div class="report-card">
+                        <h3>📊 配额管理报表</h3>
+                        <p>包含配额余额、使用情况、缺口分析等详细信息</p>
+                        <button class="btn btn-primary" id="exportQuotaReport">导出报表</button>
+                    </div>
+                    <div class="report-card">
+                        <h3>🌱 减排成果报表</h3>
+                        <p>包含减排措施、减排量统计、成效分析等信息</p>
+                        <button class="btn btn-primary" id="exportReductionReport">导出报表</button>
+                    </div>
+                    <div class="report-card">
+                        <h3>📋 综合分析报表</h3>
+                        <p>包含配额与减排的综合分析、履约建议等</p>
+                        <button class="btn btn-primary" id="exportSummaryReport">导出报表</button>
+                    </div>
+                </div>
+
+                <!-- 报表预览区域 -->
+                <div class="report-preview" id="reportPreview" style="display: none;">
+                    <h3>报表预览</h3>
+                    <div class="preview-content" id="previewContent"></div>
+                    <div class="preview-actions">
+                        <button class="btn btn-primary" id="downloadReport">下载报表</button>
+                        <button class="btn btn-secondary" id="closePreview">关闭预览</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 页脚 -->
+        <footer class="footer">
+            <p>© 2026 碳资产管理系统 | 企业碳履约与减排管理平台</p>
+        </footer>
+    </div>
+
+    <!-- 引入JS文件 -->
+    <script src="js/data-store.js"></script>
+    <script src="js/quota-manager.js"></script>
+    <script src="js/reduction-manager.js"></script>
+    <script src="js/report-export.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

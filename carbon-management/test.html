@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>碳资产管理系统 - 功能测试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #1b5e20;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+            color: white;
+            border-radius: 10px;
+        }
+        .test-section {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section h2 {
+            color: #2e7d32;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e8f5e9;
+        }
+        .test-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
+        }
+        .btn-danger {
+            background: linear-gradient(135deg, #c62828 0%, #b71c1c 100%);
+            color: white;
+        }
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #666;
+            border: 1px solid #e0e0e0;
+        }
+        .test-results {
+            background: #fafafa;
+            border-radius: 8px;
+            padding: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .test-item {
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .test-item.pass {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        .test-item.fail {
+            background: #ffebee;
+            color: #c62828;
+        }
+        .test-item.info {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+        .test-item.pending {
+            background: #fff3e0;
+            color: #e65100;
+        }
+        .status-icon {
+            font-size: 18px;
+        }
+        .data-display {
+            background: #f5f5f5;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-card {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .summary-card h3 {
+            color: #33691e;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .summary-card .value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #1b5e20;
+        }
+        .summary-card .unit {
+            font-size: 12px;
+            color: #666;
+        }
+        .link-section {
+            text-align: center;
+            padding: 20px;
+        }
+        .link-section a {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: transform 0.3s;
+        }
+        .link-section a:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(46, 125, 50, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 碳资产管理系统 - 功能测试页面</h1>
+
+        <!-- 测试链接 -->
+        <div class="link-section">
+            <a href="index.html">→ 返回主系统</a>
+        </div>
+
+        <!-- 测试统计 -->
+        <div class="summary-cards">
+            <div class="summary-card">
+                <h3>测试通过</h3>
+                <div class="value" id="passCount">0</div>
+                <div class="unit">项</div>
+            </div>
+            <div class="summary-card">
+                <h3>测试失败</h3>
+                <div class="value" id="failCount" style="color: #c62828;">0</div>
+                <div class="unit">项</div>
+            </div>
+            <div class="summary-card">
+                <h3>测试总数</h3>
+                <div class="value" id="totalCount">0</div>
+                <div class="unit">项</div>
+            </div>
+        </div>
+
+        <!-- 测试控制 -->
+        <div class="test-section">
+            <h2>📋 测试控制面板</h2>
+            <div class="test-buttons">
+                <button class="btn btn-primary" onclick="runAllTests()">🚀 运行全部测试</button>
+                <button class="btn btn-primary" onclick="testDataStore()">💾 测试数据存储</button>
+                <button class="btn btn-primary" onclick="testQuotaManager()">📊 测试配额管理</button>
+                <button class="btn btn-primary" onclick="testReductionManager()">🌱 测试减排管理</button>
+                <button class="btn btn-primary" onclick="testGapCalculation()">📈 测试缺口计算</button>
+                <button class="btn btn-primary" onclick="testWarningSystem()">⚠️ 测试预警系统</button>
+                <button class="btn btn-primary" onclick="testReportExport()">📄 测试报表生成</button>
+                <button class="btn btn-danger" onclick="clearTestData()">🗑️ 清空测试数据</button>
+            </div>
+            <div class="test-results" id="testResults">
+                <div class="test-item info">
+                    <span class="status-icon">ℹ️</span>
+                    <span>点击上方按钮开始测试...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 数据存储测试 -->
+        <div class="test-section">
+            <h2>💾 数据存储状态</h2>
+            <div class="data-display" id="dataDisplay">
+                等待测试...
+            </div>
+        </div>
+
+        <!-- 计算结果测试 -->
+        <div class="test-section">
+            <h2>📊 计算结果验证</h2>
+            <div class="data-display" id="calcDisplay">
+                等待测试...
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入被测试的JS文件 -->
+    <script src="js/data-store.js"></script>
+    <script src="js/quota-manager.js"></script>
+    <script src="js/reduction-manager.js"></script>
+    <script src="js/report-export.js"></script>
+
+    <script>
+        // 测试统计
+        let testStats = {
+            pass: 0,
+            fail: 0,
+            total: 0
+        };
+
+        // 更新统计显示
+        function updateStats() {
+            document.getElementById('passCount').textContent = testStats.pass;
+            document.getElementById('failCount').textContent = testStats.fail;
+            document.getElementById('totalCount').textContent = testStats.total;
+        }
+
+        // 添加测试结果
+        function addResult(message, status) {
+            const resultsDiv = document.getElementById('testResults');
+            const icons = {
+                'pass': '✅',
+                'fail': '❌',
+                'info': 'ℹ️',
+                'pending': '⏳'
+            };
+            
+            const item = document.createElement('div');
+            item.className = `test-item ${status}`;
+            item.innerHTML = `
+                <span class="status-icon">${icons[status]}</span>
+                <span>${message}</span>
+            `;
+            resultsDiv.appendChild(item);
+            resultsDiv.scrollTop = resultsDiv.scrollHeight;
+
+            testStats.total++;
+            if (status === 'pass') testStats.pass++;
+            if (status === 'fail') testStats.fail++;
+            updateStats();
+        }
+
+        // 清空测试结果
+        function clearResults() {
+            document.getElementById('testResults').innerHTML = '';
+            testStats = { pass: 0, fail: 0, total: 0 };
+            updateStats();
+        }
+
+        // 运行所有测试
+        async function runAllTests() {
+            clearResults();
+            addResult('开始运行全部测试...', 'info');
+            
+            await testDataStore();
+            await testQuotaManager();
+            await testReductionManager();
+            await testGapCalculation();
+            await testWarningSystem();
+            await testReportExport();
+            
+            addResult(`测试完成！通过: ${testStats.pass}, 失败: ${testStats.fail}`, 
+                testStats.fail === 0 ? 'pass' : 'fail');
+        }
+
+        // 测试数据存储
+        function testDataStore() {
+            return new Promise((resolve) => {
+                addResult('--- 开始测试数据存储模块 ---', 'info');
+                
+                try {
+                    // 初始化
+                    DataStore.init();
+                    addResult('数据存储初始化成功', 'pass');
+                    
+                    // 测试配额存储
+                    const testQuota = DataStore.addQuota({
+                        year: 2026,
+                        type: 'national',
+                        amount: 10000,
+                        issueDate: '2026-01-01',
+                        remark: '测试配额'
+                    });
+                    
+                    if (testQuota.id && testQuota.amount === 10000) {
+                        addResult('配额数据存储成功', 'pass');
+                    } else {
+                        addResult('配额数据存储失败', 'fail');
+                    }
+                    
+                    // 测试减排存储
+                    const testReduction = DataStore.addReduction({
+                        year: 2026,
+                        type: 'energy',
+                        amount: 500,
+                        implementDate: '2026-01-15',
+                        description: '测试减排'
+                    });
+                    
+                    if (testReduction.id && testReduction.amount === 500) {
+                        addResult('减排数据存储成功', 'pass');
+                    } else {
+                        addResult('减排数据存储失败', 'fail');
+                    }
+                    
+                    // 测试排放数据
+                    DataStore.setCurrentEmission(8000);
+                    const emissions = DataStore.getEmissions();
+                    
+                    if (emissions.totalEmission === 8000) {
+                        addResult('排放数据存储成功', 'pass');
+                    } else {
+                        addResult('排放数据存储失败', 'fail');
+                    }
+                    
+                    // 显示数据
+                    displayData();
+                    
+                } catch (error) {
+                    addResult(`数据存储测试出错: ${error.message}`, 'fail');
+                }
+                
+                resolve();
+            });
+        }
+
+        // 测试配额管理
+        function testQuotaManager() {
+            return new Promise((resolve) => {
+                addResult('--- 开始测试配额管理模块 ---', 'info');
+                
+                try {
+                    // 获取配额列表
+                    const quotas = DataStore.getQuotas();
+                    if (quotas.length > 0) {
+                        addResult(`配额查询成功，共 ${quotas.length} 条记录`, 'pass');
+                    } else {
+                        addResult('配额列表为空', 'pending');
+                    }
+                    
+                    // 获取配额统计
+                    const stats = DataStore.getQuotaStats();
+                    if (stats.totalQuota >= 0) {
+                        addResult(`配额统计成功，总额: ${stats.totalQuota.toFixed(2)} 吨`, 'pass');
+                    } else {
+                        addResult('配额统计失败', 'fail');
+                    }
+                    
+                    // 验证配额类型映射
+                    const types = QuotaManager.QUOTA_TYPES;
+                    if (types.national && types.pilot && types.voluntary) {
+                        addResult('配额类型映射正确', 'pass');
+                    } else {
+                        addResult('配额类型映射缺失', 'fail');
+                    }
+                    
+                } catch (error) {
+                    addResult(`配额管理测试出错: ${error.message}`, 'fail');
+                }
+                
+                resolve();
+            });
+        }
+
+        // 测试减排管理
+        function testReductionManager() {
+            return new Promise((resolve) => {
+                addResult('--- 开始测试减排管理模块 ---', 'info');
+                
+                try {
+                    // 获取减排列表
+                    const reductions = DataStore.getReductions();
+                    if (reductions.length > 0) {
+                        addResult(`减排查询成功，共 ${reductions.length} 条记录`, 'pass');
+                    } else {
+                        addResult('减排列表为空', 'pending');
+                    }
+                    
+                    // 获取减排统计
+                    const stats = DataStore.getReductionStats();
+                    if (stats.totalReduction >= 0) {
+                        addResult(`减排统计成功，累计: ${stats.totalReduction.toFixed(2)} 吨`, 'pass');
+                    } else {
+                        addResult('减排统计失败', 'fail');
+                    }
+                    
+                    // 验证减排类型映射
+                    const types = ReductionManager.REDUCTION_TYPES;
+                    if (types.energy && types.process && types.renewable) {
+                        addResult('减排类型映射正确', 'pass');
+                    } else {
+                        addResult('减排类型映射缺失', 'fail');
+                    }
+                    
+                } catch (error) {
+                    addResult(`减排管理测试出错: ${error.message}`, 'fail');
+                }
+                
+                resolve();
+            });
+        }
+
+        // 测试缺口计算
+        function testGapCalculation() {
+            return new Promise((resolve) => {
+                addResult('--- 开始测试缺口计算逻辑 ---', 'info');
+                
+                try {
+                    const gapInfo = DataStore.calculateGap();
+                    
+                    // 验证计算结果
+                    addResult(`当前排放量: ${gapInfo.currentEmission.toFixed(2)} 吨CO₂`, 'info');
+                    addResult(`可用配额: ${gapInfo.availableQuota.toFixed(2)} 吨CO₂`, 'info');
+                    addResult(`配额缺口/盈余: ${gapInfo.gap.toFixed(2)} 吨CO₂`, 'info');
+                    
+                    // 验证计算公式
+                    // 配额缺口 = 当前排放量 - 可用配额
+                    const expectedGap = gapInfo.currentEmission - gapInfo.availableQuota;
+                    if (Math.abs(gapInfo.gap - expectedGap) < 0.01) {
+                        addResult('缺口计算公式正确', 'pass');
+                    } else {
+                        addResult('缺口计算公式错误', 'fail');
+                    }
+                    
+                    // 验证缺口判断
+                    const isDeficit = gapInfo.gap > 0;
+                    if (gapInfo.isDeficit === isDeficit) {
+                        addResult(`缺口判断正确: ${isDeficit ? '存在缺口' : '存在盈余'}`, 'pass');
+                    } else {
+                        addResult('缺口判断错误', 'fail');
+                    }
+                    
+                    // 显示计算结果
+                    displayCalculation(gapInfo);
+                    
+                } catch (error) {
+                    addResult(`缺口计算测试出错: ${error.message}`, 'fail');
+                }
+                
+                resolve();
+            });
+        }
+
+        // 测试预警系统
+        function testWarningSystem() {
+            return new Promise((resolve) => {
+                addResult('--- 开始测试预警系统 ---', 'info');
+                
+                try {
+                    const warningInfo = DataStore.checkWarning();
+                    
+                    // 显示预警信息
+                    addResult(`预警状态: ${warningInfo.needWarning ? '需要预警' : '无需预警'}`, 'info');
+                    addResult(`预警级别: ${warningInfo.level}`, 'info');
+                    addResult(`预警消息: ${warningInfo.message}`, 'info');
+                    
+                    // 验证预警逻辑
+                    if (warningInfo.needWarning && warningInfo.level !== 'none') {
+                        addResult('预警触发逻辑正确', 'pass');
+                    } else if (!warningInfo.needWarning && warningInfo.level === 'none') {
+                        addResult('正常状态判断正确', 'pass');
+                    } else {
+                        addResult('预警逻辑存在问题', 'fail');
+                    }
+                    
+                } catch (error) {
+                    addResult(`预警系统测试出错: ${error.message}`, 'fail');
+                }
+                
+                resolve();
+            });
+        }
+
+        // 测试报表生成
+        function testReportExport() {
+            return new Promise((resolve) => {
+                addResult('--- 开始测试报表生成 ---', 'info');
+                
+                try {
+                    // 测试配额报表生成
+                    const quotaReport = ReportExport.generateQuotaReportHTML(
+                        DataStore.getQuotas(),
+                        DataStore.getQuotaStats(),
+                        DataStore.calculateGap()
+                    );
+                    
+                    if (quotaReport && quotaReport.includes('配额管理报表')) {
+                        addResult('配额报表生成成功', 'pass');
+                    } else {
+                        addResult('配额报表生成失败', 'fail');
+                    }
+                    
+                    // 测试减排报表生成
+                    const reductionReport = ReportExport.generateReductionReportHTML(
+                        DataStore.getReductions(),
+                        DataStore.getReductionStats(),
+                        ReductionManager.getStatsByType()
+                    );
+                    
+                    if (reductionReport && reductionReport.includes('减排成果报表')) {
+                        addResult('减排报表生成成功', 'pass');
+                    } else {
+                        addResult('减排报表生成失败', 'fail');
+                    }
+                    
+                    // 测试综合报表生成
+                    const summaryReport = ReportExport.generateSummaryReportHTML(
+                        DataStore.getQuotas(),
+                        DataStore.getReductions(),
+                        DataStore.getQuotaStats(),
+                        DataStore.getReductionStats(),
+                        DataStore.calculateGap(),
+                        DataStore.checkWarning()
+                    );
+                    
+                    if (summaryReport && summaryReport.includes('综合分析报表')) {
+                        addResult('综合报表生成成功', 'pass');
+                    } else {
+                        addResult('综合报表生成失败', 'fail');
+                    }
+                    
+                    // 测试数字格式化
+                    const formatted = ReportExport.formatNumber(12345.678);
+                    if (formatted === '12,345.68') {
+                        addResult('数字格式化正确', 'pass');
+                    } else {
+                        addResult(`数字格式化错误: ${formatted}`, 'fail');
+                    }
+                    
+                } catch (error) {
+                    addResult(`报表生成测试出错: ${error.message}`, 'fail');
+                }
+                
+                resolve();
+            });
+        }
+
+        // 显示数据状态
+        function displayData() {
+            const data = DataStore.exportAll();
+            document.getElementById('dataDisplay').textContent = 
+                JSON.stringify(data, null, 2);
+        }
+
+        // 显示计算结果
+        function displayCalculation(gapInfo) {
+            const display = `
+配额缺口计算详情
+====================
+
+输入数据:
+- 当前排放量: ${gapInfo.currentEmission.toFixed(2)} 吨CO₂
+- 配额余额: ${gapInfo.quotaRemaining.toFixed(2)} 吨CO₂
+- 累计减排量: ${gapInfo.totalReduction.toFixed(2)} 吨CO₂
+
+计算过程:
+- 可用配额 = 配额余额 + 累计减排量
+- 可用配额 = ${gapInfo.quotaRemaining.toFixed(2)} + ${gapInfo.totalReduction.toFixed(2)} = ${gapInfo.availableQuota.toFixed(2)} 吨CO₂
+
+计算结果:
+- 配额缺口 = 当前排放量 - 可用配额
+- 配额缺口 = ${gapInfo.currentEmission.toFixed(2)} - ${gapInfo.availableQuota.toFixed(2)} = ${gapInfo.gap.toFixed(2)} 吨CO₂
+
+状态判断:
+- ${gapInfo.isDeficit ? '⚠️ 存在配额缺口' : '✓ 配额充足，存在盈余'}
+- ${gapInfo.gap > 0 ? '需要采取履约措施' : '履约状态良好'}
+            `;
+            document.getElementById('calcDisplay').textContent = display;
+        }
+
+        // 清空测试数据
+        function clearTestData() {
+            if (confirm('确定要清空所有测试数据吗？')) {
+                DataStore.clearAll();
+                addResult('测试数据已清空', 'info');
+                displayData();
+                document.getElementById('calcDisplay').textContent = '数据已清空，请重新测试';
+            }
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            DataStore.init();
+            displayData();
+            addResult('测试系统初始化完成，点击按钮开始测试', 'info');
+        });
+    </script>
+</body>
+</html>
