@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>碳足迹管理系统 - 数据可视化大屏</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header class="header">
+        <div class="container">
+                <div class="logo">
+                    <img src="images/logo.svg" alt="碳管理系统" class="logo-img">
+                </div>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li class="nav-item active">
+                        <a href="#" class="nav-link">首页</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">碳市场</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">信息公开</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">业务体系</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">党的建设</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">关于中心</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 轮播图 - 全屏大屏风格 -->
+    <section class="banner">
+        <div class="banner-container">
+            <div class="banner-slides">
+                <div class="banner-slide active">
+                    <img src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=1920&q=80" alt="Banner 1">
+                    <div class="banner-content">
+                        <h2>碳排放权交易 助力绿色发展</h2>
+                        <p>构建碳交易市场，推动企业低碳转型，助力实现双碳目标</p>
+                        <a href="#" class="banner-cta">
+                            了解更多
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </a>
+                    </div>
+                    <div class="banner-decoration">
+                        <div class="decoration-circle">碳交易</div>
+                        <div class="decoration-circle">绿色金融</div>
+                        <div class="decoration-circle">碳中和</div>
+                    </div>
+                </div>
+                <div class="banner-slide">
+                    <img src="https://images.unsplash.com/photo-1569163139599-0f4517e36f31?w=1920&q=80" alt="Banner 2">
+                    <div class="banner-content">
+                        <h2>数字化碳管理 智能监测</h2>
+                        <p>实时监控碳排放，数据可视化分析，智能决策支持</p>
+                        <a href="#" class="banner-cta">
+                            了解更多
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </a>
+                    </div>
+                    <div class="banner-decoration">
+                        <div class="decoration-circle">大数据</div>
+                        <div class="decoration-circle">AI智能</div>
+                        <div class="decoration-circle">云计算</div>
+                    </div>
+                </div>
+                <div class="banner-slide">
+                    <img src="https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?w=1920&q=80" alt="Banner 3">
+                    <div class="banner-content">
+                        <h2>绿色金融 碳普惠</h2>
+                        <p>创新金融服务，引领绿色生活，共建美好家园</p>
+                        <a href="#" class="banner-cta">
+                            了解更多
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </a>
+                    </div>
+                    <div class="banner-decoration">
+                        <div class="decoration-circle">投资</div>
+                        <div class="decoration-circle">理财</div>
+                        <div class="decoration-circle">普惠</div>
+                    </div>
+                </div>
+            </div>
+            <div class="banner-dots">
+                <span class="dot active" data-index="0"></span>
+                <span class="dot" data-index="1"></span>
+                <span class="dot" data-index="2"></span>
+            </div>
+            <!-- 隐藏进度条和滚动指示器
+            <div class="banner-progress" id="bannerProgress"></div>
+            <div class="scroll-indicator">
+                向下滚动
+            </div>
+            -->
+        </div>
+    </section>
+
+    <!-- 碳市场 -->
+    <section class="section carbon-market-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">碳市场行情</h2>
+                <p class="section-subtitle">CARBON MARKET</p>
+            </div>
+            
+            <!-- 实时行情双卡片 -->
+            <div class="market-dual-cards">
+                <!-- CEA实时行情卡片 -->
+                <div class="market-card cea-card">
+                    <div class="market-card-header">
+                        <div class="market-card-title">
+                            <span class="title-icon cea-icon"></span>
+                            全国碳市场 CEA
+                        </div>
+                        <span class="market-type-badge cea-badge">碳排放配额</span>
+                    </div>
+                    <div class="market-card-body" id="ceaContent">
+                        <div class="loading-spinner"></div>
+                    </div>
+                </div>
+                
+                <!-- CCER实时行情卡片 -->
+                <div class="market-card ccer-card">
+                    <div class="market-card-header">
+                        <div class="market-card-title">
+                            <span class="title-icon ccer-icon"></span>
+                            自愿减排交易 CCER
+                        </div>
+                        <span class="market-type-badge ccer-badge">核证自愿减排量</span>
+                    </div>
+                    <div class="market-card-body" id="ccerContent">
+                        <div class="loading-spinner"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 价格走势图 -->
+            <div class="market-chart-section">
+                <div class="chart-card">
+                    <div class="chart-card-header">
+                        <div class="chart-title">
+                            <span class="title-icon chart-icon"></span>
+                            价格走势分析
+                        </div>
+                        <span class="update-time-badge" id="chartUpdateTime">数据更新中...</span>
+                    </div>
+                    
+                    <!-- 图表控制 -->
+                    <div class="chart-controls-row">
+                        <div class="time-range-group">
+                            <button class="time-btn active" data-range="1m">近1月</button>
+                            <button class="time-btn" data-range="3m">近3月</button>
+                            <button class="time-btn" data-range="6m">近6月</button>
+                            <button class="time-btn" data-range="1y">近1年</button>
+                            <button class="time-btn" data-range="all">全部</button>
+                        </div>
+                        <div class="chart-type-group">
+                            <button class="chart-type-btn active" data-type="compare">对比视图</button>
+                            <button class="chart-type-btn" data-type="cea">仅CEA</button>
+                            <button class="chart-type-btn" data-type="ccer">仅CCER</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 统计摘要 - 小字显示在图表上方 -->
+                    <div class="stats-summary-top" id="statsSummary">
+                        <!-- 动态填充 -->
+                    </div>
+                    
+                    <!-- ECharts图表容器 -->
+                    <div id="carbonChart" class="chart-container"></div>
+                </div>
+            </div>
+            
+            <!-- 数据来源说明 -->
+            <div class="market-footer">
+                <div class="data-source-info">
+                    <span class="source-label">数据来源：</span>
+                    <a href="https://www.ccn.ac.cn/cets" target="_blank" class="source-link">全国碳市场</a>
+                    <span class="source-divider">·</span>
+                    <span>上海环境能源交易所</span>
+                    <span class="source-divider">·</span>
+                    <span>北京绿色交易所</span>
+                </div>
+                <div class="auto-update-info">
+                    <span class="pulse-dot"></span>
+                    <span>自动更新周期：30秒</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 信息公开 -->
+    <section class="section info-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">信息公开</h2>
+                <p class="section-subtitle">INFORMATION DISCLOSURE</p>
+            </div>
+            <div class="info-content">
+                <div class="info-tabs">
+                    <button class="info-tab active" data-tab="notice">通知公告</button>
+                    <button class="info-tab" data-tab="policy">政策法规</button>
+                    <button class="info-tab" data-tab="data">市场数据</button>
+                </div>
+                <div class="info-list active" id="notice">
+                    <div class="info-item">
+                        <span class="info-date">2026-03-06</span>
+                        <a href="#">关于2026年碳排放配额分配方案的公示</a>
+                        <span class="info-tag new">新</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-date">2026-03-01</span>
+                        <a href="#">全国碳市场2026年度交易日历发布</a>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-date">2026-02-20</span>
+                        <a href="#">关于开展碳排放权交易培训的通知</a>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-date">2026-02-15</span>
+                        <a href="#">2025年度碳排放报告核查工作启动</a>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-date">2026-01-20</span>
+                        <a href="#">关于调整碳排放权交易手续费的通知</a>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-date">2026-01-15</span>
+                        <a href="#">全国碳市场运行情况月报（2025年12月）</a>
+                    </div>
+                </div>
+                <div class="info-list" id="policy">
+                    <div class="info-item">
+                        <span class="info-date">2026-01-01</span>
+                        <a href="#">《碳排放权交易管理暂行条例》正式施行</a>
+                        <span class="info-tag important">重要</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-date">2025-12-20</span>
+                        <a href="#">上海市碳排放管理办法（2025年修订）</a>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-date">2025-11-15</span>
+                        <a href="#">温室气体排放报告技术审核指南</a>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-date">2025-10-10</span>
+                        <a href="#">碳排放权登记管理规则</a>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-date">2025-09-05</span>
+                        <a href="#">碳排放权交易结算规则</a>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-date">2025-08-01</span>
+                        <a href="#">固定资产投资项目碳排放评价指南</a>
+                    </div>
+                </div>
+                <div class="info-list" id="data">
+                    <div class="info-item">
+                        <span class="info-date">2026-03-06</span>
+                        <a href="#">全国碳市场每日行情（CEA收盘价：81.85元/吨）</a>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-date">2026-03-05</span>
+                        <a href="#">CCER交易日报（成交量：201吨）</a>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-date">2026-03-01</span>
+                        <a href="#">2026年2月碳市场运行数据报告</a>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-date">2026-02-01</span>
+                        <a href="#">2026年1月碳市场成交统计</a>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-date">2026-01-15</span>
+                        <a href="#">2025年度碳市场运行年报</a>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-date">2025-12-31</span>
+                        <a href="#">全国碳市场2025年度总结报告</a>
+                    </div>
+                </div>
+            </div>
+            <div class="info-more">
+                <a href="#" class="btn-more">查看全部公告</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 业务体系 -->
+    <section class="section business-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">业务体系</h2>
+                <p class="section-subtitle">BUSINESS SYSTEM</p>
+            </div>
+            <div class="business-grid">
+                <!-- 碳交易 -->
+                <div class="business-item">
+                    <div class="business-icon">
+                        <svg width="56" height="56" viewBox="0 0 56 56">
+                            <circle cx="28" cy="28" r="26" fill="#0066cc"/>
+                            <path d="M20 28L25 33L36 20" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3>碳交易</h3>
+                    <a href="#" class="business-link">查看更多</a>
+                </div>
+                <!-- 绿色金融 -->
+                <div class="business-item">
+                    <div class="business-icon">
+                        <svg width="56" height="56" viewBox="0 0 56 56">
+                            <circle cx="28" cy="28" r="26" fill="#00a878"/>
+                            <path d="M14 32C14 32 20 24 28 24C36 24 42 32 42 32" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"/>
+                            <path d="M20 38H36" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <h3>绿色金融</h3>
+                    <a href="#" class="business-link">查看更多</a>
+                </div>
+                <!-- 碳资管 -->
+                <div class="business-item">
+                    <div class="business-icon">
+                        <svg width="56" height="56" viewBox="0 0 56 56">
+                            <circle cx="28" cy="28" r="26" fill="#ff8c00"/>
+                            <rect x="16" y="16" width="24" height="20" rx="3" fill="none" stroke="white" stroke-width="2.5"/>
+                            <path d="M16 26H40" fill="none" stroke="white" stroke-width="2.5"/>
+                            <circle cx="28" cy="38" r="3" fill="white"/>
+                        </svg>
+                    </div>
+                    <h3>碳资管</h3>
+                    <a href="#" class="business-link">查看更多</a>
+                </div>
+                <!-- 碳普惠 -->
+                <div class="business-item">
+                    <div class="business-icon">
+                        <svg width="56" height="56" viewBox="0 0 56 56">
+                            <circle cx="28" cy="28" r="26" fill="#28a745"/>
+                            <path d="M18 30L25 37L38 22" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M22 14V20M34 14V20" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <h3>碳普惠</h3>
+                    <a href="#" class="business-link">查看更多</a>
+                </div>
+                <!-- 碳教育 -->
+                <div class="business-item">
+                    <div class="business-icon">
+                        <svg width="56" height="56" viewBox="0 0 56 56">
+                            <circle cx="28" cy="28" r="26" fill="#6f42c1"/>
+                            <path d="M20 38V20L28 14L36 20V38" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                            <ellipse cx="28" cy="32" rx="8" ry="4" fill="none" stroke="white" stroke-width="2.5"/>
+                        </svg>
+                    </div>
+                    <h3>碳教育</h3>
+                    <a href="#" class="business-link">查看更多</a>
+                </div>
+                <!-- 碳标准 -->
+                <div class="business-item">
+                    <div class="business-icon">
+                        <svg width="56" height="56" viewBox="0 0 56 56">
+                            <circle cx="28" cy="28" r="26" fill="#17a2b8"/>
+                            <rect x="18" y="14" width="20" height="28" rx="3" fill="none" stroke="white" stroke-width="2.5"/>
+                            <path d="M22 22H34M22 28H34M22 34H28" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <h3>碳标准</h3>
+                    <a href="#" class="business-link">查看更多</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 党的建设 -->
+    <section class="section party-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">党的建设</h2>
+                <p class="section-subtitle">PARTY BUILDING</p>
+            </div>
+            <div class="party-content">
+                <div class="party-image">
+                    <img src="https://placehold.co/800x500/0066cc/ffffff?text=党建引领发展+服务创造价值" alt="党的建设">
+                </div>
+                <div class="party-text">
+                    <h3>党建引领发展 服务创造价值</h3>
+                    <p>河北电子口岸始终坚持党建引领，深入学习贯彻习近平新时代中国特色社会主义思想，全面贯彻党的路线方针政策，把党建工作与业务工作深度融合。</p>
+                    <p>通过开展主题党日活动、学习教育培训等方式，不断提升党员干部的政治素养和业务能力，为电子口岸事业发展提供坚强的政治保证。</p>
+                    <a href="#" class="btn-more">了解更多</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 关于中心 -->
+    <section class="section about-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">关于中心</h2>
+                <p class="section-subtitle">ABOUT US</p>
+            </div>
+            <div class="about-grid">
+                <div class="about-item">
+                    <div class="about-icon">
+                        <svg width="50" height="50" viewBox="0 0 50 50">
+                            <circle cx="25" cy="25" r="22" fill="none" stroke="#0066cc" stroke-width="2"/>
+                            <path d="M25 15V35M15 25H35" stroke="#0066cc" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3>中心简介</h3>
+                    <p>碳排放权交易中心是经湖北省政府批准设立的碳排放权交易试点机构，致力于推动碳市场健康发展。</p>
+                </div>
+                <div class="about-item">
+                    <div class="about-icon">
+                        <svg width="50" height="50" viewBox="0 0 50 50">
+                            <circle cx="25" cy="25" r="22" fill="none" stroke="#ff6600" stroke-width="2"/>
+                            <path d="M20 25L25 30L35 20" fill="none" stroke="#ff6600" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3>核心业务</h3>
+                    <p>涵盖碳交易、绿色金融、碳资产管理、碳核查等多元化碳金融服务。</p>
+                </div>
+                <div class="about-item">
+                    <div class="about-icon">
+                        <svg width="50" height="50" viewBox="0 0 50 50">
+                            <circle cx="25" cy="25" r="22" fill="none" stroke="#00cc66" stroke-width="2"/>
+                            <path d="M25 15C20 15 16 20 16 25S20 35 25 35C30 35 34 30 34 25S30 15 25 15Z" fill="none" stroke="#00cc66" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3>服务理念</h3>
+                    <p>以客户为中心，以服务为宗旨，不断提升服务质量，为用户创造更大价值。</p>
+                </div>
+                <div class="about-item">
+                    <div class="about-icon">
+                        <svg width="50" height="50" viewBox="0 0 50 50">
+                            <circle cx="25" cy="25" r="22" fill="none" stroke="#9966cc" stroke-width="2"/>
+                            <path d="M25 20V30M20 25H30" stroke="#9966cc" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3>发展愿景</h3>
+                    <p>打造全国一流的碳管理服务平台，为实现双碳目标贡献力量。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>LINKS 友情链接</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">生态环境部</a></li>
+                        <li><a href="#">国家发改委</a></li>
+                        <li><a href="#">中国碳排放权交易网</a></li>
+                        <li><a href="#">绿色金融委员会</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>联系我们</h3>
+                    <div class="footer-contact">
+                        <div class="contact-item">
+                            <svg width="20" height="20" viewBox="0 0 20 20">
+                                <path d="M10 2C5.58 2 2 5.58 2 10s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z" fill="#fff"/>
+                            </svg>
+                            <span>咨询电话：400-888-8888</span>
+                        </div>
+                        <div class="contact-item">
+                            <svg width="20" height="20" viewBox="0 0 20 20">
+                                <path d="M10 2C5.58 2 2 5.58 2 10s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z" fill="#fff"/>
+                            </svg>
+                            <span>邮箱：carbon@carbonmgt.com</span>
+                        </div>
+                        <div class="contact-item">
+                            <svg width="20" height="20" viewBox="0 0 20 20">
+                                <path d="M10 2C5.58 2 2 5.58 2 10s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6z" fill="#fff"/>
+                            </svg>
+                            <span>地址：湖北省武汉市XX区XX路XX号</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>关注我们</h3>
+                    <div class="footer-social">
+                        <div class="social-item">
+                            <svg width="30" height="30" viewBox="0 0 30 30">
+                                <circle cx="15" cy="15" r="14" fill="none" stroke="white" stroke-width="1"/>
+                                <text x="15" y="20" font-size="12" text-anchor="middle" fill="white">微信</text>
+                            </svg>
+                        </div>
+                        <div class="social-item">
+                            <svg width="30" height="30" viewBox="0 0 30 30">
+                                <circle cx="15" cy="15" r="14" fill="none" stroke="white" stroke-width="1"/>
+                                <text x="15" y="20" font-size="12" text-anchor="middle" fill="white">微博</text>
+                            </svg>
+                        </div>
+                        <div class="social-item">
+                            <svg width="30" height="30" viewBox="0 0 30 30">
+                                <circle cx="15" cy="15" r="14" fill="none" stroke="white" stroke-width="1"/>
+                                <text x="15" y="20" font-size="8" text-anchor="middle" fill="white">移动版</text>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 碳足迹管理系统 All Rights Reserved</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 固定按钮 -->
+    <div class="fixed-buttons">
+        <button class="fixed-btn" id="btn-back-to-top" title="返回顶部">
+            <svg width="30" height="30" viewBox="0 0 30 30">
+                <path d="M15 25L15 5M5 15L15 5L25 15" fill="none" stroke="white" stroke-width="2"/>
+            </svg>
+        </button>
+        <button class="fixed-btn" id="btn-service" title="在线客服">
+            <svg width="30" height="30" viewBox="0 0 30 30">
+                <circle cx="15" cy="12" r="5" fill="white"/>
+                <path d="M8 25c0-4.42 3.58-8 8-8s8 3.58 8 8" fill="none" stroke="white" stroke-width="2"/>
+            </svg>
+        </button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

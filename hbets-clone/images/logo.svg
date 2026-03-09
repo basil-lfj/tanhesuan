@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="50" viewBox="0 0 200 50">
+  <defs>
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#0066cc;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0080ff;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Logo图标 - 碳足迹叶子 -->
+  <path d="M25 40 C10 35 5 20 15 10 C25 0 40 5 45 15 C50 25 40 35 25 40 Z" fill="url(#logoGradient)"/>
+  <path d="M25 35 C20 30 18 22 22 15" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Logo文字 -->
+  <text x="55" y="32" font-family="Microsoft YaHei, Arial, sans-serif" font-size="20" font-weight="bold" fill="#0052a3">碳足迹管理系统</text>
+</svg>
