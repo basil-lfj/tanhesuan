@@ -10,6 +10,9 @@ const elements = {
     emissionScenario: null,
     fuelType: null,
     consumption: null,
+    consumptionLabel: null,
+    consumptionUnit: null,
+    heatingValueGroup: null,
     lowerHeatingValue: null,
     calculateBtn: null,
     resultSection: null,
@@ -23,7 +26,8 @@ const elements = {
     factorUsed: null,
     factorUnit: null,
     heatingValueUsed: null,
-    consumptionUsed: null
+    consumptionUsed: null,
+    exportToReportBtn: null
 };
 
 // 当前选择状态
@@ -33,6 +37,9 @@ const selectionState = {
     scenarioId: null,
     fuelType: null
 };
+
+// 当前计算结果（用于导出）
+let currentCalculationResult = null;
 
 /**
  * 初始化应用
@@ -69,6 +76,9 @@ function initElements() {
     elements.emissionScenario = document.getElementById('emissionScenario');
     elements.fuelType = document.getElementById('fuelType');
     elements.consumption = document.getElementById('consumption');
+    elements.consumptionLabel = document.getElementById('consumptionLabel');
+    elements.consumptionUnit = document.getElementById('consumptionUnit');
+    elements.heatingValueGroup = document.getElementById('heatingValueGroup');
     elements.lowerHeatingValue = document.getElementById('lowerHeatingValue');
     elements.calculateBtn = document.getElementById('calculateBtn');
     elements.resultSection = document.getElementById('resultSection');
@@ -83,6 +93,7 @@ function initElements() {
     elements.factorUnit = document.getElementById('factorUnit');
     elements.heatingValueUsed = document.getElementById('heatingValueUsed');
     elements.consumptionUsed = document.getElementById('consumptionUsed');
+    elements.exportToReportBtn = document.getElementById('exportToReportBtn');
 }
 
 /**
@@ -119,6 +130,11 @@ function bindEvents() {
             handleCalculate();
         }
     });
+    
+    // 导出到报告按钮
+    if (elements.exportToReportBtn) {
+        elements.exportToReportBtn.addEventListener('click', handleExportToReport);
+    }
 }
 
 /**
@@ -133,12 +149,35 @@ function handleFuelCategoryChange() {
     resetSelect(elements.emissionScenario, '请选择排放场景');
     resetSelect(elements.fuelType, '请选择燃料类型');
     
+    // 根据燃料类别更新UI
+    updateUIForFuelCategory(value);
+    
     if (value) {
         const gasTypes = dataLoader.getGasTypes(value);
         populateSelect(elements.gasType, gasTypes, '请选择气体类型');
     }
     
     hideResult();
+}
+
+/**
+ * 根据燃料类别更新UI显示
+ * @param {string} category 燃料类别
+ */
+function updateUIForFuelCategory(category) {
+    if (category === '电力') {
+        // 电力类别：显示电量输入，隐藏低位发热量
+        elements.consumptionLabel.textContent = '购入使用电量';
+        elements.consumption.placeholder = '请输入用电量';
+        elements.consumptionUnit.textContent = 'kWh';
+        elements.heatingValueGroup.style.display = 'none';
+    } else {
+        // 燃料类别：显示燃料消耗量，显示低位发热量
+        elements.consumptionLabel.textContent = '燃料消耗量';
+        elements.consumption.placeholder = '请输入燃料消耗量';
+        elements.consumptionUnit.textContent = 'kg';
+        elements.heatingValueGroup.style.display = 'block';
+    }
 }
 
 /**
@@ -222,7 +261,8 @@ function handleCalculate() {
             scenarioId: selectionState.scenarioId,
             fuelType: selectionState.fuelType,
             consumption: consumption,
-            customHeatingValue: customHeatingValue
+            customHeatingValue: customHeatingValue,
+            fuelCategory: selectionState.fuelCategory
         });
         
         // 显示结果
@@ -295,6 +335,13 @@ function validateInput() {
  * 显示计算结果
  */
 function displayResult(data) {
+    // 保存当前计算结果用于导出
+    currentCalculationResult = {
+        ...data,
+        timestamp: new Date().toISOString(),
+        selectionState: { ...selectionState }
+    };
+    
     // 显示结果区域
     elements.resultSection.style.display = 'block';
     
@@ -321,7 +368,7 @@ function displayResult(data) {
     elements.heatingValueUsed.textContent = typeof data.heatingValue === 'number' 
         ? formatNumber(data.heatingValue) 
         : data.heatingValue;
-    elements.consumptionUsed.textContent = `${formatNumber(data.consumption)} kg`;
+    elements.consumptionUsed.textContent = `${formatNumber(data.consumption)} ${data.consumptionUnit || 'kg'}`;
     
     // 滚动到结果区域
     elements.resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -479,6 +526,91 @@ function formatNumber(num) {
         minimumFractionDigits: 2,
         maximumFractionDigits: 6
     });
+}
+
+/**
+ * 导出到报告生成工具
+ */
+function handleExportToReport() {
+    if (!currentCalculationResult) {
+        showExportMessage('请先进行碳排放计算', 'error');
+        return;
+    }
+    
+    // 构建导出数据
+    const exportData = {
+        version: '1.0',
+        exportedAt: new Date().toISOString(),
+        source: 'carbon-calculator',
+        calculation: {
+            // 排放结果
+            co2Equivalent: currentCalculationResult.co2Equivalent,
+            co2EquivalentUnit: currentCalculationResult.co2EquivalentUnit || 'tCO₂e',
+            gasType: currentCalculationResult.gasType,
+            emission: currentCalculationResult.emission,
+            emissionUnit: currentCalculationResult.emissionUnit,
+            
+            // 计算参数
+            factor: currentCalculationResult.factor,
+            factorUnit: currentCalculationResult.factorUnit,
+            heatingValue: currentCalculationResult.heatingValue,
+            heatingValueUnit: currentCalculationResult.heatingValueUnit,
+            consumption: currentCalculationResult.consumption,
+            consumptionUnit: currentCalculationResult.consumptionUnit || 'kg',
+            
+            // 场景信息
+            scenarioName: currentCalculationResult.scenarioName,
+            fuelType: currentCalculationResult.fuelType,
+            
+            // 选择状态（用于行业判断）
+            fuelCategory: currentCalculationResult.selectionState?.fuelCategory,
+            gasTypeCategory: currentCalculationResult.selectionState?.gasType
+        }
+    };
+    
+    // 保存到 localStorage
+    try {
+        localStorage.setItem('calculator_export_data', JSON.stringify(exportData));
+        showExportMessage('计算结果已导出！正在跳转到报告生成工具...', 'success');
+        
+        // 延迟跳转，让用户看到提示
+        setTimeout(() => {
+            window.location.href = 'report.html?import=true';
+        }, 1000);
+    } catch (e) {
+        console.error('导出失败:', e);
+        showExportMessage('导出失败，请重试', 'error');
+    }
+}
+
+/**
+ * 显示导出消息
+ */
+function showExportMessage(message, type) {
+    // 移除已有的消息
+    const existingMsg = document.getElementById('exportMessage');
+    if (existingMsg) {
+        existingMsg.remove();
+    }
+    
+    // 创建消息元素
+    const msgDiv = document.createElement('div');
+    msgDiv.id = 'exportMessage';
+    msgDiv.className = `export-message ${type}`;
+    msgDiv.innerHTML = `
+        <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+        <span>${message}</span>
+    `;
+    
+    // 插入到导出按钮后面
+    elements.exportToReportBtn.parentNode.insertBefore(msgDiv, elements.exportToReportBtn.nextSibling);
+    
+    // 3秒后自动消失（如果不是跳转的情况）
+    if (type === 'error') {
+        setTimeout(() => {
+            msgDiv.remove();
+        }, 3000);
+    }
 }
 
 // 页面加载完成后初始化

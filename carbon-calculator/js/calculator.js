@@ -13,12 +13,13 @@ class CarbonCalculator {
      * @param {Object} params 计算参数
      * @param {string} params.scenarioId 排放场景ID
      * @param {string} params.fuelType 燃料类型
-     * @param {number} params.consumption 燃料消耗量 (kg)
+     * @param {number} params.consumption 燃料消耗量 (kg 或 kWh)
      * @param {number} params.customHeatingValue 自定义低位发热量 (可选)
+     * @param {string} params.fuelCategory 燃料类别 (可选，用于判断计算方式)
      * @returns {Object} 计算结果
      */
     calculate(params) {
-        const { scenarioId, fuelType, consumption, customHeatingValue } = params;
+        const { scenarioId, fuelType, consumption, customHeatingValue, fuelCategory } = params;
 
         // 获取排放因子信息
         const factorInfo = this.dataLoader.getEmissionFactor(scenarioId, fuelType);
@@ -32,38 +33,75 @@ class CarbonCalculator {
             throw new Error('未找到对应的排放场景');
         }
 
-        // 计算能量值 (TJ)
-        const energy = this.calculateEnergy(consumption, factorInfo, customHeatingValue);
+        // 根据燃料类别选择计算方式
+        const category = fuelCategory || scenarioDetails.fuelCategory;
+        let emission, energy, co2Equivalent, formattedEmission;
+        let resultData = {
+            gasType: factorInfo.gasType,
+            factor: factorInfo.factor,
+            factorUnit: factorInfo.unit,
+            scenarioName: scenarioDetails.name,
+            fuelType: fuelType
+        };
 
-        // 计算排放量
-        const emission = this.calculateEmission(energy, factorInfo);
-
-        // 计算CO2当量
-        const co2Equivalent = this.calculateCO2Equivalent(factorInfo.gasType, emission);
-
-        // 格式化排放量显示
-        const formattedEmission = this.formatEmission(emission, factorInfo.gasType);
-
-        return {
-            success: true,
-            data: {
-                gasType: factorInfo.gasType,
+        if (category === '电力') {
+            // 电力计算：直接用电量乘以排放因子
+            emission = this.calculateElectricityEmission(consumption, factorInfo);
+            // 电力排放量是kgCO2，需要转换为吨
+            co2Equivalent = emission / 1000; // kg转吨
+            formattedEmission = this.formatEmission(emission, factorInfo.gasType);
+            
+            resultData = {
+                ...resultData,
                 emission: formattedEmission.value,
                 emissionUnit: formattedEmission.unit,
                 co2Equivalent: co2Equivalent,
                 co2EquivalentUnit: 'tCO₂e',
-                factor: factorInfo.factor,
-                factorUnit: factorInfo.unit,
+                energy: consumption / 1000, // 转换为MWh用于显示
+                energyUnit: 'MWh',
+                heatingValue: '-',
+                heatingValueUnit: '-',
+                consumption: consumption,
+                consumptionUnit: 'kWh'
+            };
+        } else {
+            // 燃料燃烧计算：通过能量值计算
+            energy = this.calculateEnergy(consumption, factorInfo, customHeatingValue);
+            emission = this.calculateEmission(energy, factorInfo);
+            co2Equivalent = this.calculateCO2Equivalent(factorInfo.gasType, emission);
+            formattedEmission = this.formatEmission(emission, factorInfo.gasType);
+            
+            resultData = {
+                ...resultData,
+                emission: formattedEmission.value,
+                emissionUnit: formattedEmission.unit,
+                co2Equivalent: co2Equivalent,
+                co2EquivalentUnit: 'tCO₂e',
                 energy: energy,
                 energyUnit: 'TJ',
                 heatingValue: customHeatingValue || factorInfo.lowerHeatingValue || '默认',
                 heatingValueUnit: factorInfo.heatingValueUnit || '-',
                 consumption: consumption,
-                consumptionUnit: 'kg',
-                scenarioName: scenarioDetails.name,
-                fuelType: fuelType
-            }
+                consumptionUnit: 'kg'
+            };
+        }
+
+        return {
+            success: true,
+            data: resultData
         };
+    }
+
+    /**
+     * 计算电力碳排放量
+     * @param {number} electricity 电量 (kWh)
+     * @param {Object} factorInfo 排放因子信息
+     * @returns {number} 排放量 (kgCO2)
+     */
+    calculateElectricityEmission(electricity, factorInfo) {
+        // 排放因子单位: kgCO2/kWh
+        // 结果为千克CO2
+        return electricity * factorInfo.factor;
     }
 
     /**
@@ -131,13 +169,18 @@ class CarbonCalculator {
      * 计算CO2当量
      * @param {string} gasType 气体类型
      * @param {number} emission 排放量
+     * @param {string} unit 排放量单位 (可选)
      * @returns {number} CO2当量 (tCO2e)
      */
-    calculateCO2Equivalent(gasType, emission) {
+    calculateCO2Equivalent(gasType, emission, unit) {
         const gwp = this.dataLoader.getGWP(gasType);
         
         // 根据气体类型确定单位转换
         if (gasType === 'CO2') {
+            // 检查单位，如果是kgCO2需要转换为吨
+            if (unit && unit.includes('kg')) {
+                return emission / 1000; // kg转吨
+            }
             // 排放量已经是吨
             return emission * gwp;
         } else if (gasType === 'CH4' || gasType === 'N2O') {

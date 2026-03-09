@@ -955,3 +955,203 @@ footer a:hover {
         grid-template-columns: 1fr;
     }
 }
+
+/* ========== 导出和导入相关样式 ========== */
+
+/* 导出操作区域 */
+.export-actions {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+}
+
+.btn-export {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #2e7d32, #43a047);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
+}
+
+.btn-export:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(46, 125, 50, 0.4);
+    background: linear-gradient(135deg, #388e3c, #4caf50);
+}
+
+.btn-export:active {
+    transform: translateY(0);
+}
+
+.btn-export i {
+    font-size: 1.1rem;
+}
+
+.export-hint {
+    margin-top: 12px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+/* 导出消息提示 */
+.export-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    animation: fadeIn 0.3s ease;
+}
+
+.export-message.success {
+    background: rgba(46, 125, 50, 0.1);
+    color: #2e7d32;
+    border: 1px solid rgba(46, 125, 50, 0.3);
+}
+
+.export-message.error {
+    background: rgba(211, 47, 47, 0.1);
+    color: #d32f2f;
+    border: 1px solid rgba(211, 47, 47, 0.3);
+}
+
+.export-message i {
+    font-size: 1.1rem;
+}
+
+/* 导入数据提示条 */
+.import-notification {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    margin-bottom: 25px;
+    background: linear-gradient(135deg, rgba(46, 125, 50, 0.1), rgba(76, 175, 80, 0.05));
+    border: 2px solid rgba(46, 125, 50, 0.3);
+    border-radius: 12px;
+    animation: slideDown 0.4s ease;
+}
+
+.import-notification-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.import-notification-content > i {
+    font-size: 2rem;
+    color: var(--primary-color);
+}
+
+.import-notification-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.import-notification-text strong {
+    font-size: 1rem;
+    color: var(--text-primary);
+}
+
+.import-notification-text span {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.import-notification-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-sm {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    border-radius: 6px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-outline:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: var(--text-primary);
+}
+
+/* 动画 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .import-notification {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .import-notification-content {
+        flex-direction: column;
+    }
+    
+    .import-notification-actions {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .btn-sm {
+        flex: 1;
+        max-width: 120px;
+    }
+}

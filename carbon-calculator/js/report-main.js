@@ -12,6 +12,7 @@
     let dataManager = null;
     let templateParser = null;
     let reportGenerator = null;
+    let importedCalculatorData = null; // 存储从计算器导入的数据
 
     // DOM元素
     const elements = {
@@ -38,6 +39,12 @@
         btnBackForm: document.getElementById('btn-back-form'),
         btnGenerate: document.getElementById('btn-generate'),
         
+        // 导入相关
+        importNotification: null,
+        importDataPreview: null,
+        btnImportData: null,
+        btnDismissImport: null,
+        
         // 其他
         loadingOverlay: document.getElementById('loading-overlay'),
         toast: document.getElementById('toast')
@@ -53,14 +60,30 @@
         formGenerator = new FormGenerator('report-form');
         reportGenerator = new ReportGenerator();
 
+        // 初始化导入相关元素
+        initImportElements();
+
         // 绑定事件
         bindEvents();
 
         // 检查是否有草稿
         checkDraft();
 
+        // 检查是否有导入的计算器数据
+        checkImportedData();
+
         // 显示行业选择步骤
         showStep('industry');
+    }
+
+    /**
+     * 初始化导入相关元素
+     */
+    function initImportElements() {
+        elements.importNotification = document.getElementById('import-notification');
+        elements.importDataPreview = document.getElementById('import-data-preview');
+        elements.btnImportData = document.getElementById('btn-import-data');
+        elements.btnDismissImport = document.getElementById('btn-dismiss-import');
     }
 
     /**
@@ -82,6 +105,14 @@
         elements.btnNext.addEventListener('click', () => showStep('preview'));
         elements.btnBackForm.addEventListener('click', () => showStep('form'));
         elements.btnGenerate.addEventListener('click', generateReport);
+        
+        // 导入数据按钮事件
+        if (elements.btnImportData) {
+            elements.btnImportData.addEventListener('click', handleImportData);
+        }
+        if (elements.btnDismissImport) {
+            elements.btnDismissImport.addEventListener('click', dismissImportNotification);
+        }
     }
 
     /**
@@ -538,6 +569,179 @@
             // 可以提示用户是否加载草稿
             console.log('发现草稿:', draft);
         }
+    }
+
+    /**
+     * 检查是否有导入的计算器数据
+     */
+    function checkImportedData() {
+        try {
+            const storedData = localStorage.getItem('calculator_export_data');
+            if (storedData) {
+                const data = JSON.parse(storedData);
+                if (data && data.source === 'carbon-calculator') {
+                    importedCalculatorData = data;
+                    showImportNotification(data);
+                }
+            }
+        } catch (e) {
+            console.error('检查导入数据失败:', e);
+        }
+    }
+
+    /**
+     * 显示导入提示
+     */
+    function showImportNotification(data) {
+        if (elements.importNotification) {
+            elements.importNotification.style.display = 'flex';
+            
+            // 更新预览信息
+            if (elements.importDataPreview && data.calculation) {
+                const calc = data.calculation;
+                const previewText = `${calc.fuelType || '燃料'} - CO₂当量: ${calc.co2Equivalent || '-'} ${calc.co2EquivalentUnit || 'tCO₂e'}`;
+                elements.importDataPreview.textContent = previewText;
+            }
+        }
+    }
+
+    /**
+     * 隐藏导入提示
+     */
+    function dismissImportNotification() {
+        if (elements.importNotification) {
+            elements.importNotification.style.display = 'none';
+        }
+        // 清除存储的数据
+        localStorage.removeItem('calculator_export_data');
+        importedCalculatorData = null;
+    }
+
+    /**
+     * 处理导入数据
+     */
+    function handleImportData() {
+        if (!importedCalculatorData || !importedCalculatorData.calculation) {
+            showToast('没有可导入的数据', 'error');
+            return;
+        }
+
+        const calc = importedCalculatorData.calculation;
+        
+        // 根据燃料类型推断行业
+        const inferredIndustry = inferIndustryFromFuel(calc);
+        
+        // 自动选择行业并填充数据
+        selectIndustry(inferredIndustry);
+        
+        // 延迟填充数据（等待表单生成完成）
+        setTimeout(() => {
+            fillFormWithCalculationData(calc);
+            showToast('数据已成功导入！', 'success');
+            
+            // 隐藏导入提示并清除存储
+            dismissImportNotification();
+        }, 300);
+    }
+
+    /**
+     * 根据燃料类型推断行业
+     */
+    function inferIndustryFromFuel(calc) {
+        const fuelCategory = calc.fuelCategory || '';
+        const fuelType = calc.fuelType || '';
+        const scenarioName = calc.scenarioName || '';
+        
+        // 根据场景名称或燃料类型推断
+        if (scenarioName.includes('发电') || scenarioName.includes('电力')) {
+            return 'power';
+        }
+        if (scenarioName.includes('钢铁') || scenarioName.includes('炼铁') || scenarioName.includes('炼钢')) {
+            return 'steel';
+        }
+        if (scenarioName.includes('水泥') || scenarioName.includes('熟料')) {
+            return 'cement';
+        }
+        if (scenarioName.includes('化工') || scenarioName.includes('石油')) {
+            return 'chemical';
+        }
+        
+        // 根据燃料类型推断
+        if (fuelType.includes('煤') && fuelCategory === '固体燃料') {
+            // 煤炭通常用于发电行业
+            return 'power';
+        }
+        if (fuelType.includes('焦炭') || fuelType.includes('高炉煤气')) {
+            return 'steel';
+        }
+        if (fuelType.includes('天然气') || fuelType.includes('液化气')) {
+            // 天然气可能用于多个行业，默认化工
+            return 'chemical';
+        }
+        
+        // 默认选择发电行业
+        return 'power';
+    }
+
+    /**
+     * 使用计算数据填充表单
+     */
+    function fillFormWithCalculationData(calc) {
+        const formData = formGenerator.getFormData();
+        
+        // 设置核算年度
+        const currentYear = new Date().getFullYear();
+        if (!formData['核算年度']) {
+            formGenerator.setFieldValue('核算年度', currentYear.toString());
+        }
+        
+        // 根据气体类型和排放数据填充排放结果
+        if (calc.co2Equivalent) {
+            // 设置总排放量
+            formGenerator.setFieldValue('总排放量', calc.co2Equivalent.toFixed(4));
+            
+            // 根据气体类型设置对应的排放量
+            if (calc.gasType === 'CO2') {
+                // CO2排放
+                if (calc.emission) {
+                    formGenerator.setFieldValue('燃烧排放量', calc.emission);
+                    formGenerator.setFieldValue('范围1总量', calc.co2Equivalent.toFixed(4));
+                    formGenerator.setFieldValue('范围1占比', '100');
+                }
+            } else if (calc.gasType === 'CH4' || calc.gasType === 'N2O') {
+                // CH4或N2O排放
+                if (calc.emission) {
+                    formGenerator.setFieldValue('燃烧排放量', calc.co2Equivalent.toFixed(4));
+                    formGenerator.setFieldValue('范围1总量', calc.co2Equivalent.toFixed(4));
+                    formGenerator.setFieldValue('范围1占比', '100');
+                }
+            }
+        }
+        
+        // 设置排放因子
+        if (calc.factor && calc.factorUnit) {
+            if (calc.gasType === 'CO2') {
+                formGenerator.setFieldValue('燃煤排放因子', calc.factor);
+            } else {
+                formGenerator.setFieldValue('燃煤排放因子', calc.factor);
+            }
+        }
+        
+        // 设置燃料消耗量（转换为吨）
+        if (calc.consumption) {
+            const consumptionInTons = (calc.consumption / 1000).toFixed(4); // kg转吨
+            formGenerator.setFieldValue('煤炭消耗量', consumptionInTons);
+        }
+        
+        // 设置低位发热量
+        if (calc.heatingValue && typeof calc.heatingValue === 'number') {
+            // 转换单位：TJ/10⁴t 到 GJ/吨
+            const heatingValueGJ = (calc.heatingValue * 0.1).toFixed(4);
+            formGenerator.setFieldValue('低位发热量', heatingValueGJ);
+        }
+        
+        // 更新进度显示
+        updateProgress();
     }
 
     /**

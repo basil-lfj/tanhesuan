@@ -23,6 +23,25 @@
 
         <!-- 行业选择页面 -->
         <div id="step-industry" class="step-container active">
+            <!-- 导入数据提示条 -->
+            <div id="import-notification" class="import-notification" style="display: none;">
+                <div class="import-notification-content">
+                    <i class="fas fa-file-import"></i>
+                    <div class="import-notification-text">
+                        <strong>检测到计算器导出数据</strong>
+                        <span id="import-data-preview">包含碳排放计算结果</span>
+                    </div>
+                </div>
+                <div class="import-notification-actions">
+                    <button type="button" class="btn btn-sm btn-primary" id="btn-import-data">
+                        <i class="fas fa-download"></i> 导入数据
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline" id="btn-dismiss-import">
+                        <i class="fas fa-times"></i> 忽略
+                    </button>
+                </div>
+            </div>
+
             <div class="step-header">
                 <h2><i class="fas fa-industry"></i> 选择行业类型</h2>
                 <p>请选择您要生成报告的行业类型，系统将根据行业模板生成对应的填写表单</p>

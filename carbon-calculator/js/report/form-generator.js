@@ -374,6 +374,35 @@ class FormGenerator {
         }
         this.formValues = {};
     }
+
+    /**
+     * 设置指定字段的值
+     * @param {string} fieldName - 字段名称
+     * @param {*} value - 字段值
+     */
+    setFieldValue(fieldName, value) {
+        // 更新内部存储
+        this.formValues[fieldName] = value;
+        
+        // 更新DOM元素
+        const element = this.container.querySelector(`[name="${fieldName}"]`);
+        if (element) {
+            element.value = value;
+            // 触发change事件
+            const event = new Event('change', { bubbles: true });
+            element.dispatchEvent(event);
+        }
+    }
+
+    /**
+     * 批量设置字段值
+     * @param {Object} values - 字段名和值的键值对
+     */
+    setFieldValues(values) {
+        Object.keys(values).forEach(fieldName => {
+            this.setFieldValue(fieldName, values[fieldName]);
+        });
+    }
 }
 
 // 导出

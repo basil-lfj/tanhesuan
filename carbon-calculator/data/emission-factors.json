@@ -377,6 +377,57 @@
         { "fuelType": "柴油车", "factor": 3.9, "unit": "kgN2O/TJ" },
         { "fuelType": "液化石油气车", "factor": 0.2, "unit": "kgN2O/TJ" }
       ]
+    },
+    {
+      "id": "electricity_co2",
+      "name": "购入电力-二氧化碳",
+      "gasType": "CO2",
+      "fuelCategory": "电力",
+      "description": "购入使用电力产生的二氧化碳排放",
+      "factors": [
+        { 
+          "fuelType": "全国平均电网", 
+          "factor": 0.5306, 
+          "unit": "kgCO2/kWh",
+          "description": "2023年全国电力平均二氧化碳排放因子"
+        },
+        { 
+          "fuelType": "华北电网", 
+          "factor": 0.8843, 
+          "unit": "kgCO2/kWh",
+          "description": "2023年华北区域电网平均二氧化碳排放因子"
+        },
+        { 
+          "fuelType": "东北电网", 
+          "factor": 0.8574, 
+          "unit": "kgCO2/kWh",
+          "description": "2023年东北区域电网平均二氧化碳排放因子"
+        },
+        { 
+          "fuelType": "华东电网", 
+          "factor": 0.7921, 
+          "unit": "kgCO2/kWh",
+          "description": "2023年华东区域电网平均二氧化碳排放因子"
+        },
+        { 
+          "fuelType": "华中电网", 
+          "factor": 0.5258, 
+          "unit": "kgCO2/kWh",
+          "description": "2023年华中区域电网平均二氧化碳排放因子"
+        },
+        { 
+          "fuelType": "西北电网", 
+          "factor": 0.8922, 
+          "unit": "kgCO2/kWh",
+          "description": "2023年西北区域电网平均二氧化碳排放因子"
+        },
+        { 
+          "fuelType": "南方电网", 
+          "factor": 0.5279, 
+          "unit": "kgCO2/kWh",
+          "description": "2023年南方区域电网平均二氧化碳排放因子"
+        }
+      ]
     }
   ],
   "metadata": {
