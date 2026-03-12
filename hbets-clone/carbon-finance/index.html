@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>碳金融 - 碳市场行情</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1a4231",
+                        "sage-100": "#e7ede7",
+                        "sage-500": "#6b8f71",
+                        "sage-900": "#1a3a1c",
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #FDF8F3 0%, #FFF9F0 50%, #F0FDF4 100%);
+            min-height: 100vh;
+            color: #2D3748;
+        }
+
+        /* 颜色配置 - 轻松舒畅风格 */
+        :root {
+            --sage: #7CB083;
+            --sage-light: #98E4D6;
+            --coral: #FF8066;
+            --coral-light: #FF9A8B;
+            --sky: #7DD3FC;
+            --sky-light: #A5F3FC;
+            --text: #2D3748;
+            --text-dim: #718096;
+        }
+
+        /* 卡片样式 */
+        .card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(124, 176, 131, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(124, 176, 131, 0.12);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(124, 176, 131, 0.15);
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #475569;
+        }
+
+        /* 双栏布局 */
+        .dual-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .dual-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 实时行情卡片 */
+        .realtime-card {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .market-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #fff;
+        }
+
+        .market-badge.cea {
+            background: linear-gradient(135deg, #7CB083, #98E4D6);
+        }
+
+        .market-badge.ccer {
+            background: linear-gradient(135deg, #7DD3FC, #A5F3FC);
+        }
+
+        .price-main {
+            text-align: center;
+            padding: 16px 0;
+        }
+
+        .price-label {
+            font-size: 0.8rem;
+            color: #718096;
+            margin-bottom: 8px;
+        }
+
+        .price-value {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #2D3748;
+            line-height: 1.1;
+        }
+
+        .price-unit {
+            font-size: 0.3em;
+            color: #718096;
+            display: block;
+            margin-top: 4px;
+        }
+
+        .price-change {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-top: 12px;
+        }
+
+        .price-change.up {
+            background: linear-gradient(135deg, #FF8066, #FF9A8B);
+            color: white;
+        }
+
+        .price-change.down {
+            background: linear-gradient(135deg, #7CB083, #98E4D6);
+            color: white;
+        }
+
+        .price-info-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(124, 176, 131, 0.15);
+            width: 100%;
+        }
+
+        @media (max-width: 600px) {
+            .price-info-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .price-value {
+                font-size: 2.5rem;
+            }
+        }
+
+        .info-item {
+            text-align: center;
+            padding: 10px 6px;
+            background: rgba(124, 176, 131, 0.05);
+            border-radius: 12px;
+        }
+
+        .info-label {
+            font-size: 0.7rem;
+            color: #718096;
+            margin-bottom: 4px;
+        }
+
+        .info-value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #2D3748;
+        }
+
+        .info-value.high {
+            color: #FF8066;
+        }
+
+        .info-value.low {
+            color: #7CB083;
+        }
+
+        /* 图表区域 */
+        .chart-section {
+            margin-top: 8px;
+        }
+
+        .chart-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .time-range-selector {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .time-btn {
+            padding: 6px 14px;
+            border: 1px solid rgba(124, 176, 131, 0.2);
+            background: rgba(255, 255, 255, 0.5);
+            color: #718096;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+        }
+
+        .time-btn:hover {
+            background: rgba(124, 176, 131, 0.1);
+        }
+
+        .time-btn.active {
+            background: linear-gradient(135deg, #7CB083, #98E4D6);
+            border-color: transparent;
+            color: #fff;
+        }
+
+        .chart-type-selector {
+            display: flex;
+            gap: 6px;
+        }
+
+        .chart-type-btn {
+            padding: 6px 14px;
+            border: 1px solid rgba(124, 176, 131, 0.2);
+            background: rgba(255, 255, 255, 0.5);
+            color: #718096;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+        }
+
+        .chart-type-btn:hover {
+            background: rgba(124, 176, 131, 0.1);
+        }
+
+        .chart-type-btn.active {
+            background: rgba(124, 176, 131, 0.2);
+            border-color: #7CB083;
+            color: #5A9364;
+        }
+
+        #trendChart {
+            width: 100%;
+            height: 400px;
+        }
+
+        /* 统计摘要 */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .stat-card {
+            background: rgba(124, 176, 131, 0.05);
+            border-radius: 12px;
+            padding: 14px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            background: rgba(124, 176, 131, 0.1);
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2D3748;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: #718096;
+            margin-top: 4px;
+        }
+
+        /* 加载状态 */
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            color: #718096;
+        }
+
+        .loading-spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid rgba(124, 176, 131, 0.2);
+            border-top-color: #7CB083;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 12px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 页脚 */
+        .footer {
+            text-align: center;
+            padding: 16px;
+            color: #A0AEC0;
+            font-size: 0.75rem;
+        }
+
+        .footer a {
+            color: #7CB083;
+            text-decoration: none;
+        }
+
+        .update-time {
+            font-size: 0.75rem;
+            color: #A0AEC0;
+        }
+
+        .source-tag {
+            font-size: 0.7rem;
+            color: #A0AEC0;
+            margin-top: 8px;
+            text-align: center;
+        }
+
+        @media (max-width: 600px) {
+            #trendChart {
+                height: 300px;
+            }
+            
+            .chart-controls {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header class="sticky top-0 z-50 w-full border-b border-sage-100 bg-white/80 backdrop-blur-md px-6 lg:px-20 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <a href="../index.html" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                <div class="size-9 bg-primary flex items-center justify-center rounded-lg">
+                    <span class="material-symbols-outlined text-white text-xl">eco</span>
+                </div>
+                <h2 class="text-sage-900 text-xl font-extrabold tracking-tight">碳数通</h2>
+            </a>
+        </div>
+        <nav class="hidden md:flex items-center gap-10">
+            <a href="../index.html" class="nav-link-item text-sage-500 text-sm font-medium hover:text-sage-900 transition-colors">首页</a>
+            <a href="../carbon-calculator/index.html" class="nav-link-item text-sage-500 text-sm font-medium hover:text-sage-900 transition-colors">碳核算</a>
+            <a href="../carbon-management/index.html" class="nav-link-item text-sage-500 text-sm font-medium hover:text-sage-900 transition-colors">碳资管</a>
+            <a href="#" class="nav-link-item text-sage-900 border-b-2 border-primary pb-1 text-sm font-semibold">碳金融</a>
+        </nav>
+        <div class="flex items-center gap-4">
+            <button class="p-2 rounded-full hover:bg-sage-100 transition-colors">
+                <span class="material-symbols-outlined text-sage-900">notifications</span>
+            </button>
+            <div class="h-10 w-10 rounded-full border-2 border-primary/20 p-0.5 overflow-hidden bg-sage-100 flex items-center justify-center">
+                <span class="material-symbols-outlined text-primary text-xl">person</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="p-6 md:p-10">
+        <div class="max-w-6xl mx-auto">
+            
+            <!-- 页面标题 -->
+            <header class="mb-6">
+                <h1 class="text-2xl font-medium text-gray-800 mb-1">碳市场行情</h1>
+                <p class="text-gray-500 text-sm">CEA · CCER · 实时数据</p>
+            </header>
+
+            <!-- 双栏实时行情卡片 -->
+            <div class="dual-cards">
+                <!-- CEA实时行情 -->
+                <section class="card realtime-card">
+                    <div class="card-header" style="width: 100%;">
+                        <div class="card-title">全国碳市场 CEA</div>
+                        <span class="market-badge cea">碳排放配额</span>
+                    </div>
+                    <div id="ceaContent">
+                        <div class="loading">
+                            <div class="loading-spinner"></div>
+                            <p>加载中...</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- CCER实时行情 -->
+                <section class="card realtime-card">
+                    <div class="card-header" style="width: 100%;">
+                        <div class="card-title">自愿减排交易 CCER</div>
+                        <span class="market-badge ccer">核证自愿减排量</span>
+                    </div>
+                    <div id="ccerContent">
+                        <div class="loading">
+                            <div class="loading-spinner"></div>
+                            <p>加载中...</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- 趋势图区域 -->
+            <section class="card chart-section">
+                <div class="card-header">
+                    <div class="card-title">价格走势</div>
+                    <span class="update-time" id="updateTime">数据更新中...</span>
+                </div>
+
+                <!-- 图表控制 -->
+                <div class="chart-controls">
+                    <div class="time-range-selector">
+                        <button class="time-btn active" data-range="1m">近1月</button>
+                        <button class="time-btn" data-range="3m">近3月</button>
+                        <button class="time-btn" data-range="6m">近6月</button>
+                        <button class="time-btn" data-range="1y">近1年</button>
+                        <button class="time-btn" data-range="all">全部</button>
+                    </div>
+                    <div class="chart-type-selector">
+                        <button class="chart-type-btn active" data-type="compare">对比</button>
+                        <button class="chart-type-btn" data-type="cea">CEA</button>
+                        <button class="chart-type-btn" data-type="ccer">CCER</button>
+                    </div>
+                </div>
+
+                <!-- ECharts图表容器 -->
+                <div id="trendChart"></div>
+
+                <!-- 统计摘要 -->
+                <div class="stats-row" id="statsRow">
+                    <!-- 动态填充 -->
+                </div>
+            </section>
+
+            <!-- 页脚 -->
+            <footer class="footer">
+                数据来源：<a href="https://www.ccn.ac.cn/cets" target="_blank">全国碳市场</a> · 上海环交所 · 北京绿交所 · 每30秒更新
+            </footer>
+
+        </div>
+    </div>
+
+    <script>
+        // ================== 全局配置 ==================
+        const API = {
+            latest: '/api/data/latest',
+            ceaTrend: '/api/trend/cea',
+            ccerTrend: '/api/trend/ccer',
+            compareTrend: '/api/trend/compare'
+        };
+
+        // 颜色配置
+        const COLORS = {
+            sage: '#7CB083',
+            sageLight: '#98E4D6',
+            coral: '#FF8066',
+            coralLight: '#FF9A8B',
+            sky: '#7DD3FC',
+            skyLight: '#A5F3FC',
+            text: '#2D3748',
+            textDim: '#718096'
+        };
+
+        // 模拟数据
+        const MOCK_DATA = {
+            cea: {
+                date: '2026-03-12',
+                open_price: 88.50,
+                high_price: 91.05,
+                low_price: 87.20,
+                close_price: 89.42,
+                previous_close: 87.28,
+                change_percent: 2.45,
+                source: '上海环交所'
+            },
+            ccer: {
+                date: '2026-03-12',
+                volume: 12500,
+                amount: 1106250,
+                avg_price: 72.15,
+                change_percent: -0.82,
+                source: '北京绿交所'
+            }
+        };
+
+        // 生成模拟趋势数据
+        function generateMockTrendData(basePrice, days = 90, volatility = 3) {
+            const data = [];
+            const today = new Date();
+            let price = basePrice;
+            
+            for (let i = days; i >= 0; i--) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                
+                const change = (Math.random() - 0.48) * volatility;
+                price = Math.max(30, Math.min(110, price + change));
+                
+                data.push({
+                    date: date.toISOString().split('T')[0],
+                    price: Math.round(price * 100) / 100,
+                    volume: Math.floor(Math.random() * 50000 + 10000)
+                });
+            }
+            return data;
+        }
+
+        let chartInstance = null;
+        let cachedCeaData = null;
+        let cachedCcerData = null;
+        let currentTimeRange = '1m';
+        let currentChartType = 'compare';
+
+        // ================== 工具函数 ==================
+        
+        function formatNumber(num, decimals = 2) {
+            if (num === null || num === undefined) return '--';
+            return typeof num === 'number' ? num.toFixed(decimals) : num;
+        }
+
+        function getChangeClass(percent) {
+            if (percent > 0) return 'up';
+            if (percent < 0) return 'down';
+            return '';
+        }
+
+        function getChangeArrow(percent) {
+            if (percent > 0) return '↑';
+            if (percent < 0) return '↓';
+            return '';
+        }
+
+        function filterByTimeRange(data, range) {
+            if (range === 'all') return data;
+            
+            const now = new Date();
+            let startDate;
+            
+            switch (range) {
+                case '1m':
+                    startDate = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+                    break;
+                case '3m':
+                    startDate = new Date(now.getFullYear(), now.getMonth() - 3, now.getDate());
+                    break;
+                case '6m':
+                    startDate = new Date(now.getFullYear(), now.getMonth() - 6, now.getDate());
+                    break;
+                case '1y':
+                    startDate = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
+                    break;
+                default:
+                    return data;
+            }
+            
+            const startStr = startDate.toISOString().split('T')[0];
+            return data.filter(item => item.date >= startStr);
+        }
+
+        // ================== CEA行情渲染 ==================
+        
+        function renderCeaData(data) {
+            const container = document.getElementById('ceaContent');
+            
+            if (!data) {
+                container.innerHTML = '<div class="loading"><p>暂无数据</p></div>';
+                return;
+            }
+
+            const closePrice = data.close_price || data.closing_price;
+            const changePercent = data.change_percent || 0;
+            const changeClass = getChangeClass(changePercent);
+            const arrow = getChangeArrow(changePercent);
+            const sign = changePercent >= 0 ? '+' : '';
+
+            container.innerHTML = `
+                <div class="price-main">
+                    <div class="price-label">收盘价</div>
+                    <div class="price-value">
+                        ${formatNumber(closePrice)}
+                        <span class="price-unit">元/吨</span>
+                    </div>
+                    ${changePercent !== null && changePercent !== undefined ? `
+                    <div class="price-change ${changeClass}">
+                        ${arrow} ${sign}${formatNumber(changePercent)}%
+                    </div>
+                    ` : ''}
+                </div>
+                <div class="price-info-grid">
+                    <div class="info-item">
+                        <div class="info-label">开盘</div>
+                        <div class="info-value">${formatNumber(data.open_price)}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">最高</div>
+                        <div class="info-value high">${formatNumber(data.high_price)}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">最低</div>
+                        <div class="info-value low">${formatNumber(data.low_price)}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">前收</div>
+                        <div class="info-value">${formatNumber(data.previous_close)}</div>
+                    </div>
+                </div>
+                <div class="source-tag">${data.date || '--'} · ${data.source || '上海环交所'}</div>
+            `;
+        }
+
+        // ================== CCER行情渲染 ==================
+        
+        function renderCcerData(data) {
+            const container = document.getElementById('ccerContent');
+            
+            if (!data) {
+                container.innerHTML = '<div class="loading"><p>暂无数据</p></div>';
+                return;
+            }
+
+            const avgPrice = data.avg_price;
+            const changePercent = data.change_percent || 0;
+            const changeClass = getChangeClass(changePercent);
+            const arrow = getChangeArrow(changePercent);
+            const sign = changePercent >= 0 ? '+' : '';
+
+            container.innerHTML = `
+                <div class="price-main">
+                    <div class="price-label">平均价</div>
+                    <div class="price-value">
+                        ${formatNumber(avgPrice)}
+                        <span class="price-unit">元/吨</span>
+                    </div>
+                    ${changePercent !== null && changePercent !== undefined ? `
+                    <div class="price-change ${changeClass}">
+                        ${arrow} ${sign}${formatNumber(changePercent)}%
+                    </div>
+                    ` : ''}
+                </div>
+                <div class="price-info-grid">
+                    <div class="info-item">
+                        <div class="info-label">成交量</div>
+                        <div class="info-value">${data.volume ? data.volume.toLocaleString() : '--'}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">成交额</div>
+                        <div class="info-value">${data.amount ? data.amount.toLocaleString() : '--'}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">平均价</div>
+                        <div class="info-value">${formatNumber(avgPrice)}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">涨跌幅</div>
+                        <div class="info-value ${changeClass}">${changePercent !== null ? sign + formatNumber(changePercent) + '%' : '--'}</div>
+                    </div>
+                </div>
+                <div class="source-tag">${data.date || '--'} · ${data.source || '北京绿交所'}</div>
+            `;
+        }
+
+        // ================== 图表渲染 ==================
+        
+        function initChart() {
+            const chartDom = document.getElementById('trendChart');
+            chartInstance = echarts.init(chartDom);
+            
+            window.addEventListener('resize', () => {
+                chartInstance && chartInstance.resize();
+            });
+        }
+
+        function renderCompareChart(ceaData, ccerData) {
+            const filteredCea = filterByTimeRange(ceaData, currentTimeRange);
+            const filteredCcer = filterByTimeRange(ccerData, currentTimeRange);
+
+            const ceaMap = {};
+            filteredCea.forEach(d => { ceaMap[d.date] = d; });
+            
+            const ccerMap = {};
+            filteredCcer.forEach(d => { ccerMap[d.date] = d; });
+
+            const allDates = [...new Set([...Object.keys(ceaMap), ...Object.keys(ccerMap)])].sort();
+
+            const dates = [];
+            const ceaPrices = [];
+            const ccerPrices = [];
+
+            allDates.forEach(date => {
+                dates.push(date);
+                const ceaPrice = ceaMap[date]?.price;
+                const ccerPrice = ccerMap[date]?.price;
+                
+                ceaPrices.push(ceaPrice || null);
+                ccerPrices.push(ccerPrice || null);
+            });
+
+            const option = {
+                tooltip: {
+                    trigger: 'axis',
+                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                    borderColor: COLORS.sage,
+                    borderWidth: 1,
+                    padding: [10, 14],
+                    textStyle: {
+                        color: COLORS.text,
+                        fontSize: 12
+                    }
+                },
+                legend: {
+                    data: ['CEA收盘价', 'CCER平均价'],
+                    top: 10,
+                    right: 10,
+                    textStyle: {
+                        color: COLORS.textDim,
+                        fontSize: 12
+                    },
+                    itemWidth: 20,
+                    itemHeight: 12,
+                    itemGap: 16
+                },
+                grid: {
+                    left: 40,
+                    right: 40,
+                    bottom: 50,
+                    top: 60,
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    data: dates,
+                    boundaryGap: false,
+                    axisLine: {
+                        lineStyle: { color: 'rgba(124, 176, 131, 0.2)', width: 1 }
+                    },
+                    axisTick: { show: false },
+                    axisLabel: {
+                        color: COLORS.textDim,
+                        fontSize: 10,
+                        rotate: 45,
+                        margin: 12
+                    }
+                },
+                yAxis: {
+                    type: 'value',
+                    name: '元/吨',
+                    min: 30,
+                    max: 110,
+                    nameTextStyle: {
+                        color: COLORS.textDim,
+                        fontSize: 11,
+                        padding: [0, 0, 8, 0]
+                    },
+                    axisLine: {
+                        show: true,
+                        lineStyle: { color: 'rgba(124, 176, 131, 0.2)', width: 1 }
+                    },
+                    axisTick: { show: false },
+                    axisLabel: {
+                        color: COLORS.textDim,
+                        fontSize: 10
+                    },
+                    splitLine: {
+                        lineStyle: {
+                            color: 'rgba(124, 176, 131, 0.08)',
+                            type: 'dashed'
+                        }
+                    }
+                },
+                series: [
+                    {
+                        name: 'CEA收盘价',
+                        type: 'line',
+                        data: ceaPrices,
+                        smooth: true,
+                        symbol: 'circle',
+                        symbolSize: 5,
+                        showSymbol: false,
+                        lineStyle: {
+                            width: 2.5,
+                            color: COLORS.sage
+                        },
+                        itemStyle: {
+                            color: COLORS.sage,
+                            borderWidth: 2,
+                            borderColor: '#fff'
+                        },
+                        areaStyle: {
+                            color: {
+                                type: 'linear',
+                                x: 0, y: 0, x2: 0, y2: 1,
+                                colorStops: [
+                                    { offset: 0, color: 'rgba(124, 176, 131, 0.2)' },
+                                    { offset: 1, color: 'rgba(124, 176, 131, 0.02)' }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        name: 'CCER平均价',
+                        type: 'line',
+                        data: ccerPrices,
+                        smooth: true,
+                        symbol: 'circle',
+                        symbolSize: 5,
+                        showSymbol: false,
+                        lineStyle: {
+                            width: 2.5,
+                            color: COLORS.sky
+                        },
+                        itemStyle: {
+                            color: COLORS.sky,
+                            borderWidth: 2,
+                            borderColor: '#fff'
+                        },
+                        areaStyle: {
+                            color: {
+                                type: 'linear',
+                                x: 0, y: 0, x2: 0, y2: 1,
+                                colorStops: [
+                                    { offset: 0, color: 'rgba(125, 211, 252, 0.2)' },
+                                    { offset: 1, color: 'rgba(125, 211, 252, 0.02)' }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            };
+
+            chartInstance.setOption(option, true);
+            updateStats(filteredCea, filteredCcer);
+        }
+
+        function renderSingleChart(data, market) {
+            const filtered = filterByTimeRange(data, currentTimeRange);
+            
+            const dates = filtered.map(d => d.date);
+            const prices = filtered.map(d => d.price);
+            const volumes = filtered.map(d => d.volume);
+
+            const isCea = market === 'cea';
+            const lineColor = isCea ? COLORS.sage : COLORS.sky;
+            const name = isCea ? 'CEA收盘价' : 'CCER平均价';
+            const areaColor = isCea ? 'rgba(124, 176, 131, 0.2)' : 'rgba(125, 211, 252, 0.2)';
+            
+            const option = {
+                tooltip: {
+                    trigger: 'axis',
+                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                    borderColor: lineColor,
+                    borderWidth: 1,
+                    padding: [10, 14],
+                    textStyle: {
+                        color: COLORS.text,
+                        fontSize: 12
+                    }
+                },
+                legend: {
+                    data: [name, '成交量'],
+                    top: 10,
+                    right: 10,
+                    textStyle: {
+                        color: COLORS.textDim,
+                        fontSize: 12
+                    },
+                    itemWidth: 20,
+                    itemHeight: 12,
+                    itemGap: 16
+                },
+                grid: {
+                    left: 40,
+                    right: 40,
+                    bottom: 50,
+                    top: 60,
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    data: dates,
+                    boundaryGap: false,
+                    axisLine: {
+                        lineStyle: { color: 'rgba(124, 176, 131, 0.2)', width: 1 }
+                    },
+                    axisTick: { show: false },
+                    axisLabel: {
+                        color: COLORS.textDim,
+                        fontSize: 10,
+                        rotate: 45,
+                        margin: 12
+                    }
+                },
+                yAxis: [
+                    {
+                        type: 'value',
+                        name: '元/吨',
+                        min: 30,
+                        max: 110,
+                        nameTextStyle: {
+                            color: COLORS.textDim,
+                            fontSize: 11,
+                            padding: [0, 0, 8, 0]
+                        },
+                        axisLine: {
+                            show: true,
+                            lineStyle: { color: 'rgba(124, 176, 131, 0.2)', width: 1 }
+                        },
+                        axisTick: { show: false },
+                        axisLabel: {
+                            color: COLORS.textDim,
+                            fontSize: 10
+                        },
+                        splitLine: {
+                            lineStyle: {
+                                color: 'rgba(124, 176, 131, 0.08)',
+                                type: 'dashed'
+                            }
+                        }
+                    },
+                    {
+                        type: 'value',
+                        name: '成交量',
+                        nameTextStyle: {
+                            color: COLORS.textDim,
+                            fontSize: 11,
+                            padding: [0, 0, 8, 0]
+                        },
+                        axisLine: {
+                            show: true,
+                            lineStyle: { color: 'rgba(124, 176, 131, 0.2)', width: 1 }
+                        },
+                        axisTick: { show: false },
+                        axisLabel: {
+                            color: COLORS.textDim,
+                            fontSize: 10
+                        },
+                        splitLine: { show: false }
+                    }
+                ],
+                series: [
+                    {
+                        name: name,
+                        type: 'line',
+                        data: prices,
+                        smooth: true,
+                        symbol: 'circle',
+                        symbolSize: 5,
+                        showSymbol: false,
+                        lineStyle: {
+                            width: 2.5,
+                            color: lineColor
+                        },
+                        itemStyle: {
+                            color: lineColor,
+                            borderWidth: 2,
+                            borderColor: '#fff'
+                        },
+                        areaStyle: {
+                            color: {
+                                type: 'linear',
+                                x: 0, y: 0, x2: 0, y2: 1,
+                                colorStops: [
+                                    { offset: 0, color: areaColor },
+                                    { offset: 1, color: areaColor.replace('0.2', '0.02') }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        name: '成交量',
+                        type: 'bar',
+                        yAxisIndex: 1,
+                        data: volumes,
+                        itemStyle: {
+                            color: 'rgba(124, 176, 131, 0.15)',
+                            borderRadius: [3, 3, 0, 0]
+                        },
+                        barWidth: '30%'
+                    }
+                ]
+            };
+
+            chartInstance.setOption(option, true);
+
+            if (isCea) {
+                updateSingleStats(filtered, 'CEA');
+            } else {
+                updateSingleStats(filtered, 'CCER');
+            }
+        }
+
+        function updateStats(ceaData, ccerData) {
+            const container = document.getElementById('statsRow');
+            
+            const ceaPrices = ceaData.map(d => d.price).filter(p => p);
+            const ccerPrices = ccerData.map(d => d.price).filter(p => p);
+            
+            const ceaMax = ceaPrices.length ? Math.max(...ceaPrices).toFixed(2) : '--';
+            const ceaMin = ceaPrices.length ? Math.min(...ceaPrices).toFixed(2) : '--';
+            const ccerMax = ccerPrices.length ? Math.max(...ccerPrices).toFixed(2) : '--';
+            const ccerMin = ccerPrices.length ? Math.min(...ccerPrices).toFixed(2) : '--';
+
+            container.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-value">${ceaMax}</div>
+                    <div class="stat-label">CEA最高</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${ceaMin}</div>
+                    <div class="stat-label">CEA最低</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${ccerMax}</div>
+                    <div class="stat-label">CCER最高</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${ccerMin}</div>
+                    <div class="stat-label">CCER最低</div>
+                </div>
+            `;
+        }
+
+        function updateSingleStats(data, market) {
+            const container = document.getElementById('statsRow');
+            
+            const prices = data.map(d => d.price).filter(p => p);
+            const volumes = data.map(d => d.volume).filter(v => v);
+            
+            const max = prices.length ? Math.max(...prices).toFixed(2) : '--';
+            const min = prices.length ? Math.min(...prices).toFixed(2) : '--';
+            const avg = prices.length ? (prices.reduce((a, b) => a + b, 0) / prices.length).toFixed(2) : '--';
+            const totalVol = volumes.length ? volumes.reduce((a, b) => a + b, 0).toLocaleString() : '--';
+
+            container.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-value">${max}</div>
+                    <div class="stat-label">${market}最高</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${min}</div>
+                    <div class="stat-label">${market}最低</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${avg}</div>
+                    <div class="stat-label">${market}均价</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${totalVol}</div>
+                    <div class="stat-label">总成交量</div>
+                </div>
+            `;
+        }
+
+        // ================== 事件绑定 ==================
+        
+        function bindEvents() {
+            // 时间范围选择
+            document.querySelectorAll('.time-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentTimeRange = this.dataset.range;
+                    
+                    if (currentChartType === 'compare') {
+                        renderCompareChart(cachedCeaData, cachedCcerData);
+                    } else if (currentChartType === 'cea') {
+                        renderSingleChart(cachedCeaData, 'cea');
+                    } else {
+                        renderSingleChart(cachedCcerData, 'ccer');
+                    }
+                });
+            });
+
+            // 图表类型选择
+            document.querySelectorAll('.chart-type-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.chart-type-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentChartType = this.dataset.type;
+                    
+                    if (currentChartType === 'compare') {
+                        renderCompareChart(cachedCeaData, cachedCcerData);
+                    } else if (currentChartType === 'cea') {
+                        renderSingleChart(cachedCeaData, 'cea');
+                    } else {
+                        renderSingleChart(cachedCcerData, 'ccer');
+                    }
+                });
+            });
+        }
+
+        // ================== 初始化 ==================
+        
+        function init() {
+            // 立即显示模拟数据
+            renderCeaData(MOCK_DATA.cea);
+            renderCcerData(MOCK_DATA.ccer);
+            
+            // 初始化图表
+            initChart();
+            
+            // 生成模拟趋势数据
+            cachedCeaData = generateMockTrendData(89, 120, 2.5);
+            cachedCcerData = generateMockTrendData(72, 120, 3);
+            renderCompareChart(cachedCeaData, cachedCcerData);
+            
+            // 绑定事件
+            bindEvents();
+            
+            // 更新时间
+            document.getElementById('updateTime').textContent = 
+                `模拟数据 · ${new Date().toLocaleString('zh-CN')}`;
+        }
+
+        // 启动
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

@@ -233,44 +233,28 @@ function initTabs() {
     });
 }
 
-// 导航栏效果
+// 导航栏效果 - 新版Tailwind风格
 function initNavEffects() {
-    const navItems = document.querySelectorAll('.nav-item');
-    const header = document.querySelector('.header');
-
-    // 导航项悬停效果
-    navItems.forEach(item => {
-        item.addEventListener('mouseenter', function() {
-            navItems.forEach(nav => nav.classList.remove('active'));
-            this.classList.add('active');
-        });
-
-        item.addEventListener('mouseleave', function() {
-            // 移除后重新激活第一个
-            navItems.forEach(nav => nav.classList.remove('active'));
-            navItems[0].classList.add('active');
-        });
-    });
-
+    const navLinks = document.querySelectorAll('.nav-link-item[data-section]');
+    
     // 点击导航项
-    navItems.forEach(item => {
-        item.addEventListener('click', function(e) {
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
             e.preventDefault();
-            navItems.forEach(nav => nav.classList.remove('active'));
-            this.classList.add('active');
-
+            
+            // 移除所有active状态
+            navLinks.forEach(nav => {
+                nav.classList.remove('text-sage-900', 'border-b-2', 'border-primary', 'pb-1', 'text-sm', 'font-semibold');
+                nav.classList.add('text-sage-500', 'text-sm', 'font-medium');
+            });
+            
+            // 添加active状态
+            this.classList.remove('text-sage-500', 'font-medium');
+            this.classList.add('text-sage-900', 'border-b-2', 'border-primary', 'pb-1', 'font-semibold');
+            
             // 平滑滚动到对应区块
-            const linkText = this.querySelector('.nav-link').textContent;
-            const sectionMap = {
-                '首页': '.banner',
-                '碳市场': '.carbon-market-section',
-                '信息公开': '.info-section',
-                '业务体系': '.business-section',
-                '党的建设': '.party-section',
-                '关于中心': '.about-section'
-            };
-
-            const targetSection = document.querySelector(sectionMap[linkText]);
+            const sectionClass = this.getAttribute('data-section');
+            const targetSection = document.querySelector('.' + sectionClass);
             if (targetSection) {
                 targetSection.scrollIntoView({
                     behavior: 'smooth',
@@ -278,21 +262,6 @@ function initNavEffects() {
                 });
             }
         });
-    });
-
-    // 滚动时导航栏效果
-    let lastScrollY = window.scrollY;
-
-    window.addEventListener('scroll', () => {
-        const scrollY = window.scrollY;
-
-        if (scrollY > 100) {
-            header.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
-        } else {
-            header.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
-        }
-
-        lastScrollY = scrollY;
     });
 }
 
@@ -524,16 +493,9 @@ async function initCarbonMarket() {
 
 // 初始化时间范围按钮
 function initTimeRangeButtons() {
-    const timeBtns = document.querySelectorAll('.time-btn');
-
-    timeBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            timeBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            currentTimeRange = btn.getAttribute('data-range');
-            updateChart();
-        });
-    });
+    // Set default to 'all' and don't initialize buttons for monthly ranges
+    currentTimeRange = 'all';
+    updateChart();
 }
 
 // 初始化图表类型按钮
@@ -730,6 +692,8 @@ function updateMarketDisplay(data) {
     const cea = data.cea;
     if (cea) {
         renderCeaData(cea);
+        // 更新当前价格显示
+        updateCurrentPriceDisplay(cea);
     }
     
     // 更新CCER数据
@@ -742,98 +706,54 @@ function updateMarketDisplay(data) {
     if (data.history) {
         updateStatsSummary(data.history);
     }
+    
+    // 更新时间显示
+    updateChartUpdateTime(data);
 }
 
-// 渲染CEA数据
+// 更新当前价格显示
+function updateCurrentPriceDisplay(cea) {
+    const priceDisplay = document.getElementById('currentPriceDisplay');
+    if (!priceDisplay) return;
+    
+    const closePrice = cea.close_price || cea.closing_price || 0;
+    const priceNum = priceDisplay.querySelector('.price-num');
+    
+    if (priceNum) {
+        // 添加数字动画效果
+        priceNum.style.transition = 'all 0.5s ease';
+        priceNum.textContent = formatNumber(closePrice);
+    }
+}
+
+// 更新图表更新时间
+function updateChartUpdateTime(data) {
+    const updateTimeEl = document.getElementById('chartUpdateTime');
+    if (!updateTimeEl) return;
+    
+    const timeSpan = updateTimeEl.querySelector('span');
+    if (timeSpan) {
+        const now = new Date();
+        const timeStr = now.toLocaleString('zh-CN', {
+            month: 'numeric',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        timeSpan.textContent = `数据更新: ${timeStr}`;
+    }
+}
+
+// 渲染CEA数据（简化版本 - 只更新统计摘要）
 function renderCeaData(cea) {
-    const container = document.getElementById('ceaContent');
-    if (!container) return;
-    
-    const closePrice = cea.close_price || cea.closing_price;
-    const changePercent = cea.change_percent || 0;
-    const changeClass = changePercent >= 0 ? 'up' : 'down';
-    const arrow = changePercent >= 0 ? '↑' : '↓';
-    const sign = changePercent >= 0 ? '+' : '';
-    
-    container.innerHTML = `
-        <div class="price-main">
-            <div class="price-label">收盘价</div>
-            <div class="price-value cea">
-                ${formatNumber(closePrice)}
-                <span class="price-unit">元/吨</span>
-            </div>
-            ${changePercent !== null && changePercent !== undefined ? `
-            <div class="price-change ${changeClass}">
-                ${arrow} ${sign}${formatNumber(changePercent)}%
-            </div>
-            ` : ''}
-        </div>
-        <div class="price-info-grid">
-            <div class="info-item">
-                <div class="info-label">开盘价</div>
-                <div class="info-value">${formatNumber(cea.open_price)}</div>
-            </div>
-            <div class="info-item">
-                <div class="info-label">最高价</div>
-                <div class="info-value high">${formatNumber(cea.high_price)}</div>
-            </div>
-            <div class="info-item">
-                <div class="info-label">最低价</div>
-                <div class="info-value low">${formatNumber(cea.low_price)}</div>
-            </div>
-            <div class="info-item">
-                <div class="info-label">前收盘</div>
-                <div class="info-value">${formatNumber(cea.previous_close)}</div>
-            </div>
-        </div>
-        <div class="source-tag">数据日期: ${cea.date || '--'} · 来源: ${cea.source || '上海环境能源交易所'}</div>
-    `;
+    // 这个函数现在仅用于数据处理，实际显示在统计摘要中
+    console.log('CEA数据已加载:', cea);
 }
 
-// 渲染CCER数据
+// 渲染CCER数据（简化版本 - 只更新统计摘要）
 function renderCcerData(ccer) {
-    const container = document.getElementById('ccerContent');
-    if (!container) return;
-    
-    const avgPrice = ccer.avg_price;
-    const changePercent = ccer.change_percent || 0;
-    const changeClass = changePercent >= 0 ? 'up' : 'down';
-    const arrow = changePercent >= 0 ? '↑' : '↓';
-    const sign = changePercent >= 0 ? '+' : '';
-    
-    container.innerHTML = `
-        <div class="price-main">
-            <div class="price-label">平均价</div>
-            <div class="price-value ccer">
-                ${formatNumber(avgPrice)}
-                <span class="price-unit">元/吨</span>
-            </div>
-            ${changePercent !== null && changePercent !== undefined ? `
-            <div class="price-change ${changeClass}">
-                ${arrow} ${sign}${formatNumber(changePercent)}%
-            </div>
-            ` : ''}
-        </div>
-        <div class="price-info-grid">
-            <div class="info-item">
-                <div class="info-label">成交量</div>
-                <div class="info-value">${ccer.volume ? ccer.volume.toLocaleString() : '--'}</div>
-            </div>
-            <div class="info-item">
-                <div class="info-label">成交额</div>
-                <div class="info-value">${ccer.amount ? ccer.amount.toLocaleString() : '--'}</div>
-            </div>
-            <div class="info-item">
-                <div class="info-label">平均价</div>
-                <div class="info-value">${formatNumber(avgPrice)}</div>
-            </div>
-            <div class="info-item">
-                <div class="info-label">涨跌幅</div>
-                <div class="info-value ${changeClass}">${changePercent !== null ? sign + formatNumber(changePercent) + '%' : '--'}</div>
-            </div>
-        </div>
-        <div class="source-tag">数据日期: ${ccer.date || '--'} · 来源: ${ccer.source || '北京绿色交易所'}</div>
-    `;
+    // 这个函数现在仅用于数据处理，实际显示在统计摘要中
+    console.log('CCER数据已加载:', ccer);
 }
 
 // 格式化数字
@@ -873,30 +793,8 @@ function updateChart() {
 
 // 根据时间范围过滤数据
 function filterByTimeRange(data, range) {
-    if (range === 'all') return data;
-    
-    const now = new Date();
-    let startDate;
-    
-    switch (range) {
-        case '1m':
-            startDate = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
-            break;
-        case '3m':
-            startDate = new Date(now.getFullYear(), now.getMonth() - 3, now.getDate());
-            break;
-        case '6m':
-            startDate = new Date(now.getFullYear(), now.getMonth() - 6, now.getDate());
-            break;
-        case '1y':
-            startDate = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
-            break;
-        default:
-            return data;
-    }
-    
-    const startStr = startDate.toISOString().split('T')[0];
-    return data.filter(item => item.date >= startStr);
+    // Only show all data, no time range filtering
+    return data;
 }
 
 // 渲染对比图表

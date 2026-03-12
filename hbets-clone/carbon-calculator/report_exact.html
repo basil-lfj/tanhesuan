@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CarbonLux - 新建碳核算报告</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#19e62b",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#112112",
+                        "sage": {
+                            50: "#f4f7f4",
+                            100: "#e7ede7",
+                            200: "#d0dbd0",
+                            500: "#4e9754",
+                            900: "#0e1b0f"
+                        },
+                        "glacier": {
+                            50: "#f0f7f9",
+                            100: "#e1eff4",
+                            200: "#c2dfe9"
+                        }
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Manrope', sans-serif;
+        }
+        .glass-card {
+            background: #ffffff;
+            border: 1px solid #e7ede7;
+        }
+        .custom-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%234e9754' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display transition-colors duration-300">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+<!-- Top Navigation -->
+<header class="sticky top-0 z-50 w-full border-b border-sage-100 bg-white/80 backdrop-blur-md px-6 lg:px-20 py-4 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="size-9 bg-primary flex items-center justify-center rounded-lg">
+<span class="material-symbols-outlined text-white text-xl">eco</span>
+</div>
+<h2 class="text-sage-900 text-xl font-extrabold tracking-tight">CarbonLux</h2>
+</div>
+<nav class="hidden md:flex items-center gap-10"><a class="text-sage-900 border-b-2 border-primary pb-1 text-sm font-semibold" href="#">新建报告</a></nav>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-sage-100 transition-colors">
+<span class="material-symbols-outlined text-sage-900">notifications</span>
+</button>
+<div class="h-10 w-10 rounded-full border-2 border-primary/20 p-0.5 overflow-hidden">
+<img alt="User profile" class="rounded-full w-full h-full object-cover" data-alt="User profile avatar circle" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVPwXXD83wRf0SoYsfiEVBUiZYuTu6HNd0JI_60cwqtr9OgyG-chjoWZVwjfPMC2tUsMh_7ADJDcU7w8BIP72T8gxkJV_Nqcz8i2G5hCp15BCmpsNUQOZChvKgnuRR-CJKrQbJxcN02HRqn0nuVKNVm6UrI2Dt1kJMzXpquXF9N8xYyvzyp1fuqrseIV2JTj-xqp1dgZufOB3HWXVbk9Aeha6HVvvf7rRoU6HrLuepbjMK-WhGTf8yUS1b9meEpNrlJumOy9fSU5M"/>
+</div>
+</div>
+</header>
+<main class="flex-1 max-w-5xl mx-auto w-full px-6 py-12">
+<!-- Hero Section -->
+<div class="mb-12">
+<span class="inline-block px-3 py-1 rounded-full bg-primary/10 text-sage-500 text-xs font-bold uppercase tracking-widest mb-4">Step 01 / Data Entry</span>
+<h1 class="text-4xl md:text-5xl font-extrabold text-sage-900 mb-4 tracking-tight">开启您的碳足迹旅程</h1>
+<p class="text-lg text-sage-500 max-w-2xl leading-relaxed">
+                    请在下方填写企业基础信息。我们的智能引擎将根据您提供的数据，为您生成符合国际标准的深度碳排放分析报告。
+                </p>
+</div>
+<!-- Form Container -->
+<div class="glass-card rounded-2xl p-8 md:p-12">
+<!-- Section: Basic Info -->
+<div class="mb-12">
+<div class="flex items-center gap-2 mb-8 border-b border-sage-100 pb-4">
+<span class="material-symbols-outlined text-primary">corporate_fare</span>
+<h3 class="text-xl font-bold text-sage-900">主体信息</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="space-y-2">
+<label class="text-sm font-semibold text-sage-900 ml-1">企业全称</label>
+<input class="w-full h-14 bg-white border border-sage-200 rounded-xl px-4 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none text-sage-900 placeholder:text-sage-200" placeholder="例如：碳影科技（北京）有限公司" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="text-sm font-semibold text-sage-900 ml-1">所属行业</label>
+<select class="custom-select w-full h-14 bg-white border border-sage-200 rounded-xl px-4 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none text-sage-900">
+<option value="">请选择您的产业领域</option>
+<option value="tech">高新技术与互联网</option>
+<option value="manu">先进制造</option>
+<option value="energy">能源与公用事业</option>
+<option value="retail">消费与零售</option>
+</select>
+</div>
+</div>
+</div>
+<!-- Section: Timeframe -->
+<div class="mb-12">
+<div class="flex items-center gap-2 mb-8 border-b border-sage-100 pb-4">
+<span class="material-symbols-outlined text-primary">calendar_today</span>
+<h3 class="text-xl font-bold text-sage-900">核算周期</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="space-y-2">
+<label class="text-sm font-semibold text-sage-900 ml-1">核算年度</label>
+<select class="custom-select w-full h-14 bg-white border border-sage-200 rounded-xl px-4 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none text-sage-900">
+<option>2023 年度</option>
+<option>2024 年度</option>
+</select>
+</div>
+<div class="md:col-span-2 space-y-2">
+<label class="text-sm font-semibold text-sage-900 ml-1">时间精度</label>
+<div class="flex gap-4">
+<button class="flex-1 h-14 bg-primary/10 border-2 border-primary rounded-xl text-sage-900 font-bold flex items-center justify-center gap-2 transition-all">
+<span class="material-symbols-outlined text-primary">check_circle</span> 按年度
+                                </button>
+<button class="flex-1 h-14 bg-white border border-sage-200 rounded-xl text-sage-900/50 font-medium flex items-center justify-center gap-2 hover:border-sage-300 transition-all">
+                                    按季度
+                                </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Section: Data Detail -->
+<div class="mb-12">
+<div class="flex items-center gap-2 mb-8 border-b border-sage-100 pb-4">
+<span class="material-symbols-outlined text-primary">bolt</span>
+<h3 class="text-xl font-bold text-sage-900">核心能耗数据</h3>
+</div>
+<div class="space-y-6">
+<div class="p-6 bg-glacier-50 rounded-xl border border-glacier-100 flex flex-col md:flex-row md:items-center justify-between gap-6">
+<div class="flex gap-4">
+<div class="size-12 rounded-lg bg-white flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">electric_bolt</span>
+</div>
+<div>
+<p class="font-bold text-sage-900">外购电力消耗</p>
+<p class="text-xs text-sage-500">根据每月电费单统计总量</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<input class="w-32 h-12 bg-white border border-sage-200 rounded-lg px-4 text-right focus:ring-primary/20 focus:border-primary transition-all outline-none" placeholder="0.00" type="number"/>
+<span class="text-sage-500 font-medium">MWh</span>
+</div>
+</div>
+<div class="p-6 bg-glacier-50 rounded-xl border border-glacier-100 flex flex-col md:flex-row md:items-center justify-between gap-6">
+<div class="flex gap-4">
+<div class="size-12 rounded-lg bg-white flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">propane_tank</span>
+</div>
+<div>
+<p class="font-bold text-sage-900">天然气使用</p>
+<p class="text-xs text-sage-500">主要用于办公供暖或食堂</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<input class="w-32 h-12 bg-white border border-sage-200 rounded-lg px-4 text-right focus:ring-primary/20 focus:border-primary transition-all outline-none" placeholder="0.00" type="number"/>
+<span class="text-sage-500 font-medium">m³</span>
+</div>
+</div>
+<div class="p-6 bg-glacier-50 rounded-xl border border-glacier-100 flex flex-col md:flex-row md:items-center justify-between gap-6">
+<div class="flex gap-4">
+<div class="size-12 rounded-lg bg-white flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">commute</span>
+</div>
+<div>
+<p class="font-bold text-sage-900">企业商务差旅</p>
+<p class="text-xs text-sage-500">包括飞行里程及交通能耗</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<input class="w-32 h-12 bg-white border border-sage-200 rounded-lg px-4 text-right focus:ring-primary/20 focus:border-primary transition-all outline-none" placeholder="0.00" type="number"/>
+<span class="text-sage-500 font-medium">km</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Section: Facilities -->
+<div class="mb-12">
+<div class="flex items-center gap-2 mb-8 border-b border-sage-100 pb-4">
+<span class="material-symbols-outlined text-primary">domain_add</span>
+<h3 class="text-xl font-bold text-sage-900">设施详情</h3>
+</div>
+</div>
+<!-- CTA Button -->
+<div class="pt-8 flex flex-col items-center">
+<button class="w-full md:w-auto md:min-w-[320px] h-16 bg-primary hover:bg-primary/90 text-sage-900 text-lg font-extrabold rounded-2xl transition-all active:scale-95 flex items-center justify-center gap-3">
+<span>生成专业核算报告</span>
+<span class="material-symbols-outlined">auto_awesome</span>
+</button>
+<p class="mt-4 text-sage-500 text-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-xs">verified_user</span>
+                        数据由 CarbonLux 高级加密技术保护，仅供报告生成使用
+                    </p>
+</div>
+</div>
+<!-- Footer Small -->
+<footer class="mt-20 py-8 text-center text-sage-500 text-sm border-t border-sage-100/50">
+<div class="flex justify-center gap-8 mb-4">
+<a class="hover:text-primary transition-colors" href="#">隐私政策</a>
+<a class="hover:text-primary transition-colors" href="#">服务条款</a>
+<a class="hover:text-primary transition-colors" href="#">联系技术支持</a>
+</div>
+<p>© 2024 CarbonLux. 赋能绿色可持续未来</p>
+</footer>
+</main>
+<!-- Background Decor -->
+<div class="fixed -top-24 -right-24 size-96 bg-primary/10 rounded-full blur-[100px] -z-10"></div>
+<div class="fixed -bottom-24 -left-24 size-96 bg-glacier-200/30 rounded-full blur-[100px] -z-10"></div>
+</div>
+</body></html>
