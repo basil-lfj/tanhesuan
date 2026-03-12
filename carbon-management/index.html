@@ -3,252 +3,554 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>碳资产管理系统</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>CarbonLux - 碳资产管理系统</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#19e62b",
+                        "sage": "#F0F7F4",
+                        "glacier": "#EBF5FF",
+                        "slate-custom": "#2D3A3A",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#112112",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "Noto Sans SC", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(180deg, #e8f4fc 0%, #f5fafd 50%, #ffffff 100%);
+            min-height: 100vh;
+        }
+        .metric-value {
+            letter-spacing: -0.02em;
+            font-weight: 300;
+        }
+        .asymmetric-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 4rem;
+        }
+        .hairline-border {
+            border: 0.5px solid rgba(45, 58, 58, 0.1);
+        }
+        
+        /* 流畅动画 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes pulse-soft {
+            0%, 100% { 
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 0.8;
+                transform: scale(1.02);
+            }
+        }
+        
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+        
+        .animate-slide-in-right {
+            animation: slideInRight 0.5s ease-out forwards;
+        }
+        
+        .animate-scale-in {
+            animation: scaleIn 0.4s ease-out forwards;
+        }
+        
+        .animate-pulse-soft {
+            animation: pulse-soft 2s ease-in-out infinite;
+        }
+        
+        .stagger-1 { animation-delay: 0.1s; }
+        .stagger-2 { animation-delay: 0.2s; }
+        .stagger-3 { animation-delay: 0.3s; }
+        .stagger-4 { animation-delay: 0.4s; }
+        .stagger-5 { animation-delay: 0.5s; }
+        
+        /* 悬停效果 */
+        .hover-lift {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .hover-lift:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+        }
+        
+        /* Tab 切换动画 */
+        .tab-content {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.4s ease-out;
+            display: none;
+        }
+        .tab-content.active {
+            opacity: 1;
+            transform: translateY(0);
+            display: block;
+        }
+        
+        /* 表格行动画 */
+        .table-row-animate {
+            opacity: 0;
+            animation: fadeInUp 0.4s ease-out forwards;
+        }
+        
+        /* 按钮悬停 */
+        .btn-animate {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .btn-animate::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+        .btn-animate:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        /* 表单面板动画 */
+        .form-panel-animate {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out, opacity 0.3s ease-out, padding 0.3s ease-out;
+            opacity: 0;
+        }
+        .form-panel-animate.show {
+            max-height: 600px;
+            opacity: 1;
+        }
+        
+        /* 数字变化动画 */
+        .number-change {
+            transition: all 0.3s ease;
+        }
+        
+        /* 成功提示动画 */
+        @keyframes successPop {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .success-pop {
+            animation: successPop 0.4s ease-out forwards;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 1024px) {
+            .asymmetric-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .metric-value {
+                font-size: 2.5rem !important;
+            }
+        }
+        
+        /* 滚动条美化 */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(45, 58, 58, 0.2);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(45, 58, 58, 0.3);
+        }
+    </style>
 </head>
-<body>
-    <div class="container">
-        <!-- 头部导航 -->
-        <header class="header">
-            <h1>碳资产管理系统</h1>
-            <p class="subtitle">企业碳履约与减排管理平台</p>
-        </header>
-
-        <!-- 核心指标卡片 -->
-        <section class="metrics-section">
-            <div class="metric-card">
-                <div class="metric-icon quota-icon">📊</div>
-                <div class="metric-content">
-                    <h3>配额余额</h3>
-                    <p class="metric-value" id="quotaBalance">--</p>
-                    <span class="metric-unit">吨CO₂</span>
-                </div>
-            </div>
-            <div class="metric-card">
-                <div class="metric-icon gap-icon">📈</div>
-                <div class="metric-content">
-                    <h3>配额缺口/盈余</h3>
-                    <p class="metric-value" id="quotaGap">--</p>
-                    <span class="metric-unit">吨CO₂</span>
-                </div>
-                <div class="metric-status" id="gapStatus"></div>
-            </div>
-            <div class="metric-card">
-                <div class="metric-icon reduction-icon">🌱</div>
-                <div class="metric-content">
-                    <h3>累计减排量</h3>
-                    <p class="metric-value" id="totalReduction">--</p>
-                    <span class="metric-unit">吨CO₂</span>
-                </div>
-            </div>
-            <div class="metric-card">
-                <div class="metric-icon emission-icon">🏭</div>
-                <div class="metric-content">
-                    <h3>当前排放量</h3>
-                    <p class="metric-value" id="currentEmission">--</p>
-                    <span class="metric-unit">吨CO₂</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- 预警提示区域 -->
-        <section class="alert-section" id="alertSection" style="display: none;">
-            <div class="alert warning" id="warningAlert">
-                <span class="alert-icon">⚠️</span>
-                <div class="alert-content">
-                    <h4>配额缺口预警</h4>
-                    <p id="warningMessage">您的碳配额存在缺口，请及时采取履约措施！</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- 功能选项卡 -->
-        <section class="tabs-section">
-            <div class="tabs">
-                <button class="tab-btn active" data-tab="quota">配额管理</button>
-                <button class="tab-btn" data-tab="reduction">减排成果</button>
-                <button class="tab-btn" data-tab="report">报表导出</button>
-            </div>
-
-            <!-- 配额管理面板 -->
-            <div class="tab-content active" id="quota-tab">
-                <div class="panel-header">
-                    <h2>配额管理</h2>
-                    <button class="btn btn-primary" id="addQuotaBtn">+ 新增配额</button>
-                </div>
-                
-                <!-- 配额录入表单 -->
-                <div class="form-panel" id="quotaForm" style="display: none;">
-                    <h3>录入配额信息</h3>
-                    <form id="quotaInputForm">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="quotaYear">年度</label>
-                                <input type="number" id="quotaYear" min="2020" max="2030" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="quotaType">配额类型</label>
-                                <select id="quotaType" required>
-                                    <option value="">请选择</option>
-                                    <option value="national">全国碳市场配额</option>
-                                    <option value="pilot">试点碳市场配额</option>
-                                    <option value="voluntary">自愿减排配额</option>
-                                    <option value="other">其他配额</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="quotaAmount">配额数量（吨CO₂）</label>
-                                <input type="number" id="quotaAmount" step="0.01" min="0" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="quotaDate">发放日期</label>
-                                <input type="date" id="quotaDate" required>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="quotaRemark">备注</label>
-                            <textarea id="quotaRemark" rows="2"></textarea>
-                        </div>
-                        <div class="form-actions">
-                            <button type="submit" class="btn btn-primary">保存</button>
-                            <button type="button" class="btn btn-secondary" id="cancelQuotaBtn">取消</button>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- 配额明细表格 -->
-                <div class="table-panel">
-                    <h3>配额明细</h3>
-                    <table class="data-table" id="quotaTable">
-                        <thead>
-                            <tr>
-                                <th>年度</th>
-                                <th>配额类型</th>
-                                <th>配额数量（吨CO₂）</th>
-                                <th>已使用（吨CO₂）</th>
-                                <th>剩余（吨CO₂）</th>
-                                <th>发放日期</th>
-                                <th>操作</th>
-                            </tr>
-                        </thead>
-                        <tbody id="quotaTableBody">
-                            <!-- 动态填充 -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- 减排成果面板 -->
-            <div class="tab-content" id="reduction-tab">
-                <div class="panel-header">
-                    <h2>减排成果管理</h2>
-                    <button class="btn btn-primary" id="addReductionBtn">+ 新增减排</button>
-                </div>
-
-                <!-- 减排录入表单 -->
-                <div class="form-panel" id="reductionForm" style="display: none;">
-                    <h3>录入减排成果</h3>
-                    <form id="reductionInputForm">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="reductionYear">年度</label>
-                                <input type="number" id="reductionYear" min="2020" max="2030" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="reductionType">减排类型</label>
-                                <select id="reductionType" required>
-                                    <option value="">请选择</option>
-                                    <option value="energy">节能改造</option>
-                                    <option value="process">工艺改进</option>
-                                    <option value="renewable">可再生能源</option>
-                                    <option value="ccus">碳捕集利用与封存</option>
-                                    <option value="other">其他措施</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="reductionAmount">减排量（吨CO₂）</label>
-                                <input type="number" id="reductionAmount" step="0.01" min="0" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="reductionDate">实施日期</label>
-                                <input type="date" id="reductionDate" required>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="reductionDesc">措施描述</label>
-                            <textarea id="reductionDesc" rows="2"></textarea>
-                        </div>
-                        <div class="form-actions">
-                            <button type="submit" class="btn btn-primary">保存</button>
-                            <button type="button" class="btn btn-secondary" id="cancelReductionBtn">取消</button>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- 减排明细表格 -->
-                <div class="table-panel">
-                    <h3>减排成果明细</h3>
-                    <table class="data-table" id="reductionTable">
-                        <thead>
-                            <tr>
-                                <th>年度</th>
-                                <th>减排类型</th>
-                                <th>减排量（吨CO₂）</th>
-                                <th>实施日期</th>
-                                <th>措施描述</th>
-                                <th>操作</th>
-                            </tr>
-                        </thead>
-                        <tbody id="reductionTableBody">
-                            <!-- 动态填充 -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- 报表导出面板 -->
-            <div class="tab-content" id="report-tab">
-                <div class="panel-header">
-                    <h2>报表导出</h2>
-                </div>
-                
-                <div class="report-options">
-                    <div class="report-card">
-                        <h3>📊 配额管理报表</h3>
-                        <p>包含配额余额、使用情况、缺口分析等详细信息</p>
-                        <button class="btn btn-primary" id="exportQuotaReport">导出报表</button>
+<body class="font-display text-slate-custom min-h-screen">
+    <div class="max-w-[1440px] mx-auto px-8 py-6">
+        <main>
+            <!-- 核心指标区域 -->
+            <section class="mb-16 animate-fade-in-up stagger-1">
+                <div class="flex justify-between items-end mb-10">
+                    <div>
+                        <h2 class="text-sm font-bold uppercase tracking-widest text-slate-custom/40 mb-2">Real-time Performance</h2>
+                        <p class="text-4xl font-light">企业碳资产实时监控</p>
                     </div>
-                    <div class="report-card">
-                        <h3>🌱 减排成果报表</h3>
-                        <p>包含减排措施、减排量统计、成效分析等信息</p>
-                        <button class="btn btn-primary" id="exportReductionReport">导出报表</button>
+                    <div class="text-right">
+                        <p class="text-xs font-medium text-slate-custom/40 uppercase">最后更新</p>
+                        <p class="text-sm font-bold" id="lastUpdate">--</p>
                     </div>
-                    <div class="report-card">
-                        <h3>📋 综合分析报表</h3>
-                        <p>包含配额与减排的综合分析、履约建议等</p>
-                        <button class="btn btn-primary" id="exportSummaryReport">导出报表</button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8" id="metricsGrid">
+                    <!-- 配额余额 -->
+                    <div class="bg-white/30 backdrop-blur-sm py-6 px-4 flex flex-col justify-between group hover-lift rounded-xl border border-white/50">
+                        <span class="text-sm font-medium text-slate-custom/60 mb-6 flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                            配额余额
+                        </span>
+                        <div>
+                            <p class="metric-value text-5xl md:text-6xl mb-2 text-slate-custom" id="quotaBalance">--</p>
+                            <p class="text-xs font-bold text-slate-custom/40 italic">吨 CO₂</p>
+                        </div>
+                    </div>
+                    <!-- 配额缺口/盈余 -->
+                    <div class="bg-white/30 backdrop-blur-sm py-6 px-4 flex flex-col justify-between group hover-lift rounded-xl border border-white/50">
+                        <span class="text-sm font-medium text-slate-custom/60 mb-6 flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+                            配额缺口/盈余
+                        </span>
+                        <div>
+                            <p class="metric-value text-5xl md:text-6xl mb-2 text-slate-custom" id="quotaGap">--</p>
+                            <p class="text-xs font-bold text-slate-custom/40 italic" id="gapStatus">计算中...</p>
+                        </div>
+                    </div>
+                    <!-- 累计减排量 -->
+                    <div class="bg-white/30 backdrop-blur-sm py-6 px-4 flex flex-col justify-between group hover-lift rounded-xl border border-white/50">
+                        <span class="text-sm font-medium text-slate-custom/60 mb-6 flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-green-600"></span>
+                            累计减排量
+                        </span>
+                        <div>
+                            <p class="metric-value text-5xl md:text-6xl mb-2 text-slate-custom" id="totalReduction">--</p>
+                            <p class="text-xs font-bold text-slate-custom/40 italic">tCO₂e</p>
+                        </div>
+                    </div>
+                    <!-- 当前排放量 -->
+                    <div class="bg-white/30 backdrop-blur-sm py-6 px-4 flex flex-col justify-between group hover-lift rounded-xl border border-white/50">
+                        <span class="text-sm font-medium text-slate-custom/60 mb-6 flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span>
+                            当前排放量
+                        </span>
+                        <div>
+                            <p class="metric-value text-5xl md:text-6xl mb-2 text-slate-custom" id="currentEmission">--</p>
+                            <p class="text-xs font-bold text-slate-custom/40 italic">本年度统计</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 预警区域 -->
+            <section class="mb-8 animate-fade-in-up stagger-2" id="alertSection" style="display: none;">
+                <div class="bg-orange-50/80 backdrop-blur-sm border-l-4 border-orange-400 rounded-r-xl p-5 flex items-center gap-4 animate-pulse-soft">
+                    <span class="material-symbols-outlined text-orange-500 text-3xl">warning</span>
+                    <div>
+                        <h4 class="font-bold text-orange-700">配额缺口预警</h4>
+                        <p class="text-sm text-orange-600" id="warningMessage">您的碳配额存在缺口，请及时采取履约措施！</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 功能选项卡 -->
+            <section class="animate-fade-in-up stagger-3">
+                <div class="flex items-center gap-2 mb-8 border-b border-slate-custom/10">
+                    <button class="tab-btn px-6 py-4 text-sm font-semibold border-b-2 border-primary transition-all duration-300" data-tab="quota">
+                        <span class="material-symbols-outlined text-lg align-middle mr-2">account_balance_wallet</span>
+                        配额管理
+                    </button>
+                    <button class="tab-btn px-6 py-4 text-sm font-medium text-slate-custom/60 hover:text-slate-custom border-b-2 border-transparent transition-all duration-300" data-tab="reduction">
+                        <span class="material-symbols-outlined text-lg align-middle mr-2">eco</span>
+                        减排成果
+                    </button>
+                    <button class="tab-btn px-6 py-4 text-sm font-medium text-slate-custom/60 hover:text-slate-custom border-b-2 border-transparent transition-all duration-300" data-tab="report">
+                        <span class="material-symbols-outlined text-lg align-middle mr-2">description</span>
+                        报表导出
+                    </button>
+                </div>
+
+                <!-- 配额管理面板 -->
+                <div class="tab-content active" id="quota-tab">
+                    <div class="flex items-center justify-between mb-8">
+                        <h3 class="text-xl font-bold flex items-center gap-3">
+                            配额明细
+                        </h3>
+                        <button class="btn-animate bg-primary text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-primary/90 transition-all duration-300 flex items-center gap-2" id="addQuotaBtn">
+                            <span class="material-symbols-outlined text-lg">add</span>
+                            新增配额
+                        </button>
+                    </div>
+                    
+                    <!-- 配额录入表单 -->
+                    <div class="form-panel-animate bg-sage/50 backdrop-blur-sm rounded-xl p-6 mb-8 border border-slate-custom/10" id="quotaForm">
+                        <h4 class="font-bold mb-6 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">edit_document</span>
+                            录入配额信息
+                        </h4>
+                        <form id="quotaInputForm">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                <div>
+                                    <label class="text-sm font-medium text-slate-custom/60 mb-2 block">年度</label>
+                                    <input type="number" id="quotaYear" min="2020" max="2030" class="w-full bg-white/60 border border-slate-custom/10 rounded-lg px-4 py-3 text-sm focus:ring-1 focus:ring-primary/30 focus:border-primary/30 transition-all duration-300" required>
+                                </div>
+                                <div>
+                                    <label class="text-sm font-medium text-slate-custom/60 mb-2 block">配额类型</label>
+                                    <select id="quotaType" class="w-full bg-white/60 border border-slate-custom/10 rounded-lg px-4 py-3 text-sm focus:ring-1 focus:ring-primary/30 focus:border-primary/30 transition-all duration-300" required>
+                                        <option value="">请选择</option>
+                                        <option value="national">全国碳市场配额</option>
+                                        <option value="pilot">试点碳市场配额</option>
+                                        <option value="voluntary">自愿减排配额</option>
+                                        <option value="other">其他配额</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="text-sm font-medium text-slate-custom/60 mb-2 block">配额数量（吨CO₂）</label>
+                                    <input type="number" id="quotaAmount" step="0.01" min="0" class="w-full bg-white/60 border border-slate-custom/10 rounded-lg px-4 py-3 text-sm focus:ring-1 focus:ring-primary/30 focus:border-primary/30 transition-all duration-300" required>
+                                </div>
+                                <div>
+                                    <label class="text-sm font-medium text-slate-custom/60 mb-2 block">发放日期</label>
+                                    <input type="date" id="quotaDate" class="w-full bg-white/60 border border-slate-custom/10 rounded-lg px-4 py-3 text-sm focus:ring-1 focus:ring-primary/30 focus:border-primary/30 transition-all duration-300" required>
+                                </div>
+                            </div>
+                            <div class="mb-6">
+                                <label class="text-sm font-medium text-slate-custom/60 mb-2 block">备注</label>
+                                <textarea id="quotaRemark" rows="2" class="w-full bg-white/60 border border-slate-custom/10 rounded-lg px-4 py-3 text-sm focus:ring-1 focus:ring-primary/30 focus:border-primary/30 transition-all duration-300 resize-none"></textarea>
+                            </div>
+                            <div class="flex gap-4">
+                                <button type="submit" class="btn-animate bg-primary text-white px-6 py-2.5 rounded-lg text-sm font-semibold hover:bg-primary/90 transition-all duration-300">
+                                    保存
+                                </button>
+                                <button type="button" class="px-6 py-2.5 rounded-lg text-sm font-medium text-slate-custom/60 hover:text-slate-custom hover:bg-slate-custom/5 transition-all duration-300" id="cancelQuotaBtn">
+                                    取消
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- 配额列表 -->
+                    <div class="space-y-4" id="quotaList">
+                        <!-- 动态填充 -->
                     </div>
                 </div>
 
-                <!-- 报表预览区域 -->
-                <div class="report-preview" id="reportPreview" style="display: none;">
-                    <h3>报表预览</h3>
-                    <div class="preview-content" id="previewContent"></div>
-                    <div class="preview-actions">
-                        <button class="btn btn-primary" id="downloadReport">下载报表</button>
-                        <button class="btn btn-secondary" id="closePreview">关闭预览</button>
+                <!-- 减排成果面板 -->
+                <div class="tab-content" id="reduction-tab">
+                    <div class="asymmetric-grid items-start">
+                        <div>
+                            <div class="flex items-center justify-between mb-8">
+                                <h3 class="text-xl font-bold flex items-center gap-3">
+                                    减排成果明细
+                                </h3>
+                                <button class="btn-animate bg-primary text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-primary/90 transition-all duration-300 flex items-center gap-2" id="addReductionBtn">
+                                    <span class="material-symbols-outlined text-lg">add</span>
+                                    新增减排
+                                </button>
+                            </div>
+                            
+                            <!-- 减排录入表单 -->
+                            <div class="form-panel-animate bg-sage/50 backdrop-blur-sm rounded-xl p-6 mb-8 border border-slate-custom/10" id="reductionForm">
+                                <h4 class="font-bold mb-6 flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-primary">edit_document</span>
+                                    录入减排成果
+                                </h4>
+                                <form id="reductionInputForm">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                        <div>
+                                            <label class="text-sm font-medium text-slate-custom/60 mb-2 block">年度</label>
+                                            <input type="number" id="reductionYear" min="2020" max="2030" class="w-full bg-white/60 border border-slate-custom/10 rounded-lg px-4 py-3 text-sm focus:ring-1 focus:ring-primary/30 focus:border-primary/30 transition-all duration-300" required>
+                                        </div>
+                                        <div>
+                                            <label class="text-sm font-medium text-slate-custom/60 mb-2 block">减排类型</label>
+                                            <select id="reductionType" class="w-full bg-white/60 border border-slate-custom/10 rounded-lg px-4 py-3 text-sm focus:ring-1 focus:ring-primary/30 focus:border-primary/30 transition-all duration-300" required>
+                                                <option value="">请选择</option>
+                                                <option value="energy">节能改造</option>
+                                                <option value="process">工艺改进</option>
+                                                <option value="renewable">可再生能源</option>
+                                                <option value="ccus">碳捕集利用与封存</option>
+                                                <option value="other">其他措施</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="text-sm font-medium text-slate-custom/60 mb-2 block">减排量（吨CO₂）</label>
+                                            <input type="number" id="reductionAmount" step="0.01" min="0" class="w-full bg-white/60 border border-slate-custom/10 rounded-lg px-4 py-3 text-sm focus:ring-1 focus:ring-primary/30 focus:border-primary/30 transition-all duration-300" required>
+                                        </div>
+                                        <div>
+                                            <label class="text-sm font-medium text-slate-custom/60 mb-2 block">实施日期</label>
+                                            <input type="date" id="reductionDate" class="w-full bg-white/60 border border-slate-custom/10 rounded-lg px-4 py-3 text-sm focus:ring-1 focus:ring-primary/30 focus:border-primary/30 transition-all duration-300" required>
+                                        </div>
+                                    </div>
+                                    <div class="mb-6">
+                                        <label class="text-sm font-medium text-slate-custom/60 mb-2 block">措施描述</label>
+                                        <textarea id="reductionDesc" rows="2" class="w-full bg-white/60 border border-slate-custom/10 rounded-lg px-4 py-3 text-sm focus:ring-1 focus:ring-primary/30 focus:border-primary/30 transition-all duration-300 resize-none"></textarea>
+                                    </div>
+                                    <div class="flex gap-4">
+                                        <button type="submit" class="btn-animate bg-primary text-white px-6 py-2.5 rounded-lg text-sm font-semibold hover:bg-primary/90 transition-all duration-300">
+                                            保存
+                                        </button>
+                                        <button type="button" class="px-6 py-2.5 rounded-lg text-sm font-medium text-slate-custom/60 hover:text-slate-custom hover:bg-slate-custom/5 transition-all duration-300" id="cancelReductionBtn">
+                                            取消
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                            
+                            <!-- 减排列表 -->
+                            <div class="space-y-4" id="reductionList">
+                                <!-- 动态填充 -->
+                            </div>
+                        </div>
+                        
+                        <!-- 减排进度 -->
+                        <div class="bg-sage/30 backdrop-blur-sm rounded-xl p-6 border border-slate-custom/10">
+                            <h4 class="font-bold mb-6 flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary">trending_up</span>
+                                年度目标进度
+                            </h4>
+                            <div class="space-y-6">
+                                <div class="relative pl-8 mb-6">
+                                    <div class="absolute left-0 top-1 w-2 h-2 rounded-full bg-primary"></div>
+                                    <p class="text-xs font-bold text-slate-custom/40 mb-1">Q4 2024</p>
+                                    <p class="text-sm font-bold">目标设定</p>
+                                    <p class="text-sm text-slate-custom/60 mt-1">年度减排 50,000 tCO₂e</p>
+                                </div>
+                                <div class="relative pl-8 mb-6">
+                                    <div class="absolute left-0 top-1 w-2 h-2 rounded-full bg-primary/60"></div>
+                                    <p class="text-xs font-bold text-slate-custom/40 mb-1">当前进度</p>
+                                    <p class="text-sm font-bold" id="reductionProgress">计算中...</p>
+                                </div>
+                                <div class="mt-8">
+                                    <p class="text-xs font-bold text-slate-custom/60 mb-3">年度减排目标达成率</p>
+                                    <div class="flex items-center gap-4">
+                                        <div class="flex-1 h-2 bg-white/40 rounded-full overflow-hidden">
+                                            <div class="h-full bg-primary rounded-full transition-all duration-1000 ease-out" id="progressBar" style="width: 0%"></div>
+                                        </div>
+                                        <span class="text-sm font-black" id="progressPercent">0%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
+
+                <!-- 报表导出面板 -->
+                <div class="tab-content" id="report-tab">
+                    <div class="flex items-center justify-between mb-8">
+                        <h3 class="text-xl font-bold flex items-center gap-3">
+                            报表中心
+                        </h3>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-white/40 backdrop-blur-sm rounded-xl p-6 border border-white/50 hover-lift group">
+                            <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                                <span class="material-symbols-outlined text-primary text-2xl">account_balance_wallet</span>
+                            </div>
+                            <h4 class="font-bold mb-2">配额管理报表</h4>
+                            <p class="text-sm text-slate-custom/60 mb-6">配额余额、使用情况、缺口分析</p>
+                            <button class="btn-animate w-full bg-slate-custom text-white py-3 rounded-lg text-sm font-semibold hover:bg-slate-custom/90 transition-all duration-300" id="exportQuotaReport">
+                                导出报表
+                            </button>
+                        </div>
+                        <div class="bg-white/40 backdrop-blur-sm rounded-xl p-6 border border-white/50 hover-lift group">
+                            <div class="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                                <span class="material-symbols-outlined text-green-600 text-2xl">eco</span>
+                            </div>
+                            <h4 class="font-bold mb-2">减排成果报表</h4>
+                            <p class="text-sm text-slate-custom/60 mb-6">减排措施、减排量统计、成效分析</p>
+                            <button class="btn-animate w-full bg-slate-custom text-white py-3 rounded-lg text-sm font-semibold hover:bg-slate-custom/90 transition-all duration-300" id="exportReductionReport">
+                                导出报表
+                            </button>
+                        </div>
+                        <div class="bg-white/40 backdrop-blur-sm rounded-xl p-6 border border-white/50 hover-lift group">
+                            <div class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                                <span class="material-symbols-outlined text-blue-600 text-2xl">description</span>
+                            </div>
+                            <h4 class="font-bold mb-2">综合分析报表</h4>
+                            <p class="text-sm text-slate-custom/60 mb-6">配额与减排综合分析、履约建议</p>
+                            <button class="btn-animate w-full bg-slate-custom text-white py-3 rounded-lg text-sm font-semibold hover:bg-slate-custom/90 transition-all duration-300" id="exportSummaryReport">
+                                导出报表
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 报表预览区域 -->
+                    <div class="bg-sage/30 backdrop-blur-sm rounded-xl p-6 border border-slate-custom/10 hidden" id="reportPreview">
+                        <div class="flex items-center justify-between mb-6">
+                            <h4 class="font-bold flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary">preview</span>
+                                报表预览
+                            </h4>
+                            <button class="p-2 hover:bg-slate-custom/5 rounded-lg transition-colors duration-300" id="closePreview">
+                                <span class="material-symbols-outlined text-slate-custom/60">close</span>
+                            </button>
+                        </div>
+                        <div class="bg-white/60 rounded-lg p-6 mb-6 max-h-96 overflow-y-auto" id="previewContent"></div>
+                        <div class="flex gap-4">
+                            <button class="btn-animate bg-primary text-white px-6 py-2.5 rounded-lg text-sm font-semibold hover:bg-primary/90 transition-all duration-300 flex items-center gap-2" id="downloadReport">
+                                <span class="material-symbols-outlined text-lg">download</span>
+                                下载报表
+                            </button>
+                            <button class="px-6 py-2.5 rounded-lg text-sm font-medium text-slate-custom/60 hover:text-slate-custom hover:bg-slate-custom/5 transition-all duration-300" id="closePreviewBtn">
+                                关闭预览
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
 
         <!-- 页脚 -->
-        <footer class="footer">
-            <p>© 2026 碳资产管理系统 | 企业碳履约与减排管理平台</p>
+        <footer class="mt-16 pt-8 border-t border-slate-custom/5 text-slate-custom/40 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p class="text-xs font-medium">© 2024 CarbonLux 碳资产管理系统. 企业碳履约与减排管理平台</p>
+            <div class="flex gap-8 text-xs font-bold uppercase tracking-widest">
+                <a class="hover:text-slate-custom transition-colors duration-300" href="#">隐私协议</a>
+                <a class="hover:text-slate-custom transition-colors duration-300" href="#">技术支持</a>
+                <a class="hover:text-slate-custom transition-colors duration-300" href="#">API文档</a>
+            </div>
         </footer>
     </div>
 
@@ -258,5 +560,127 @@
     <script src="js/reduction-manager.js"></script>
     <script src="js/report-export.js"></script>
     <script src="js/app.js"></script>
+    
+    <script>
+        // 页面加载动画
+        document.addEventListener('DOMContentLoaded', function() {
+            // 更新最后更新时间
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
+            const timeStr = now.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('lastUpdate').textContent = `${dateStr} ${timeStr}`;
+            
+            // 选项卡切换动画
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const targetTab = this.dataset.tab;
+                    
+                    // 更新按钮状态
+                    tabBtns.forEach(b => {
+                        b.classList.remove('border-primary', 'font-semibold');
+                        b.classList.add('border-transparent', 'text-slate-custom/60', 'font-medium');
+                    });
+                    this.classList.remove('border-transparent', 'text-slate-custom/60', 'font-medium');
+                    this.classList.add('border-primary', 'font-semibold');
+                    
+                    // 切换内容
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    setTimeout(() => {
+                        document.getElementById(`${targetTab}-tab`).classList.add('active');
+                    }, 50);
+                });
+            });
+            
+            // 表单面板动画
+            const addQuotaBtn = document.getElementById('addQuotaBtn');
+            const quotaForm = document.getElementById('quotaForm');
+            const cancelQuotaBtn = document.getElementById('cancelQuotaBtn');
+            
+            const addReductionBtn = document.getElementById('addReductionBtn');
+            const reductionForm = document.getElementById('reductionForm');
+            const cancelReductionBtn = document.getElementById('cancelReductionBtn');
+            
+            if (addQuotaBtn && quotaForm) {
+                addQuotaBtn.addEventListener('click', () => {
+                    quotaForm.classList.toggle('show');
+                    if (quotaForm.classList.contains('show')) {
+                        quotaForm.style.padding = '1.5rem';
+                        quotaForm.style.maxHeight = '500px';
+                    }
+                });
+                
+                cancelQuotaBtn.addEventListener('click', () => {
+                    quotaForm.classList.remove('show');
+                    quotaForm.style.padding = '0';
+                    quotaForm.style.maxHeight = '0';
+                });
+            }
+            
+            if (addReductionBtn && reductionForm) {
+                addReductionBtn.addEventListener('click', () => {
+                    reductionForm.classList.toggle('show');
+                    if (reductionForm.classList.contains('show')) {
+                        reductionForm.style.padding = '1.5rem';
+                        reductionForm.style.maxHeight = '500px';
+                    }
+                });
+                
+                cancelReductionBtn.addEventListener('click', () => {
+                    reductionForm.classList.remove('show');
+                    reductionForm.style.padding = '0';
+                    reductionForm.style.maxHeight = '0';
+                });
+            }
+            
+            // 数字动画效果
+            function animateNumber(element, targetValue, duration = 1000) {
+                const startValue = 0;
+                const startTime = performance.now();
+                
+                function update(currentTime) {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    
+                    // 使用 easeOutExpo 缓动函数
+                    const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+                    const currentValue = Math.floor(startValue + (targetValue - startValue) * easeProgress);
+                    
+                    element.textContent = currentValue.toLocaleString();
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(update);
+                    }
+                }
+                
+                requestAnimationFrame(update);
+            }
+            
+            // 将动画函数暴露给全局
+            window.animateNumber = animateNumber;
+            
+            // 报表预览动画
+            const reportPreview = document.getElementById('reportPreview');
+            const closePreviewBtn = document.getElementById('closePreview');
+            const closePreview = document.getElementById('closePreviewBtn');
+            
+            if (closePreviewBtn) {
+                closePreviewBtn.addEventListener('click', () => {
+                    reportPreview.classList.add('hidden');
+                });
+            }
+            
+            if (closePreview) {
+                closePreview.addEventListener('click', () => {
+                    reportPreview.classList.add('hidden');
+                });
+            }
+        });
+    </script>
 </body>
 </html>

@@ -26,11 +26,15 @@ const App = {
         // 绑定全局事件
         this.bindEvents();
         
-        // 更新指标显示
-        this.updateMetrics();
+        // 更新指标显示（带动画）
+        setTimeout(() => {
+            this.updateMetrics(true);
+        }, 500);
         
         // 检查预警
-        this.checkWarning();
+        setTimeout(() => {
+            this.checkWarning();
+        }, 800);
         
         // 设置当前排放量输入（首次访问时提示）
         this.setupEmissionInput();
@@ -42,11 +46,7 @@ const App = {
      * 绑定全局事件
      */
     bindEvents() {
-        // 选项卡切换
-        const tabBtns = document.querySelectorAll('.tab-btn');
-        tabBtns.forEach(btn => {
-            btn.addEventListener('click', (e) => this.handleTabSwitch(e));
-        });
+        // 选项卡切换（已在HTML中处理）
 
         // 监听数据变化，自动更新指标
         window.addEventListener('storage', (e) => {
@@ -58,30 +58,6 @@ const App = {
     },
 
     /**
-     * 处理选项卡切换
-     */
-    handleTabSwitch(e) {
-        const targetTab = e.target.dataset.tab;
-        if (!targetTab) return;
-
-        // 更新按钮状态
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        e.target.classList.add('active');
-
-        // 更新内容显示
-        document.querySelectorAll('.tab-content').forEach(content => {
-            content.classList.remove('active');
-        });
-        
-        const targetContent = document.getElementById(`${targetTab}-tab`);
-        if (targetContent) {
-            targetContent.classList.add('active');
-        }
-    },
-
-    /**
      * 更新核心指标显示
      * 
      * 计算逻辑说明：
@@ -89,8 +65,10 @@ const App = {
      * - 配额缺口/盈余 = 当前排放量 - 可用配额（配额余额 + 累计减排量）
      * - 累计减排量：所有减排记录的总量
      * - 当前排放量：需要用户输入或从外部系统获取
+     * 
+     * @param {boolean} animate - 是否启用动画
      */
-    updateMetrics() {
+    updateMetrics(animate = false) {
         // 获取配额统计
         const quotaStats = DataStore.getQuotaStats();
         
@@ -106,7 +84,11 @@ const App = {
         // 更新配额余额显示
         const quotaBalanceEl = document.getElementById('quotaBalance');
         if (quotaBalanceEl) {
-            quotaBalanceEl.textContent = this.formatNumber(quotaStats.totalRemaining);
+            if (animate && window.animateNumber) {
+                this.animateNumber(quotaBalanceEl, quotaStats.totalRemaining);
+            } else {
+                quotaBalanceEl.textContent = this.formatNumber(quotaStats.totalRemaining);
+            }
         }
 
         // 更新配额缺口/盈余显示
@@ -114,38 +96,78 @@ const App = {
         const gapStatusEl = document.getElementById('gapStatus');
         if (quotaGapEl) {
             const gapValue = gapInfo.gap;
-            quotaGapEl.textContent = (gapValue >= 0 ? '' : '+') + this.formatNumber(Math.abs(gapValue));
+            const displayValue = (gapValue >= 0 ? '' : '+') + this.formatNumber(Math.abs(gapValue));
+            
+            if (animate && window.animateNumber) {
+                quotaGapEl.textContent = displayValue;
+            } else {
+                quotaGapEl.textContent = displayValue;
+            }
             
             // 更新样式
             if (gapValue > 0) {
-                quotaGapEl.style.color = '#c62828'; // 缺口显示红色
+                quotaGapEl.classList.add('text-red-500');
+                quotaGapEl.classList.remove('text-primary');
             } else {
-                quotaGapEl.style.color = '#2e7d32'; // 盈余显示绿色
+                quotaGapEl.classList.remove('text-red-500');
+                quotaGapEl.classList.add('text-primary');
             }
         }
         
         // 更新缺口状态标签
         if (gapStatusEl) {
             if (gapInfo.isDeficit) {
-                gapStatusEl.className = 'metric-status deficit';
-                gapStatusEl.textContent = '缺口';
+                gapStatusEl.textContent = '缺口状态';
             } else {
-                gapStatusEl.className = 'metric-status surplus';
-                gapStatusEl.textContent = '盈余';
+                gapStatusEl.textContent = '盈余状态';
             }
         }
 
         // 更新累计减排量显示
         const totalReductionEl = document.getElementById('totalReduction');
         if (totalReductionEl) {
-            totalReductionEl.textContent = this.formatNumber(reductionStats.totalReduction);
+            if (animate && window.animateNumber) {
+                this.animateNumber(totalReductionEl, reductionStats.totalReduction);
+            } else {
+                totalReductionEl.textContent = this.formatNumber(reductionStats.totalReduction);
+            }
         }
 
         // 更新当前排放量显示
         const currentEmissionEl = document.getElementById('currentEmission');
         if (currentEmissionEl) {
-            currentEmissionEl.textContent = this.formatNumber(emissions.totalEmission || 0);
+            if (animate && window.animateNumber) {
+                this.animateNumber(currentEmissionEl, emissions.totalEmission || 0);
+            } else {
+                currentEmissionEl.textContent = this.formatNumber(emissions.totalEmission || 0);
+            }
         }
+    },
+
+    /**
+     * 数字动画效果
+     */
+    animateNumber(element, targetValue, duration = 1000) {
+        const startValue = 0;
+        const startTime = performance.now();
+        const startText = element.textContent;
+        
+        function update(currentTime) {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            
+            // 使用 easeOutExpo 缓动函数
+            const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+            const currentValue = Math.floor(startValue + (targetValue - startValue) * easeProgress);
+            
+            element.textContent = currentValue.toLocaleString();
+            
+            if (progress < 1) {
+                requestAnimationFrame(update);
+            }
+        }
+        
+        requestAnimationFrame(update);
     },
 
     /**
@@ -159,35 +181,38 @@ const App = {
     checkWarning() {
         const warningInfo = DataStore.checkWarning();
         const alertSection = document.getElementById('alertSection');
-        const warningAlert = document.getElementById('warningAlert');
         const warningMessage = document.getElementById('warningMessage');
 
-        if (!alertSection || !warningAlert || !warningMessage) return;
+        if (!alertSection || !warningMessage) return;
 
         if (warningInfo.needWarning) {
             // 显示预警
             alertSection.style.display = 'block';
             warningMessage.textContent = warningInfo.message;
             
-            // 设置预警级别样式
-            if (warningInfo.level === 'high') {
-                warningAlert.className = 'alert warning';
-                warningAlert.style.background = 'linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%)';
-                warningAlert.style.borderLeftColor = '#c62828';
-            } else {
-                warningAlert.className = 'alert warning';
-                warningAlert.style.background = 'linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%)';
-                warningAlert.style.borderLeftColor = '#ff9800';
-            }
+            // 更新预警图标和样式
+            alertSection.querySelector('.alert-section-inner')?.remove();
+            alertSection.innerHTML = `
+                <div class="bg-orange-50/80 backdrop-blur-sm border-l-4 border-orange-400 rounded-r-xl p-5 flex items-center gap-4 animate-pulse-soft alert-section-inner">
+                    <span class="material-symbols-outlined text-orange-500 text-3xl">warning</span>
+                    <div>
+                        <h4 class="font-bold text-orange-700">配额缺口预警</h4>
+                        <p class="text-sm text-orange-600">${warningInfo.message}</p>
+                    </div>
+                </div>
+            `;
         } else {
             // 显示正常状态
             alertSection.style.display = 'block';
-            warningAlert.className = 'alert success';
-            warningAlert.style.background = 'linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%)';
-            warningAlert.style.borderLeftColor = '#4caf50';
-            warningAlert.querySelector('.alert-icon').textContent = '✓';
-            warningAlert.querySelector('h4').textContent = '履约状态良好';
-            warningMessage.textContent = warningInfo.message;
+            alertSection.innerHTML = `
+                <div class="bg-green-50/80 backdrop-blur-sm border-l-4 border-primary rounded-r-xl p-5 flex items-center gap-4 animate-fade-in-up alert-section-inner">
+                    <span class="material-symbols-outlined text-primary text-3xl">check_circle</span>
+                    <div>
+                        <h4 class="font-bold text-green-700">履约状态良好</h4>
+                        <p class="text-sm text-green-600">${warningInfo.message}</p>
+                    </div>
+                </div>
+            `;
         }
     },
 
@@ -207,17 +232,20 @@ const App = {
      * 显示排放量输入提示
      */
     showEmissionInputPrompt() {
-        // 在指标卡片区域添加输入提示
-        const emissionCard = document.querySelector('.metric-card:last-child');
-        if (emissionCard) {
-            const promptDiv = document.createElement('div');
-            promptDiv.className = 'emission-prompt';
-            promptDiv.innerHTML = `
-                <button class="btn btn-small btn-primary" onclick="App.showEmissionInputModal()">
-                    设置排放量
-                </button>
-            `;
-            emissionCard.appendChild(promptDiv);
+        // 在当前排放量卡片添加点击事件
+        const metricsGrid = document.getElementById('metricsGrid');
+        if (metricsGrid) {
+            const lastCard = metricsGrid.querySelector('div:last-child');
+            if (lastCard) {
+                lastCard.style.cursor = 'pointer';
+                lastCard.addEventListener('click', () => this.showEmissionInputModal());
+                
+                // 添加提示文字
+                const prompt = document.createElement('p');
+                prompt.className = 'text-xs text-primary mt-2 opacity-0 hover:opacity-100 transition-opacity';
+                prompt.textContent = '点击设置';
+                lastCard.querySelector('div:last-child').appendChild(prompt);
+            }
         }
     },
 
@@ -226,25 +254,58 @@ const App = {
      */
     showEmissionInputModal() {
         const currentEmission = DataStore.getEmissions().totalEmission || 0;
-        const input = prompt('请输入当前年度碳排放量（吨CO₂）：', currentEmission);
         
-        if (input !== null) {
-            const value = parseFloat(input);
+        // 创建模态框
+        const modal = document.createElement('div');
+        modal.className = 'fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in-up';
+        modal.innerHTML = `
+            <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl">
+                <h3 class="text-xl font-bold mb-6 flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary">factory</span>
+                    设置当前排放量
+                </h3>
+                <p class="text-sm text-slate-custom/60 mb-4">请输入本年度碳排放量（吨CO₂）</p>
+                <input type="number" id="emissionInput" value="${currentEmission}" 
+                    class="w-full bg-sage/30 border border-slate-custom/10 rounded-xl px-4 py-3 text-lg font-bold focus:ring-1 focus:ring-primary/30 focus:border-primary/30 transition-all duration-300" 
+                    placeholder="请输入排放量">
+                <div class="flex gap-4 mt-6">
+                    <button id="saveEmission" class="flex-1 btn-animate bg-primary text-white py-3 rounded-xl font-semibold hover:bg-primary/90 transition-all duration-300">
+                        保存
+                    </button>
+                    <button id="cancelEmission" class="flex-1 py-3 rounded-xl font-medium text-slate-custom/60 hover:bg-slate-custom/5 transition-all duration-300">
+                        取消
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        // 绑定事件
+        modal.querySelector('#saveEmission').addEventListener('click', () => {
+            const input = modal.querySelector('#emissionInput');
+            const value = parseFloat(input.value);
+            
             if (!isNaN(value) && value >= 0) {
                 DataStore.setCurrentEmission(value);
                 this.updateMetrics();
                 this.checkWarning();
                 this.showToast('排放量设置成功！', 'success');
-                
-                // 移除输入提示
-                const promptDiv = document.querySelector('.emission-prompt');
-                if (promptDiv) {
-                    promptDiv.remove();
-                }
+                modal.remove();
             } else {
                 this.showToast('请输入有效的数值', 'error');
             }
-        }
+        });
+        
+        modal.querySelector('#cancelEmission').addEventListener('click', () => {
+            modal.remove();
+        });
+        
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.remove();
+            }
+        });
     },
 
     /**
@@ -253,8 +314,8 @@ const App = {
     formatNumber(num) {
         if (num === null || num === undefined || isNaN(num)) return '--';
         return num.toLocaleString('zh-CN', { 
-            minimumFractionDigits: 2, 
-            maximumFractionDigits: 2 
+            minimumFractionDigits: 0, 
+            maximumFractionDigits: 0 
         });
     },
 
@@ -263,19 +324,26 @@ const App = {
      */
     showToast(message, type = 'success') {
         // 移除已存在的toast
-        const existingToast = document.querySelector('.toast');
+        const existingToast = document.querySelector('.toast-message');
         if (existingToast) {
             existingToast.remove();
         }
 
         const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
+        toast.className = `toast-message fixed bottom-8 left-1/2 -translate-x-1/2 px-6 py-3 rounded-xl text-sm font-medium z-50 animate-fade-in-up ${
+            type === 'success' ? 'bg-primary text-white' : 
+            type === 'error' ? 'bg-red-500 text-white' : 
+            'bg-orange-500 text-white'
+        }`;
         toast.textContent = message;
         document.body.appendChild(toast);
 
         // 3秒后自动消失
         setTimeout(() => {
-            toast.remove();
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(-50%) translateY(20px)';
+            toast.style.transition = 'all 0.3s ease';
+            setTimeout(() => toast.remove(), 300);
         }, 3000);
     },
 

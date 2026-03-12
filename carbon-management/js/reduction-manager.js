@@ -18,12 +18,16 @@ const ReductionManager = {
         'other': '其他措施'
     },
 
+    // 年度减排目标（吨CO2e）
+    ANNUAL_TARGET: 50000,
+
     /**
      * 初始化减排管理模块
      */
     init() {
         this.bindEvents();
         this.loadReductionData();
+        this.updateProgress();
         console.log('减排管理模块初始化完成');
     },
 
@@ -56,7 +60,9 @@ const ReductionManager = {
     showReductionForm() {
         const formPanel = document.getElementById('reductionForm');
         if (formPanel) {
-            formPanel.style.display = 'block';
+            formPanel.classList.add('show');
+            formPanel.style.padding = '1.5rem';
+            formPanel.style.maxHeight = '500px';
             // 设置默认值
             document.getElementById('reductionYear').value = new Date().getFullYear();
             document.getElementById('reductionDate').value = new Date().toISOString().split('T')[0];
@@ -70,16 +76,14 @@ const ReductionManager = {
         const formPanel = document.getElementById('reductionForm');
         const form = document.getElementById('reductionInputForm');
         if (formPanel) {
-            formPanel.style.display = 'none';
+            formPanel.classList.remove('show');
+            formPanel.style.padding = '0';
+            formPanel.style.maxHeight = '0';
         }
         if (form) {
             form.reset();
             // 重置编辑模式
             delete form.dataset.editId;
-            const submitBtn = form.querySelector('button[type="submit"]');
-            if (submitBtn) {
-                submitBtn.textContent = '保存';
-            }
         }
     },
 
@@ -129,6 +133,7 @@ const ReductionManager = {
             
             // 刷新显示
             this.loadReductionData();
+            this.updateProgress();
             this.hideReductionForm();
             
             // 更新整体指标
@@ -168,43 +173,98 @@ const ReductionManager = {
     },
 
     /**
-     * 加载减排数据并渲染表格
+     * 加载减排数据并渲染列表
      */
     loadReductionData() {
         const reductions = DataStore.getReductions();
-        const tbody = document.getElementById('reductionTableBody');
+        const listContainer = document.getElementById('reductionList');
         
-        if (!tbody) return;
+        if (!listContainer) return;
 
         if (reductions.length === 0) {
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="6" class="empty-row">
-                        暂无减排数据，请点击"新增减排"按钮添加
-                    </td>
-                </tr>
+            listContainer.innerHTML = `
+                <div class="bg-white/30 backdrop-blur-sm rounded-xl p-12 text-center border border-white/50 animate-fade-in-up">
+                    <span class="material-symbols-outlined text-5xl text-slate-custom/20 mb-4">eco</span>
+                    <p class="text-slate-custom/40 text-sm">暂无减排数据</p>
+                    <p class="text-slate-custom/30 text-xs mt-1">点击"新增减排"按钮添加</p>
+                </div>
             `;
             return;
         }
 
-        // 按年度降序排序
-        const sortedReductions = [...reductions].sort((a, b) => b.year - a.year);
+        // 按实施日期降序排序
+        const sortedReductions = [...reductions].sort((a, b) => new Date(b.implementDate) - new Date(a.implementDate));
 
-        tbody.innerHTML = sortedReductions.map(reduction => `
-            <tr data-id="${reduction.id}">
-                <td>${reduction.year}</td>
-                <td>${reduction.typeName || this.REDUCTION_TYPES[reduction.type]}</td>
-                <td>${this.formatNumber(reduction.amount)}</td>
-                <td>${reduction.implementDate}</td>
-                <td title="${reduction.description || ''}">${this.truncateText(reduction.description || '-', 20)}</td>
-                <td>
-                    <div class="action-btns">
-                        <button class="btn btn-small btn-secondary" onclick="ReductionManager.editReduction('${reduction.id}')">编辑</button>
-                        <button class="btn btn-small btn-danger" onclick="ReductionManager.deleteReduction('${reduction.id}')">删除</button>
+        listContainer.innerHTML = sortedReductions.map((reduction, index) => `
+            <div class="flex items-center justify-between py-5 px-4 border-b border-slate-custom/5 group transition-all bg-white/20 hover:bg-white/40 rounded-xl mb-3 hover-lift animate-fade-in-up table-row-animate" style="animation-delay: ${index * 0.05}s" data-id="${reduction.id}">
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 flex items-center justify-center bg-primary/10 rounded-lg">
+                        <span class="material-symbols-outlined text-primary text-xl">${this.getTypeIcon(reduction.type)}</span>
                     </div>
-                </td>
-            </tr>
+                    <div>
+                        <p class="text-sm font-bold">${reduction.typeName || this.REDUCTION_TYPES[reduction.type]}</p>
+                        <p class="text-xs text-slate-custom/40">${reduction.implementDate}</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-6">
+                    <div class="text-right">
+                        <p class="text-sm font-bold text-primary">- ${this.formatNumber(reduction.amount)} tCO₂e</p>
+                        <p class="text-xs text-slate-custom/40">${reduction.year}年度</p>
+                    </div>
+                    <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button onclick="ReductionManager.editReduction('${reduction.id}')" class="p-2 hover:bg-primary/10 rounded-lg transition-colors" title="编辑">
+                            <span class="material-symbols-outlined text-lg text-slate-custom/60 hover:text-primary">edit</span>
+                        </button>
+                        <button onclick="ReductionManager.deleteReduction('${reduction.id}')" class="p-2 hover:bg-red-50 rounded-lg transition-colors" title="删除">
+                            <span class="material-symbols-outlined text-lg text-slate-custom/60 hover:text-red-500">delete</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
         `).join('');
+    },
+
+    /**
+     * 获取类型图标
+     */
+    getTypeIcon(type) {
+        const icons = {
+            'energy': 'bolt',
+            'process': 'precision_manufacturing',
+            'renewable': 'solar_power',
+            'ccus': 'co2',
+            'other': 'more_horiz'
+        };
+        return icons[type] || 'eco';
+    },
+
+    /**
+     * 更新进度显示
+     */
+    updateProgress() {
+        const stats = DataStore.getReductionStats();
+        const totalReduction = stats.totalReduction || 0;
+        const progressPercent = Math.min((totalReduction / this.ANNUAL_TARGET) * 100, 100);
+        
+        // 更新进度条
+        const progressBar = document.getElementById('progressBar');
+        if (progressBar) {
+            setTimeout(() => {
+                progressBar.style.width = `${progressPercent}%`;
+            }, 300);
+        }
+        
+        // 更新百分比文字
+        const progressPercentEl = document.getElementById('progressPercent');
+        if (progressPercentEl) {
+            progressPercentEl.textContent = `${Math.round(progressPercent)}%`;
+        }
+        
+        // 更新进度描述
+        const reductionProgress = document.getElementById('reductionProgress');
+        if (reductionProgress) {
+            reductionProgress.textContent = `已实现 ${this.formatNumber(totalReduction)} tCO₂e`;
+        }
     },
 
     /**
@@ -233,12 +293,6 @@ const ReductionManager = {
         // 修改表单为编辑模式
         const form = document.getElementById('reductionInputForm');
         form.dataset.editId = id;
-        
-        // 更新按钮文字
-        const submitBtn = form.querySelector('button[type="submit"]');
-        if (submitBtn) {
-            submitBtn.textContent = '更新';
-        }
     },
 
     /**
@@ -254,6 +308,7 @@ const ReductionManager = {
             const result = DataStore.deleteReduction(id);
             if (result) {
                 this.loadReductionData();
+                this.updateProgress();
                 
                 // 更新整体指标
                 if (typeof App !== 'undefined') {
@@ -279,8 +334,8 @@ const ReductionManager = {
     formatNumber(num) {
         if (num === null || num === undefined) return '--';
         return num.toLocaleString('zh-CN', { 
-            minimumFractionDigits: 2, 
-            maximumFractionDigits: 2 
+            minimumFractionDigits: 0, 
+            maximumFractionDigits: 0 
         });
     },
 
@@ -291,6 +346,7 @@ const ReductionManager = {
      * @returns {string} 截断后的文本
      */
     truncateText(text, maxLength) {
+        if (!text) return '-';
         if (text.length <= maxLength) return text;
         return text.substring(0, maxLength) + '...';
     },
@@ -302,19 +358,25 @@ const ReductionManager = {
      */
     showToast(message, type = 'success') {
         // 移除已存在的toast
-        const existingToast = document.querySelector('.toast');
+        const existingToast = document.querySelector('.toast-message');
         if (existingToast) {
             existingToast.remove();
         }
 
         const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
+        toast.className = `toast-message fixed bottom-8 left-1/2 -translate-x-1/2 px-6 py-3 rounded-xl text-sm font-medium z-50 animate-fade-in-up ${
+            type === 'success' ? 'bg-primary text-white' : 
+            type === 'error' ? 'bg-red-500 text-white' : 
+            'bg-orange-500 text-white'
+        }`;
         toast.textContent = message;
         document.body.appendChild(toast);
 
         // 3秒后自动消失
         setTimeout(() => {
-            toast.remove();
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(-50%) translateY(20px)';
+            setTimeout(() => toast.remove(), 300);
         }, 3000);
     },
 
@@ -326,32 +388,9 @@ const ReductionManager = {
         const stats = DataStore.getReductionStats();
         return {
             totalReduction: stats.totalReduction,
-            currentYearReduction: stats.currentYearReduction,
-            recordCount: stats.recordCount,
-            byYear: stats.byYear
+            reductionCount: stats.reductionCount,
+            byType: stats.byType,
+            reductions: DataStore.getReductions()
         };
-    },
-
-    /**
-     * 获取减排类型统计
-     * @returns {Object} 按类型统计的减排量
-     */
-    getStatsByType() {
-        const reductions = DataStore.getReductions();
-        const stats = {};
-        
-        reductions.forEach(r => {
-            if (!stats[r.type]) {
-                stats[r.type] = {
-                    typeName: r.typeName || this.REDUCTION_TYPES[r.type],
-                    total: 0,
-                    count: 0
-                };
-            }
-            stats[r.type].total += r.amount;
-            stats[r.type].count++;
-        });
-        
-        return stats;
     }
 };

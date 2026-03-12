@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#19e62b",
+                        "sage": "#F0F7F4",
+                        "glacier": "#EBF5FF",
+                        "slate-custom": "#2D3A3A",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#112112",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "Noto Sans SC", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>body {
+    background: linear-gradient(180deg, #f0f9ff 0%, #fdfdfd 100%);
+    min-height: 100vh;
+    }
+.metric-value {
+    letter-spacing: -0.02em;
+    font-weight: 300;
+    }
+.asymmetric-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 4rem
+    }
+.hairline-border {
+    border: 0.5px solid rgba(45, 58, 58, 0.1);
+}</style>
+</head>
+<body class="font-display text-slate-custom min-h-screen">
+<div class="max-w-[1440px] mx-auto px-8 py-6">
+<header class="flex items-center justify-between mb-24 border-b border-slate-custom/10 pb-8">
+<div class="flex items-center gap-12">
+<div class="flex items-center gap-3">
+<div class="bg-primary/20 p-2 rounded-lg">
+<span class="material-symbols-outlined text-slate-custom leading-none">token</span>
+</div>
+<h1 class="text-2xl font-extrabold tracking-tight">CarbonLux</h1>
+</div>
+<nav class="hidden md:flex items-center gap-10">
+<a class="text-sm font-semibold border-b-2 border-primary pb-1" href="#">资产概览</a>
+<a class="text-sm font-medium text-slate-custom/60 hover:text-slate-custom transition-colors" href="#">配额交易</a>
+<a class="text-sm font-medium text-slate-custom/60 hover:text-slate-custom transition-colors" href="#">减排项目</a>
+<a class="text-sm font-medium text-slate-custom/60 hover:text-slate-custom transition-colors" href="#">合规报告</a>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-custom/40 text-lg">search</span>
+<input class="bg-white/40 border-none rounded-full pl-10 pr-4 py-2 text-sm w-64 focus:ring-1 focus:ring-primary/30 transition-all placeholder:text-slate-custom/30" placeholder="搜索资产编号..." type="text"/>
+</div>
+<div class="w-10 h-10 rounded-full bg-glacier flex items-center justify-center border border-slate-custom/5">
+<span class="material-symbols-outlined text-slate-custom/60">person</span>
+</div>
+</div>
+</header>
+<main>
+<section class="mb-20">
+<div class="flex justify-between items-end mb-10">
+<div>
+<h2 class="text-sm font-bold uppercase tracking-widest text-slate-custom/40 mb-2">Real-time Performance</h2>
+<p class="text-4xl font-light">企业碳资产实时监控</p>
+</div>
+<div class="text-right">
+<p class="text-xs font-medium text-slate-custom/40 uppercase">最后更新</p>
+<p class="text-sm font-bold">2023年10月24日 14:30</p>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-12">
+<div class="bg-transparent py-4 flex flex-col justify-between group transition-all">
+<span class="text-sm font-medium text-slate-custom/60 mb-8 flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                            配额余额
+                        </span>
+<div>
+<p class="metric-value text-6xl mb-2 text-slate-custom">850,234</p>
+<p class="text-xs font-bold text-slate-custom/40 italic">单位：吨 (t)</p>
+</div>
+</div>
+<div class="bg-transparent py-4 flex flex-col justify-between group transition-all">
+<span class="text-sm font-medium text-slate-custom/60 mb-8 flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+                            配额缺口/盈余
+                        </span>
+<div>
+<p class="metric-value text-6xl mb-2 text-slate-custom">+12,400</p>
+<p class="text-xs font-bold text-slate-custom/40 italic">盈余状态</p>
+</div>
+</div>
+<div class="bg-transparent py-4 flex flex-col justify-between group transition-all">
+<span class="text-sm font-medium text-slate-custom/60 mb-8 flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-green-600"></span>
+                            累计减排量
+                        </span>
+<div>
+<p class="metric-value text-6xl mb-2 text-slate-custom">45,200</p>
+<p class="text-xs font-bold text-slate-custom/40 italic">tCO2e</p>
+</div>
+</div>
+<div class="bg-transparent py-4 flex flex-col justify-between group transition-all">
+<span class="text-sm font-medium text-slate-custom/60 mb-8 flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span>
+                            当前排放量
+                        </span>
+<div>
+<p class="metric-value text-6xl mb-2 text-slate-custom">128,400</p>
+<p class="text-xs font-bold text-slate-custom/40 italic">本年度统计</p>
+</div>
+</div>
+</div>
+</section>
+<section class="asymmetric-grid items-start pb-20">
+<div class="rounded-none p-0 border-none">
+<div class="flex items-center justify-between mb-8">
+<h3 class="text-xl font-bold flex items-center gap-3">
+<span class="material-symbols-outlined text-slate-custom/40">account_balance_wallet</span>
+                            配额管理
+                        </h3>
+<button class="text-xs font-bold uppercase tracking-tighter text-slate-custom/40 hover:text-primary transition-colors">查看全部</button>
+</div>
+<div class="space-y-4">
+<div class="flex items-center justify-between py-6 border-b border-slate-custom/5 group transition-all bg-transparent">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 flex items-center justify-center border border-slate-custom/10 text-slate-custom/60">
+<span class="text-xs font-bold">2023A</span>
+</div>
+<div>
+<p class="text-sm font-bold">华东地区电力配额</p>
+<p class="text-xs text-slate-custom/40">有效期至 2024.12.31</p>
+</div>
+</div>
+<div class="flex items-center gap-8">
+<div class="text-right">
+<p class="text-sm font-bold">12,500 t</p>
+<p class="text-xs text-primary font-medium">可用</p>
+</div>
+<button class="px-0 py-1 text-xs font-semibold tracking-wider text-slate-custom/40 border-b border-transparent hover:border-slate-custom hover:text-slate-custom transition-all">变更用量</button>
+</div>
+</div>
+<div class="flex items-center justify-between py-6 border-b border-slate-custom/5 group transition-all bg-transparent">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 flex items-center justify-center border border-slate-custom/10 text-slate-custom/60">
+<span class="text-xs font-bold">2023B</span>
+</div>
+<div>
+<p class="text-sm font-bold">全国碳市场通用配额</p>
+<p class="text-xs text-slate-custom/40">有效期至 2025.06.30</p>
+</div>
+</div>
+<div class="flex items-center gap-8">
+<div class="text-right">
+<p class="text-sm font-bold">340,000 t</p>
+<p class="text-xs text-primary font-medium">锁定中</p>
+</div>
+<button class="px-0 py-1 text-xs font-semibold tracking-wider text-slate-custom/40 border-b border-transparent hover:border-slate-custom hover:text-slate-custom transition-all">变更用量</button>
+</div>
+</div>
+<div class="flex items-center justify-between py-6 border-b border-slate-custom/5 group transition-all bg-transparent">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 flex items-center justify-center border border-slate-custom/10 text-slate-custom/60">
+<span class="text-xs font-bold">2022R</span>
+</div>
+<div>
+<p class="text-sm font-bold">结余滚存配额</p>
+<p class="text-xs text-slate-custom/40">已存入备用池</p>
+</div>
+</div>
+<div class="flex items-center gap-8">
+<div class="text-right">
+<p class="text-sm font-bold">5,200 t</p>
+<p class="text-xs text-slate-custom/40 font-medium">冻结</p>
+</div>
+<button class="px-0 py-1 text-xs font-semibold tracking-wider text-slate-custom/40 border-b border-transparent hover:border-slate-custom hover:text-slate-custom transition-all">变更用量</button>
+</div>
+</div>
+</div>
+</div>
+<div class="rounded-none p-0 border-none">
+<div class="mb-8">
+<h3 class="text-xl font-bold flex items-center gap-3">
+<span class="material-symbols-outlined text-slate-custom/40">eco</span>
+                            减排成果
+                        </h3>
+</div>
+<div class="space-y-6">
+<div class="relative pl-8 mb-8">
+<div class="absolute -left-[5px] top-0 w-2 h-2 rounded-full bg-primary"></div>
+<p class="text-xs font-bold text-slate-custom/40 mb-1">Q3 2023</p>
+<p class="text-sm font-bold">光伏发电二期项目并网</p>
+<p class="text-sm text-primary font-bold mt-1">- 1,200 tCO2e</p>
+</div>
+<div class="relative pl-8 mb-8">
+<div class="absolute -left-[5px] top-0 w-2 h-2 rounded-full bg-primary/40"></div>
+<p class="text-xs font-bold text-slate-custom/40 mb-1">Q2 2023</p>
+<p class="text-sm font-bold">工业余热回收系统优化</p>
+<p class="text-sm text-primary font-bold mt-1">- 850 tCO2e</p>
+</div>
+<div class="relative pl-8 mb-8">
+<div class="absolute -left-[5px] top-0 w-2 h-2 rounded-full bg-primary/40"></div>
+<p class="text-xs font-bold text-slate-custom/40 mb-1">Q1 2023</p>
+<p class="text-sm font-bold">林业碳汇开发协议签署</p>
+<p class="text-sm text-primary font-bold mt-1">- 4,500 tCO2e</p>
+</div>
+<div class="relative pl-8 mb-8">
+<p class="text-xs font-bold text-slate-custom/60 mb-2">年度减排目标达成率</p>
+<div class="flex items-center gap-4">
+<div class="flex-1 h-1.5 bg-white/40 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[72%]"></div>
+</div>
+<span class="text-sm font-black">72%</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<footer class="mt-12 pt-8 border-t border-slate-custom/5 text-slate-custom/40 flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="text-xs font-medium">© 2023 CarbonLux 碳资产管理系统. 苏ICP备2023000000号</p>
+<div class="flex gap-8 text-xs font-bold uppercase tracking-widest">
+<a class="hover:text-slate-custom transition-colors" href="#">隐私协议</a>
+<a class="hover:text-slate-custom transition-colors" href="#">技术支持</a>
+<a class="hover:text-slate-custom transition-colors" href="#">API文档</a>
+</div>
+</footer>
+</div>
+</body></html>
