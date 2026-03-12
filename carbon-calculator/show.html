@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2bee7c",
+                        "sage": "#4c9a6c",
+                        "mint": "#e7f3ec",
+                        "forest-dark": "#0d1b13",
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#102218",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "Noto Sans SC", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>.glass-panel {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3)
+    }
+.bg-forest-hero {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url(https://lh3.googleusercontent.com/aida-public/AB6AXuBWdJAFM7orxF1CZZqsdlZTyGqbUJNilmxhbBFNHINI3xGuqTI0lpAEIL3GrlkD2WoB_UX0ywY5bchbc74ECSuhVe0Lc0FDWZ5PtLi33RiVrUxAlS2PAjyJz9KtR2DXCOpzj5mvonUlQPNmoun2o5h0bfmw92aTszIeIO1qFqYqGsyS3vO51l7u79JtzoiJarYl3FkTc6q0WfC3-CYHi7Sz0LRLn-rfuaUSNyg6pLMawPvGBlCcpe-dCe7JKjvD3z3LLHZM2mecHxA);
+    background-size: cover;
+    background-position: center
+    }</style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="relative min-h-screen w-full flex flex-col overflow-x-hidden" data-alt="Sunlight filtering through a lush green forest canopy" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDTAUY7WDi9arwdyoN28PoGbjW46G-88fFVdQUak0wTkB6FaqiBECUO-eRzBD_Z3J7qta1aYmZDz_QLwRoNoMXMm1VgdJpGB6Kb267huNZ50MgKfXUpesXKr0CS63Mo7IbBaS_fYaGm-cE5gxt9aowlbaN7WHWSlKTBlpwv6VDIWOr5JV3zd4WgRiTL8d2dhIYcO0Qyqy01jSxpDrLBdv2PkV-gZISYkjXfP861PpLfEJ_zDLsktlmcayi1687KIOAM8zSxr9H9Tp8'); background-size: cover; background-position: center;"><div class="absolute inset-0 bg-white/20 pointer-events-none z-0"></div>
+<!-- Header / Top Navigation -->
+<header class="w-full px-6 py-4 flex items-center justify-between glass-panel sticky top-0 z-50 relative z-10">
+<div class="flex items-center gap-3">
+<div class="p-2 bg-primary/20 rounded-lg text-sage">
+<span class="material-symbols-outlined block">nature_people</span>
+</div>
+<h1 class="text-forest-dark font-bold text-xl tracking-tight">森呼吸 <span class="font-light text-sage ml-1">Forest Breath</span></h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-white/50 rounded-full transition-colors text-sage">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="size-10 rounded-full border-2 border-primary/30 overflow-hidden">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="Profile picture of a smiling young woman" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-8cAfTW8vDvm3EzNNIxSwG7cVdUQHwQQq-Ca29MNy7nExeeQkBcSWyPuDqa2oV_PL4Xlyo1Ls3mgG3-P7zZCcJxjvVHowzXT8qyuvdL_8RJXyt36odVev3OtzlspyS4xAE0Wq84djV-sQ5VMTGz8cLwcpRWECaFSmLG6IPUpZ5z7CGzPoJrzGnnX2Wo895JT_KlYw43u9r_5r40b5p1ub4O7d6gm8fzeWmJ8D5rxcsPQISlvMzKuyRs2ByPiy56HdV30x_l3KqaU"/>
+</div>
+</div>
+</header>
+<main class="flex-1 max-w-4xl mx-auto w-full p-6 flex flex-col gap-6 relative z-10">
+<!-- Hero Text -->
+<div class="mt-4 text-center">
+<h2 class="text-3xl font-bold text-forest-dark mb-2">碳核算</h2>
+<p class="text-sage font-medium opacity-90">记录每一份努力，让地球呼吸更顺畅</p>
+</div>
+<!-- Main Form Card -->
+<div class="glass-panel rounded-xl overflow-hidden shadow-xl border border-white/40">
+<!-- Custom Tabs -->
+<div class="flex border-b border-sage/10 bg-white/30">
+<button class="flex-1 py-4 text-sm font-bold border-b-2 border-primary text-forest-dark flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[20px]">local_fire_department</span>
+                        化石燃料燃烧
+                    </button>
+<button class="flex-1 py-4 text-sm font-bold text-sage/60 hover:text-sage transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[20px]">bolt</span>
+                        购入电力
+                    </button>
+</div>
+<div class="p-8 space-y-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Fuel Category -->
+<div class="space-y-2">
+<label class="text-sm font-semibold text-sage ml-1">燃料类别</label>
+<div class="relative">
+<select class="w-full h-12 bg-white/50 border-white/60 rounded-lg px-4 appearance-none focus:ring-primary focus:border-primary text-forest-dark">
+<option>请选择燃料类别</option>
+<option>液体燃料</option>
+<option>气体燃料</option>
+<option>固体燃料</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-3 text-sage/50 pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- Gas Type -->
+<div class="space-y-2">
+<label class="text-sm font-semibold text-sage ml-1">气体类型</label>
+<div class="relative">
+<select class="w-full h-12 bg-white/50 border-white/60 rounded-lg px-4 appearance-none focus:ring-primary focus:border-primary text-forest-dark">
+<option>二氧化碳 (CO₂)</option>
+<option>甲烷 (CH₄)</option>
+<option>氧化亚氮 (N₂O)</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-3 text-sage/50 pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- Emission Scenario -->
+<div class="space-y-2">
+<label class="text-sm font-semibold text-sage ml-1">排放场景</label>
+<div class="relative">
+<select class="w-full h-12 bg-white/50 border-white/60 rounded-lg px-4 appearance-none focus:ring-primary focus:border-primary text-forest-dark">
+<option>工业生产</option>
+<option>交通运输</option>
+<option>民用办公</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-3 text-sage/50 pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- Fuel Type -->
+<div class="space-y-2">
+<label class="text-sm font-semibold text-sage ml-1">燃料名称</label>
+<div class="relative">
+<select class="w-full h-12 bg-white/50 border-white/60 rounded-lg px-4 appearance-none focus:ring-primary focus:border-primary text-forest-dark">
+<option>天然气</option>
+<option>无烟煤</option>
+<option>柴油</option>
+<option>汽油</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-3 text-sage/50 pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- Fuel Consumption -->
+<div class="space-y-2">
+<label class="text-sm font-semibold text-sage ml-1">燃料消耗量</label>
+<div class="relative">
+<input class="w-full h-12 bg-white/50 border-white/60 rounded-lg px-4 focus:ring-primary focus:border-primary text-forest-dark" placeholder="0.00" type="number"/>
+<span class="absolute right-4 top-3 text-sage font-medium text-sm">万立方米</span>
+</div>
+</div>
+<!-- Net Calorific Value -->
+<div class="space-y-2">
+<label class="text-sm font-semibold text-sage ml-1">低位发热量 <span class="font-normal opacity-60">(可选)</span></label>
+<div class="relative">
+<input class="w-full h-12 bg-white/50 border-white/60 rounded-lg px-4 focus:ring-primary focus:border-primary text-forest-dark" placeholder="默认推荐值" type="number"/>
+<span class="absolute right-4 top-3 text-sage font-medium text-sm">GJ/t</span>
+</div>
+</div>
+</div>
+<!-- Action Button -->
+<div class="pt-6">
+<button class="w-full py-4 bg-primary hover:bg-primary/90 text-forest-dark font-bold text-lg rounded-xl shadow-[0_8px_20px_-4px_rgba(43,238,124,0.4)] transition-all transform active:scale-[0.98] flex items-center justify-center gap-2"><span class="material-symbols-outlined">calculate</span> 立即计算我的碳足迹</button>
+</div>
+<p class="text-center text-xs text-sage/70">
+                        基于最新的《企业温室气体排放核算方法与报告指南》
+                    </p>
+</div>
+</div>
+<!-- Quick Stats / Bottom Cards -->
+<div class="grid grid-cols-2 gap-4 mb-10">
+<div class="glass-panel p-4 rounded-xl flex items-center gap-3 border border-white/30">
+<div class="size-10 bg-primary/20 rounded-full flex items-center justify-center text-sage">
+<span class="material-symbols-outlined">eco</span>
+</div>
+<div>
+<p class="text-xs text-sage font-medium">累计减排</p>
+<p class="text-lg font-bold text-forest-dark">1,284 kg</p>
+</div>
+</div>
+<div class="glass-panel p-4 rounded-xl flex items-center gap-3 border border-white/30">
+<div class="size-10 bg-sage/20 rounded-full flex items-center justify-center text-sage">
+<span class="material-symbols-outlined">forest</span>
+</div>
+<div>
+<p class="text-xs text-sage font-medium">等效造林</p>
+<p class="text-lg font-bold text-forest-dark">12 棵</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Navigation Footer -->
+</div>
+</body></html>

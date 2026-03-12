@@ -105,6 +105,68 @@ class CarbonCalculator {
     }
 
     /**
+     * 计算电力碳排放（支持电网类型选择）
+     * @param {Object} params 计算参数
+     * @param {string} params.gridType 电网类型
+     * @param {number} params.consumption 用电量 (kWh)
+     * @returns {Object} 计算结果
+     */
+    calculateElectricity(params) {
+        const { gridType, consumption } = params;
+        
+        // 获取电网排放因子
+        let factorInfo;
+        if (gridType) {
+            factorInfo = this.dataLoader.getElectricityFactor(gridType);
+        }
+        
+        // 如果没有找到，使用默认值
+        if (!factorInfo) {
+            factorInfo = {
+                factor: 0.5306,
+                unit: 'kgCO₂/kWh',
+                fuelType: gridType || '全国平均电网'
+            };
+        }
+        
+        const factor = factorInfo.factor;
+        const factorUnit = factorInfo.unit;
+        
+        // 计算排放量 (kgCO2)
+        const emission = consumption * factor;
+        
+        // 转换为吨CO2当量
+        const co2Equivalent = emission / 1000;
+        
+        // 格式化排放量
+        let formattedEmission;
+        if (emission >= 1000) {
+            formattedEmission = { value: this.formatNumber(emission / 1000), unit: 'tCO₂' };
+        } else {
+            formattedEmission = { value: this.formatNumber(emission), unit: 'kgCO₂' };
+        }
+        
+        return {
+            success: true,
+            data: {
+                gasType: 'CO2',
+                factor: factor,
+                factorUnit: factorUnit,
+                scenarioName: '购入电力',
+                fuelType: factorInfo.fuelType,
+                emission: formattedEmission.value,
+                emissionUnit: formattedEmission.unit,
+                co2Equivalent: co2Equivalent,
+                co2EquivalentUnit: 'tCO₂e',
+                heatingValue: '-',
+                heatingValueUnit: '-',
+                consumption: consumption,
+                consumptionUnit: 'kWh'
+            }
+        };
+    }
+
+    /**
      * 计算能量值
      * @param {number} consumption 燃料消耗量 (kg)
      * @param {Object} factorInfo 排放因子信息

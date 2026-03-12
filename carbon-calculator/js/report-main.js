@@ -480,41 +480,55 @@
         // 生成预览内容
         const industryInfo = templateParser.getIndustryInfo(currentIndustry);
         let previewHtml = `
-            <div class="preview-header">
-                <h3>${formData['核算年度'] || ''}年度温室气体排放核算报告</h3>
-                <p class="preview-subtitle">${industryInfo ? industryInfo.name : ''}</p>
+            <div class="preview-section animate-slide-up">
+                <div class="flex items-center gap-2 mb-6 border-b border-sage-100 pb-4">
+                    <span class="material-symbols-outlined text-primary">description</span>
+                    <h3 class="text-xl font-bold text-sage-900">报告概览</h3>
+                </div>
+                <div class="p-6 bg-glacier-50 rounded-xl mb-6">
+                    <h4 class="text-2xl font-bold text-sage-900 mb-2">${formData['核算年度'] || ''}年度温室气体排放核算报告</h4>
+                    <p class="text-sage-500">${industryInfo ? industryInfo.name : ''}</p>
+                </div>
             </div>
-            <div class="preview-section">
-                <h4>企业基本信息</h4>
-                <div class="preview-grid">
-                    <div class="preview-item">
-                        <span class="label">企业名称：</span>
-                        <span class="value">${formData['企业全称'] || formData['企业名称'] || '-'}</span>
+            
+            <div class="preview-section animate-slide-up animate-delay-1">
+                <div class="flex items-center gap-2 mb-6 border-b border-sage-100 pb-4">
+                    <span class="material-symbols-outlined text-primary">corporate_fare</span>
+                    <h3 class="text-xl font-bold text-sage-900">企业基本信息</h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="preview-field p-4 rounded-lg flex justify-between">
+                        <span class="text-sage-500 text-sm">企业名称</span>
+                        <span class="text-sage-900 font-medium">${formData['企业全称'] || formData['企业名称'] || '-'}</span>
                     </div>
-                    <div class="preview-item">
-                        <span class="label">统一社会信用代码：</span>
-                        <span class="value">${formData['信用代码'] || '-'}</span>
+                    <div class="preview-field p-4 rounded-lg flex justify-between">
+                        <span class="text-sage-500 text-sm">统一社会信用代码</span>
+                        <span class="text-sage-900 font-medium">${formData['信用代码'] || '-'}</span>
                     </div>
-                    <div class="preview-item">
-                        <span class="label">法定代表人：</span>
-                        <span class="value">${formData['法人'] || '-'}</span>
+                    <div class="preview-field p-4 rounded-lg flex justify-between">
+                        <span class="text-sage-500 text-sm">法定代表人</span>
+                        <span class="text-sage-900 font-medium">${formData['法人'] || '-'}</span>
                     </div>
-                    <div class="preview-item">
-                        <span class="label">注册地址：</span>
-                        <span class="value">${formData['注册地址'] || '-'}</span>
+                    <div class="preview-field p-4 rounded-lg flex justify-between">
+                        <span class="text-sage-500 text-sm">注册地址</span>
+                        <span class="text-sage-900 font-medium">${formData['注册地址'] || '-'}</span>
                     </div>
                 </div>
             </div>
-            <div class="preview-section">
-                <h4>核算信息</h4>
-                <div class="preview-grid">
-                    <div class="preview-item">
-                        <span class="label">核算年度：</span>
-                        <span class="value">${formData['核算年度'] || '-'}</span>
+            
+            <div class="preview-section animate-slide-up animate-delay-2">
+                <div class="flex items-center gap-2 mb-6 border-b border-sage-100 pb-4">
+                    <span class="material-symbols-outlined text-primary">calendar_today</span>
+                    <h3 class="text-xl font-bold text-sage-900">核算信息</h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="preview-field p-4 rounded-lg flex justify-between">
+                        <span class="text-sage-500 text-sm">核算年度</span>
+                        <span class="text-sage-900 font-medium">${formData['核算年度'] || '-'}</span>
                     </div>
-                    <div class="preview-item">
-                        <span class="label">细分品类：</span>
-                        <span class="value">${formData['细分品类'] || '-'}</span>
+                    <div class="preview-field p-4 rounded-lg flex justify-between">
+                        <span class="text-sage-500 text-sm">细分品类</span>
+                        <span class="text-sage-900 font-medium">${formData['细分品类'] || '-'}</span>
                     </div>
                 </div>
             </div>
@@ -523,20 +537,26 @@
         // 如果有排放数据，显示汇总
         if (formData['总排放量']) {
             previewHtml += `
-                <div class="preview-section">
-                    <h4>排放量汇总</h4>
-                    <div class="preview-grid">
-                        <div class="preview-item">
-                            <span class="label">范围1排放：</span>
-                            <span class="value">${formData['范围1总量'] || '-'} tCO₂e</span>
+                <div class="preview-section animate-slide-up animate-delay-3">
+                    <div class="flex items-center gap-2 mb-6 border-b border-sage-100 pb-4">
+                        <span class="material-symbols-outlined text-primary">analytics</span>
+                        <h3 class="text-xl font-bold text-sage-900">排放量汇总</h3>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="p-6 bg-white rounded-xl border border-sage-100 text-center">
+                            <p class="text-sage-500 text-sm mb-2">范围1排放</p>
+                            <p class="text-2xl font-bold text-sage-900">${formData['范围1总量'] || '-'}</p>
+                            <p class="text-sage-400 text-xs mt-1">tCO₂e</p>
                         </div>
-                        <div class="preview-item">
-                            <span class="label">范围2排放：</span>
-                            <span class="value">${formData['范围2总量'] || '-'} tCO₂e</span>
+                        <div class="p-6 bg-white rounded-xl border border-sage-100 text-center">
+                            <p class="text-sage-500 text-sm mb-2">范围2排放</p>
+                            <p class="text-2xl font-bold text-sage-900">${formData['范围2总量'] || '-'}</p>
+                            <p class="text-sage-400 text-xs mt-1">tCO₂e</p>
                         </div>
-                        <div class="preview-item highlight">
-                            <span class="label">总排放量：</span>
-                            <span class="value">${formData['总排放量'] || '-'} tCO₂e</span>
+                        <div class="p-6 bg-primary/10 rounded-xl border border-primary/20 text-center">
+                            <p class="text-primary text-sm mb-2">总排放量</p>
+                            <p class="text-2xl font-bold text-sage-900">${formData['总排放量'] || '-'}</p>
+                            <p class="text-sage-400 text-xs mt-1">tCO₂e</p>
                         </div>
                     </div>
                 </div>

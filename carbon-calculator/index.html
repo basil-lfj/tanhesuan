@@ -1,169 +1,494 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>碳核算计算工具</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>碳核算计算工具</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1a4231",
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#151d1a",
+                        "mint-soft": "#e8f0ed",
+                        "sage-light": "#d1dbd6",
+                        "sage": {
+                            50: "#f4f7f4",
+                            100: "#e7ede7",
+                            200: "#d0dbd0",
+                            500: "#4e9754",
+                            900: "#0e1b0f"
+                        },
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "Noto Sans SC", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #f6f8f7;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+        }
+        .custom-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%231a4231' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.75rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+        }
+        
+        /* Module sections */
+        .module-section {
+            display: none;
+        }
+        .module-section.active {
+            display: block;
+            animation: fadeIn 0.4s ease-out;
+        }
+        
+        /* Result section */
+        .result-section {
+            display: none;
+        }
+        .result-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        /* Tab styles */
+        .tab-active {
+            background: white;
+            color: #1a4231;
+            font-weight: 700;
+            box-shadow: 0 1px 3px rgba(26, 66, 49, 0.1);
+            ring: 1px;
+            ring-color: rgba(26, 66, 49, 0.05);
+        }
+        
+        .tab-inactive {
+            color: rgba(26, 66, 49, 0.5);
+            font-weight: 500;
+        }
+        
+        .tab-inactive:hover {
+            color: #1a4231;
+        }
+        
+        /* 动画定义 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-16px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+        
+        @keyframes treeGrow {
+            0% { transform: scale(0) rotate(-10deg); opacity: 0; }
+            50% { transform: scale(1.1) rotate(3deg); }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        
+        /* 结果卡片动画 */
+        .result-card {
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        .result-card:nth-child(1) { animation-delay: 0.1s; }
+        .result-card:nth-child(2) { animation-delay: 0.2s; }
+        .result-card:nth-child(3) { animation-delay: 0.3s; }
+        .result-card:nth-child(4) { animation-delay: 0.4s; }
+        
+        /* 数据项动画 */
+        .data-item {
+            opacity: 0;
+            animation: scaleIn 0.4s ease-out forwards;
+        }
+        .data-item:nth-child(1) { animation-delay: 0.15s; }
+        .data-item:nth-child(2) { animation-delay: 0.25s; }
+        .data-item:nth-child(3) { animation-delay: 0.35s; }
+        
+        /* 参数项动画 */
+        .param-item {
+            opacity: 0;
+            animation: slideIn 0.4s ease-out forwards;
+        }
+        .param-item:nth-child(1) { animation-delay: 0.1s; }
+        .param-item:nth-child(2) { animation-delay: 0.15s; }
+        .param-item:nth-child(3) { animation-delay: 0.2s; }
+        .param-item:nth-child(4) { animation-delay: 0.25s; }
+        
+        /* 浮动装饰 */
+        .float-icon {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        /* 树木动画 */
+        .tree-animated {
+            display: inline-block;
+            animation: treeGrow 0.5s ease-out forwards;
+            transform-origin: bottom center;
+        }
+        
+        /* 可视化条 */
+        .visualization-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 16px 0;
+        }
+    </style>
 </head>
-<body>
-    <div class="container">
-        <!-- 导航栏 -->
-        <nav class="navbar">
-            <div class="nav-brand">
-                <i class="fas fa-leaf"></i>
-                <span>碳核算工具</span>
+<body class="font-display text-slate-900 antialiased min-h-screen">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+    <!-- Top Navigation -->
+    <header class="sticky top-0 z-50 w-full border-b border-sage-100 bg-white/80 backdrop-blur-md px-6 lg:px-20 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div class="size-9 bg-primary flex items-center justify-center rounded-lg">
+                <span class="material-symbols-outlined text-white text-xl">eco</span>
             </div>
-            <div class="nav-links">
-                <a href="index.html" class="active"><i class="fas fa-calculator"></i> 碳核算计算器</a>
-                <a href="report.html"><i class="fas fa-file-word"></i> 报告生成</a>
-            </div>
+            <h2 class="text-sage-900 text-xl font-extrabold tracking-tight">绿色伙伴</h2>
+        </div>
+        <nav class="hidden md:flex items-center gap-10">
+            <a href="index.html" class="text-sage-900 border-b-2 border-primary pb-1 text-sm font-semibold">碳核算计算器</a>
+            <a href="report.html" class="text-sage-500 text-sm font-medium hover:text-sage-900 transition-colors">报告生成</a>
         </nav>
+        <div class="flex items-center gap-4">
+            <button class="p-2 rounded-full hover:bg-sage-100 transition-colors">
+                <span class="material-symbols-outlined text-sage-900">notifications</span>
+            </button>
+            <div class="h-10 w-10 rounded-full border-2 border-primary/20 p-0.5 overflow-hidden">
+                <img alt="User profile" class="rounded-full w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVPwXXD83wRf0SoYsfiEVBUiZYuTu6HNd0JI_60cwqtr9OgyG-chjoWZVwjfPMC2tUsMh_7ADJDcU7w8BIP72T8gxkJV_Nqcz8i2G5hCp15BCmpsNUQOZChvKgnuRR-CJKrQbJxcN02HRqn0nuVKNVm6UrI2Dt1kJMzXpquXF9N8xYyvzyp1fuqrseIV2JTj-xqp1dgZufOB3HWXVbk9Aeha6HVvvf7rRoU6HrLuepbjMK-WhGTf8yUS1b9meEpNrlJumOy9fSU5M"/>
+            </div>
+        </div>
+    </header>
 
-        <header>
-            <h1>碳核算计算工具</h1>
-            <p class="subtitle">基于国家碳排放因子库</p>
+    <!-- Main Content -->
+    <main class="flex-1 p-6 lg:p-12 max-w-7xl mx-auto w-full">
+        <!-- Header Section -->
+        <header class="mb-12 max-w-2xl">
+            <h1 class="text-5xl lg:text-6xl font-black text-primary tracking-tight leading-tight">
+                碳排放计算器
+            </h1>
+            <p class="mt-6 text-xl text-primary/60 leading-relaxed font-light">
+                让每一份努力都清晰可见。通过专业的核算工具，精准追踪您的每一个绿色足迹。
+            </p>
         </header>
 
-        <main>
-            <section class="form-section">
-                <h2>排放源选择</h2>
-                
-                <div class="form-group">
-                    <label for="fuelCategory">燃料类别</label>
-                    <select id="fuelCategory">
-                        <option value="">-- 请选择燃料类别 --</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="gasType">气体类型</label>
-                    <select id="gasType">
-                        <option value="">-- 请选择气体类型 --</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="emissionScenario">排放场景</label>
-                    <select id="emissionScenario">
-                        <option value="">-- 请选择排放场景 --</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="fuelType">燃料类型</label>
-                    <select id="fuelType">
-                        <option value="">-- 请选择燃料类型 --</option>
-                    </select>
-                </div>
-            </section>
-
-            <section class="form-section">
-                <h2>排放量输入</h2>
-                
-                <div class="form-group">
-                    <label for="consumption" id="consumptionLabel">燃料消耗量</label>
-                    <div class="input-with-unit">
-                        <input type="number" id="consumption" placeholder="请输入消耗量" min="0" step="0.01">
-                        <span class="unit" id="consumptionUnit">kg</span>
+        <!-- Interactive Form Area -->
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-12">
+            <!-- Left Column: Inputs -->
+            <div class="xl:col-span-7 space-y-10">
+                <!-- Selection Switcher -->
+                <div class="space-y-4">
+                    <p class="text-sm font-bold text-primary uppercase tracking-widest">选择核算类别</p>
+                    <div class="flex gap-4 p-1.5 bg-mint-soft/50 rounded-2xl border border-sage-light/30 w-fit">
+                        <button class="module-tab px-8 py-3 rounded-xl tab-active transition-all" data-module="fuel">
+                            化石燃料燃烧
+                        </button>
+                        <button class="module-tab px-8 py-3 rounded-xl tab-inactive transition-all" data-module="electricity">
+                            购入电力
+                        </button>
                     </div>
                 </div>
 
-                <div class="form-group" id="heatingValueGroup">
-                    <label for="lowerHeatingValue">低位发热量（可选）</label>
-                    <div class="input-with-unit">
-                        <input type="number" id="lowerHeatingValue" placeholder="默认使用标准值" min="0" step="0.01">
-                        <span class="unit">TJ/10⁴t</span>
-                    </div>
-                    <small class="hint">如不填写，将使用因子库中的默认值</small>
-                </div>
-            </section>
-
-            <section class="button-section">
-                <button id="calculateBtn" class="btn-primary">
-                    <span class="btn-icon">⚡</span>
-                    计算碳排放
-                </button>
-            </section>
-
-            <section class="result-section" id="resultSection" style="display: none;">
-                <h2>计算结果</h2>
-                
-                <div class="result-card">
-                    <div class="result-item highlight">
-                        <span class="result-label">CO₂当量（总量）</span>
-                        <span class="result-value" id="co2Equivalent">-</span>
-                        <span class="result-unit">tCO₂e</span>
-                    </div>
-                </div>
-
-                <div class="result-details">
-                    <h3>详细排放数据</h3>
-                    
-                    <div class="result-item" id="co2Result" style="display: none;">
-                        <span class="result-label">CO₂排放量</span>
-                        <span class="result-value" id="co2Emission">-</span>
-                        <span class="result-unit">tCO₂</span>
-                    </div>
-
-                    <div class="result-item" id="ch4Result" style="display: none;">
-                        <span class="result-label">CH₄排放量</span>
-                        <span class="result-value" id="ch4Emission">-</span>
-                        <span class="result-unit">kgCH₄</span>
-                    </div>
-
-                    <div class="result-item" id="n2oResult" style="display: none;">
-                        <span class="result-label">N₂O排放量</span>
-                        <span class="result-value" id="n2oEmission">-</span>
-                        <span class="result-unit">kgN₂O</span>
-                    </div>
-                </div>
-
-                <div class="result-info">
-                    <h3>计算参数</h3>
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <span class="info-label">排放因子</span>
-                            <span class="info-value" id="factorUsed">-</span>
+                <!-- 化石燃料燃烧模块 -->
+                <section class="module-section active space-y-6" id="fuelModule">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="flex flex-col gap-3">
+                            <label class="text-sm font-bold text-primary/80 ml-1">燃料类别</label>
+                            <select id="fuelCategory" class="custom-select w-full h-14 px-5 rounded-xl border-sage-light/40 bg-white/60 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-primary">
+                                <option value="">请选择燃料类别</option>
+                            </select>
                         </div>
-                        <div class="info-item">
-                            <span class="info-label">因子单位</span>
-                            <span class="info-value" id="factorUnit">-</span>
+                        <div class="flex flex-col gap-3" id="gasTypeGroup" style="display: none;">
+                            <label class="text-sm font-bold text-primary/80 ml-1">气体类型</label>
+                            <select id="gasType" class="custom-select w-full h-14 px-5 rounded-xl border-sage-light/40 bg-white/60 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-primary">
+                                <option value="">请选择气体类型</option>
+                            </select>
                         </div>
-                        <div class="info-item">
-                            <span class="info-label">低位发热量</span>
-                            <span class="info-value" id="heatingValueUsed">-</span>
+                        <div class="flex flex-col gap-3" id="emissionScenarioGroup" style="display: none;">
+                            <label class="text-sm font-bold text-primary/80 ml-1">排放场景</label>
+                            <select id="emissionScenario" class="custom-select w-full h-14 px-5 rounded-xl border-sage-light/40 bg-white/60 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-primary">
+                                <option value="">请选择排放场景</option>
+                            </select>
                         </div>
-                        <div class="info-item">
-                            <span class="info-label">燃料消耗量</span>
-                            <span class="info-value" id="consumptionUsed">-</span>
+                        <div class="flex flex-col gap-3" id="fuelTypeGroup" style="display: none;">
+                            <label class="text-sm font-bold text-primary/80 ml-1">燃料类型</label>
+                            <select id="fuelType" class="custom-select w-full h-14 px-5 rounded-xl border-sage-light/40 bg-white/60 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-primary">
+                                <option value="">请选择燃料类型</option>
+                            </select>
+                        </div>
+                        <div class="flex flex-col gap-3 md:col-span-2" id="fuelConsumptionGroup" style="display: none;">
+                            <label class="text-sm font-bold text-primary/80 ml-1">燃料消耗量</label>
+                            <div class="relative">
+                                <input type="number" id="fuelConsumption" class="w-full h-14 px-5 rounded-xl border-sage-light/40 bg-white/60 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-primary placeholder:text-primary/20" placeholder="0.00" min="0" step="0.01"/>
+                                <div class="absolute right-4 top-1/2 -translate-y-1/2 text-primary/40 font-medium" id="fuelConsumptionUnit">kg</div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-3 md:col-span-2" id="heatingValueGroup" style="display: none;">
+                            <label class="text-sm font-bold text-primary/80 ml-1">低位发热量 <span class="font-normal opacity-60">(可选)</span></label>
+                            <div class="relative">
+                                <input type="number" id="lowerHeatingValue" class="w-full h-14 px-5 rounded-xl border-sage-light/40 bg-white/60 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-primary placeholder:text-primary/20" placeholder="不填则使用默认值" min="0" step="0.01"/>
+                                <div class="absolute right-4 top-1/2 -translate-y-1/2 text-primary/40 font-medium">TJ/10⁴t</div>
+                            </div>
+                            <small class="text-xs text-primary/50 ml-1">如不填写，将使用因子库中的默认值</small>
                         </div>
                     </div>
+
+                    <!-- CTA -->
+                    <div class="pt-4" id="fuelCalculateSection" style="display: none;">
+                        <button id="calculateFuelBtn" class="group flex items-center justify-center gap-3 w-full md:w-auto px-12 py-5 bg-primary text-white rounded-xl font-bold text-lg hover:shadow-2xl hover:shadow-primary/30 transition-all active:scale-[0.98]">
+                            <span>开始核算</span>
+                            <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                        </button>
+                    </div>
+                    <p class="text-center text-xs text-primary/50 pt-2">
+                        基于最新的《企业温室气体排放核算方法与报告指南》
+                    </p>
+                </section>
+
+                <!-- 购入电力模块 -->
+                <section class="module-section space-y-6" id="electricityModule">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="flex flex-col gap-3">
+                            <label class="text-sm font-bold text-primary/80 ml-1">电网类型</label>
+                            <select id="gridType" class="custom-select w-full h-14 px-5 rounded-xl border-sage-light/40 bg-white/60 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-primary">
+                                <option value="">请选择电网类型</option>
+                            </select>
+                        </div>
+                        <div class="flex flex-col gap-3">
+                            <label class="text-sm font-bold text-primary/80 ml-1">用电量</label>
+                            <div class="relative">
+                                <input type="number" id="electricityConsumption" class="w-full h-14 px-5 rounded-xl border-sage-light/40 bg-white/60 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-primary placeholder:text-primary/20" placeholder="0.00" min="0" step="0.01"/>
+                                <div class="absolute right-4 top-1/2 -translate-y-1/2 text-primary/40 font-medium">kWh</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CTA -->
+                    <div class="pt-4">
+                        <button id="calculateElectricityBtn" class="group flex items-center justify-center gap-3 w-full md:w-auto px-12 py-5 bg-primary text-white rounded-xl font-bold text-lg hover:shadow-2xl hover:shadow-primary/30 transition-all active:scale-[0.98]">
+                            <span>开始核算</span>
+                            <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                        </button>
+                    </div>
+                    <p class="text-center text-xs text-primary/50 pt-2">
+                        基于国家碳排放因子库电网排放因子
+                    </p>
+                </section>
+            </div>
+
+            <!-- Right Column: Visual/Illustration -->
+            <div class="xl:col-span-5 flex flex-col gap-6">
+                <div class="relative aspect-[4/5] rounded-[2rem] overflow-hidden bg-mint-soft border border-sage-light/20 shadow-2xl shadow-primary/5">
+                    <img alt="Lush green forest canopy from below" class="absolute inset-0 w-full h-full object-cover opacity-80 mix-blend-multiply" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzFjYZQrLUY0jognbFplH4x6g-uG3XwMKh2-mK_126ffNHMMiA7ABXqaxSew_l9tNOYWXshv_cK_Uvew1jE1pMrs13eyf-Qp3ykMVa2tZLCNxmog1uxGbPiI-YFFFVtIafKa_Nsduefc8OI4BbOj39u3QIUGQCYD-mM6YOoWCYU3clOemRkRCJ2EVtYT6J74IGBJ3AQOVRh5Luv2Syk5av7rkv8PVuIeM8W8-y2omt2i-js5C7-Kk4FgBdAMqDzSmCW3L0PldnYo6H"/>
+                    <div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-transparent to-transparent flex flex-col justify-end p-10 text-white">
+                        <span class="material-symbols-outlined text-5xl mb-4">nature_people</span>
+                        <h3 class="text-2xl font-bold leading-tight">可持续的未来<br/>从精准数据开始</h3>
+                        <p class="mt-4 text-white/70 font-light leading-relaxed">
+                            我们采用 IPCC 国际标准算法，为您提供最权威的碳足迹分析报告。
+                        </p>
+                    </div>
                 </div>
 
-                <div class="gwp-info">
-                    <p><strong>GWP说明：</strong>CH₄ = 28 tCO₂e/tCH₄, N₂O = 265 tCO₂e/tN₂O（IPCC第五次评估报告100年尺度）</p>
+                <!-- 底部统计卡片 -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-white/60 backdrop-blur-sm rounded-2xl border border-sage-light/30 p-5">
+                        <p class="text-xs font-bold text-primary/40 uppercase tracking-tighter">实时电网因子</p>
+                        <p class="mt-2 text-xl font-bold text-primary">0.5703</p>
+                        <p class="text-[10px] text-primary/60">tCO₂e/MWh</p>
+                    </div>
+                    <div class="bg-white/60 backdrop-blur-sm rounded-2xl border border-sage-light/30 p-5">
+                        <p class="text-xs font-bold text-primary/40 uppercase tracking-tighter">全球变暖潜势</p>
+                        <p class="mt-2 text-xl font-bold text-primary">GWP AR6</p>
+                        <p class="text-[10px] text-primary/60">最新评估报告标准</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 计算结果区域 - 横置底部 -->
+        <section class="result-section mt-12" id="resultSection">
+            <div class="bg-white/70 backdrop-blur-md rounded-2xl border border-sage-light/30 shadow-xl overflow-hidden">
+                <!-- 结果标题 -->
+                <div class="px-8 py-6 border-b border-sage-light/20">
+                    <div class="flex items-center gap-3">
+                        <div class="size-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-primary text-xl">auto_awesome</span>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-primary">计算结果</h3>
+                            <p class="text-sm text-primary/50">您的碳排放数据已生成</p>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- 导出操作 -->
-                <div class="export-actions">
-                    <button id="exportToReportBtn" class="btn-export">
-                        <i class="fas fa-file-export"></i>
-                        导出到报告生成工具
-                    </button>
-                    <p class="export-hint">将计算结果导出至报告生成工具，自动填充排放数据</p>
+                <!-- 结果内容 - 横向布局 -->
+                <div class="p-8">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                        <!-- 左侧：主要结果 -->
+                        <div class="lg:col-span-4 space-y-6">
+                            <!-- 碳吸收等效 -->
+                            <div class="result-card bg-mint-soft/50 rounded-xl p-6 text-center">
+                                <div class="size-14 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-4 float-icon">
+                                    <span class="material-symbols-outlined text-primary text-3xl">forest</span>
+                                </div>
+                                <p class="text-sm text-primary/60 font-medium mb-2">碳吸收等效</p>
+                                <div class="flex items-baseline justify-center gap-2">
+                                    <span id="treeEquivalent" class="text-4xl font-black text-primary">0</span>
+                                    <span class="text-xl font-bold text-primary/80">棵树</span>
+                                </div>
+                                <p class="text-xs text-primary/40 mt-2">一年吸收的CO₂量</p>
+                                <div class="visualization-bar justify-center mt-4" id="visualizationBar">
+                                    <!-- Trees will be generated here -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 中间：详细排放数据 -->
+                        <div class="lg:col-span-5 space-y-4">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="material-symbols-outlined text-primary">bar_chart</span>
+                                <h4 class="font-bold text-primary">详细排放数据</h4>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 gap-3">
+                                <div class="data-item bg-mint-soft/30 rounded-xl p-4" id="co2Result" style="display: none;">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                                                <span class="material-symbols-outlined text-primary">cloud</span>
+                                            </div>
+                                            <span class="text-sm font-semibold text-primary/70">CO₂排放量</span>
+                                        </div>
+                                        <div class="text-right">
+                                            <span class="text-2xl font-black text-primary" id="co2Emission">-</span>
+                                            <span class="text-sm text-primary/50 ml-1">tCO₂</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="data-item bg-mint-soft/30 rounded-xl p-4" id="ch4Result" style="display: none;">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                                                <span class="material-symbols-outlined text-primary">air</span>
+                                            </div>
+                                            <span class="text-sm font-semibold text-primary/70">CH₄排放量</span>
+                                        </div>
+                                        <div class="text-right">
+                                            <span class="text-2xl font-black text-primary" id="ch4Emission">-</span>
+                                            <span class="text-sm text-primary/50 ml-1">kgCH₄</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="data-item bg-mint-soft/30 rounded-xl p-4" id="n2oResult" style="display: none;">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                                                <span class="material-symbols-outlined text-primary">bubble_chart</span>
+                                            </div>
+                                            <span class="text-sm font-semibold text-primary/70">N₂O排放量</span>
+                                        </div>
+                                        <div class="text-right">
+                                            <span class="text-2xl font-black text-primary" id="n2oEmission">-</span>
+                                            <span class="text-sm text-primary/50 ml-1">kgN₂O</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 右侧：计算参数和导出 -->
+                        <div class="lg:col-span-3 space-y-4">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="material-symbols-outlined text-primary">tune</span>
+                                <h4 class="font-bold text-primary">计算参数</h4>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-2">
+                                <div class="param-item bg-mint-soft/30 rounded-lg p-3">
+                                    <div class="flex items-center gap-1 mb-1">
+                                        <span class="material-symbols-outlined text-primary text-xs">functions</span>
+                                        <span class="text-xs text-primary/60">排放因子</span>
+                                    </div>
+                                    <span class="text-sm font-bold text-primary" id="factorUsed">-</span>
+                                </div>
+                                <div class="param-item bg-mint-soft/30 rounded-lg p-3">
+                                    <div class="flex items-center gap-1 mb-1">
+                                        <span class="material-symbols-outlined text-primary text-xs">straighten</span>
+                                        <span class="text-xs text-primary/60">因子单位</span>
+                                    </div>
+                                    <span class="text-sm font-bold text-primary" id="factorUnit">-</span>
+                                </div>
+                                <div class="param-item bg-mint-soft/30 rounded-lg p-3">
+                                    <div class="flex items-center gap-1 mb-1">
+                                        <span class="material-symbols-outlined text-primary text-xs">thermostat</span>
+                                        <span class="text-xs text-primary/60">低位发热量</span>
+                                    </div>
+                                    <span class="text-sm font-bold text-primary" id="heatingValueUsed">-</span>
+                                </div>
+                                <div class="param-item bg-mint-soft/30 rounded-lg p-3">
+                                    <div class="flex items-center gap-1 mb-1">
+                                        <span class="material-symbols-outlined text-primary text-xs">speed</span>
+                                        <span class="text-xs text-primary/60">消耗量</span>
+                                    </div>
+                                    <span class="text-sm font-bold text-primary" id="consumptionUsed">-</span>
+                                </div>
+                            </div>
+
+                            <!-- 导出按钮 -->
+                            <button id="exportToReportBtn" class="group flex items-center justify-center gap-2 w-full px-6 py-3 bg-primary text-white rounded-xl font-bold hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-[0.98] mt-4">
+                                <span class="material-symbols-outlined text-lg">file_export</span>
+                                <span>导出报告</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- GWP说明 -->
+                    <div id="gwpInfo" class="bg-primary/5 rounded-xl border border-primary/10 p-4 mt-6">
+                        <div class="flex items-start gap-3">
+                            <div class="size-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                                <span class="material-symbols-outlined text-primary text-lg">science</span>
+                            </div>
+                            <div>
+                                <p class="text-sm font-semibold text-primary mb-1">GWP参考值</p>
+                                <p class="text-xs text-primary/60">CH₄ = 28 tCO₂e/tCH₄, N₂O = 265 tCO₂e/tN₂O（IPCC第五次评估报告100年尺度）</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </section>
-        </main>
+            </div>
+        </section>
+    </main>
+</div>
+<!-- Background Grain Overlay - Global -->
+<div class="fixed inset-0 pointer-events-none z-[100] opacity-20 contrast-150 mix-blend-overlay"></div>
 
-        <footer>
-            <p>数据来源：国家碳排放因子库 | <a href="https://data.ncsc.org.cn/factories/index" target="_blank">查看原始数据</a></p>
-        </footer>
-    </div>
-
-    <script src="js/data-loader.js"></script>
-    <script src="js/calculator.js"></script>
-    <script src="js/main.js"></script>
+<script src="js/data-loader.js"></script>
+<script src="js/calculator.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>

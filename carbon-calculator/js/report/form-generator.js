@@ -30,19 +30,45 @@ class FormGenerator {
         let html = '';
 
         variableGroups.forEach((group, index) => {
+            // 图标映射
+            const iconMap = {
+                '基本信息': 'corporate_fare',
+                '企业基本信息': 'corporate_fare',
+                '主体信息': 'corporate_fare',
+                '核算信息': 'calendar_today',
+                '核算边界': 'calendar_today',
+                '排放源信息': 'bolt',
+                '排放数据': 'analytics',
+                '能耗数据': 'electric_bolt',
+                '设备信息': 'precision_manufacturing',
+                '设施信息': 'domain',
+                '生产数据': 'factory',
+                '生产信息': 'factory',
+                '原料成分': 'science',
+                '燃料消耗': 'local_fire_department',
+                '排放结果': 'analytics',
+                '排放因子': 'functions',
+                '外购能源': 'electric_bolt',
+                '默认': 'folder'
+            };
+            
+            const iconName = iconMap[group.name] || iconMap['默认'];
+            const delayClass = `animate-delay-${Math.min(index + 1, 4)}`;
+
             html += `
-                <fieldset class="form-section" data-section="${group.id}">
-                    <legend class="section-header">
-                        <i class="fas ${group.icon || 'fa-folder'}"></i>
-                        <span>${group.name}</span>
-                        <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
-                    </legend>
-                    <div class="section-content">
-                        <div class="form-grid">
+                <div class="form-section-exact mb-10 animate-slide-up ${delayClass}" data-section="${group.id}">
+                    <div class="flex items-center gap-2 mb-6 border-b border-sage-100 pb-4 cursor-pointer section-header group">
+                        <span class="material-symbols-outlined text-primary text-xl">${iconName}</span>
+                        <h3 class="text-lg font-bold text-sage-900">${group.name}</h3>
+                        <span class="ml-auto text-xs text-sage-400 bg-sage-50 px-2 py-1 rounded-full">${group.variables.length} 项</span>
+                        <span class="material-symbols-outlined text-sage-300 group-hover:text-primary transition-all duration-300 toggle-icon ml-2">expand_more</span>
+                    </div>
+                    <div class="section-content overflow-hidden transition-all duration-500 ease-out">
+                        <div class="space-y-4">
                             ${this.buildFieldsHtml(group.variables)}
                         </div>
                     </div>
-                </fieldset>
+                </div>
             `;
         });
 
@@ -87,13 +113,69 @@ class FormGenerator {
     }
 
     /**
+     * 获取字段图标
+     */
+    getFieldIcon(varName) {
+        const iconMap = {
+            '企业': 'apartment',
+            '信用代码': 'badge',
+            '法人': 'person',
+            '注册地址': 'location_on',
+            '生产地址': 'factory',
+            '联系人': 'contact_mail',
+            '电话': 'phone',
+            '邮箱': 'mail',
+            '核算': 'calendar_today',
+            '细分': 'category',
+            '产能': 'speed',
+            '产量': 'inventory_2',
+            '消耗': 'local_fire_department',
+            '用量': 'science',
+            '排放': 'cloud',
+            '因子': 'functions',
+            '装机': 'bolt',
+            '运行': 'schedule',
+            '机组': 'precision_manufacturing',
+            '高炉': 'local_fire_department',
+            '转炉': 'whatshot',
+            '回转窑': 'fireplace',
+            '煤炭': 'terrain',
+            '焦炭': 'landscape',
+            '天然气': 'propane_tank',
+            '电力': 'electric_bolt',
+            '热力': 'thermostat',
+            '蒸汽': 'water_drop',
+            '熟料': 'foundation',
+            '水泥': 'layers',
+            '生铁': 'hardware',
+            '粗钢': 'build',
+            '钢材': 'construction',
+            '燃油': 'oil_barrel',
+            '柴油': 'local_gas_station',
+            '汽油': 'local_gas_station',
+            '默认': 'edit_note'
+        };
+        
+        for (const [key, icon] of Object.entries(iconMap)) {
+            if (varName.includes(key)) {
+                return icon;
+            }
+        }
+        return iconMap['默认'];
+    }
+
+    /**
      * 创建单个字段HTML
      * @param {Object} fieldDef - 字段定义
      * @returns {string} HTML字符串
      */
     createFieldHtml(fieldDef) {
-        const requiredMark = fieldDef.required ? '<span class="required">*</span>' : '';
-        const unitHtml = fieldDef.unit ? `<span class="input-unit">${fieldDef.unit}</span>` : '';
+        const requiredMark = fieldDef.required ? '<span class="text-red-500 ml-1">*</span>' : '';
+        const icon = this.getFieldIcon(fieldDef.name);
+        const hasUnit = fieldDef.unit && fieldDef.type === 'number';
+        
+        // 获取字段描述
+        const description = this.getFieldDescription(fieldDef.name);
 
         let inputHtml = '';
 
@@ -101,8 +183,8 @@ class FormGenerator {
             case 'textarea':
                 inputHtml = `
                     <textarea id="${fieldDef.name}" name="${fieldDef.name}"
-                        class="form-textarea" 
-                        placeholder="请输入${fieldDef.label}"
+                        class="w-full h-20 bg-white border border-sage-200 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none text-sage-900 placeholder:text-sage-300 resize-none text-sm" 
+                        placeholder="请输入..."
                         ${fieldDef.required ? 'required' : ''}></textarea>
                 `;
                 break;
@@ -110,7 +192,7 @@ class FormGenerator {
             case 'select':
                 inputHtml = `
                     <select id="${fieldDef.name}" name="${fieldDef.name}"
-                        class="form-select"
+                        class="custom-select w-full h-12 bg-white border border-sage-200 rounded-lg px-4 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none text-sage-900 text-sm"
                         ${fieldDef.required ? 'required' : ''}>
                         <option value="">请选择</option>
                         ${(fieldDef.options || []).map(opt => 
@@ -122,13 +204,13 @@ class FormGenerator {
 
             case 'number':
                 inputHtml = `
-                    <div class="input-wrapper">
+                    <div class="flex items-center gap-3">
                         <input type="number" id="${fieldDef.name}" name="${fieldDef.name}"
-                            class="form-input" 
-                            placeholder="请输入${fieldDef.label}"
+                            class="w-28 h-12 bg-white border border-sage-200 rounded-lg px-4 text-right focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none text-sage-900 text-sm" 
+                            placeholder="0.00"
                             step="any"
                             ${fieldDef.required ? 'required' : ''}>
-                        ${unitHtml}
+                        ${hasUnit ? `<span class="text-sage-500 font-medium text-sm">${fieldDef.unit}</span>` : ''}
                     </div>
                 `;
                 break;
@@ -136,7 +218,7 @@ class FormGenerator {
             case 'date':
                 inputHtml = `
                     <input type="date" id="${fieldDef.name}" name="${fieldDef.name}"
-                        class="form-input"
+                        class="w-full h-12 bg-white border border-sage-200 rounded-lg px-4 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none text-sage-900 text-sm"
                         ${fieldDef.required ? 'required' : ''}>
                 `;
                 break;
@@ -144,20 +226,74 @@ class FormGenerator {
             default:
                 inputHtml = `
                     <input type="text" id="${fieldDef.name}" name="${fieldDef.name}"
-                        class="form-input" 
-                        placeholder="请输入${fieldDef.label}"
+                        class="w-full h-12 bg-white border border-sage-200 rounded-lg px-4 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none text-sage-900 placeholder:text-sage-300 text-sm" 
+                        placeholder="请输入..."
                         ${fieldDef.required ? 'required' : ''}>
                 `;
         }
 
+        // 横向卡片布局 - 参考 report_exact.html 核心能耗数据样式
         return `
-            <div class="form-group" data-field="${fieldDef.name}">
-                <label for="${fieldDef.name}" class="form-label">
-                    ${fieldDef.label}${requiredMark}
-                </label>
-                ${inputHtml}
+            <div class="data-input-card p-5 bg-glacier-50 rounded-xl border border-glacier-100 flex flex-col md:flex-row md:items-center justify-between gap-5 transition-all duration-300 hover:bg-glacier-50/80" data-field="${fieldDef.name}">
+                <div class="flex gap-4 items-center">
+                    <div class="size-11 rounded-lg bg-white flex items-center justify-center flex-shrink-0 shadow-sm">
+                        <span class="material-symbols-outlined text-primary text-xl">${icon}</span>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-sage-900">${fieldDef.label}${requiredMark}</p>
+                        ${description ? `<p class="text-xs text-sage-500 mt-0.5">${description}</p>` : ''}
+                    </div>
+                </div>
+                <div class="md:flex-shrink-0">
+                    ${inputHtml}
+                </div>
             </div>
         `;
+    }
+    
+    /**
+     * 获取字段描述
+     * @param {string} fieldName - 字段名称
+     * @returns {string} 描述文本
+     */
+    getFieldDescription(fieldName) {
+        const descriptions = {
+            '企业': '填写营业执照上的完整企业名称',
+            '信用代码': '统一社会信用代码（18位）',
+            '法人': '企业法定代表人姓名',
+            '注册地址': '企业注册登记地址',
+            '生产地址': '实际生产经营场所地址',
+            '联系人': '负责填报的人员姓名',
+            '电话': '联系人电话号码',
+            '邮箱': '接收报告的电子邮箱',
+            '核算年度': '碳排放核算的统计年度',
+            '细分品类': '选择具体的生产工艺类型',
+            '产能': '设计生产能力',
+            '产量': '实际生产数量',
+            '消耗': '能源或原料使用量',
+            '用量': '能源或原料使用量',
+            '排放': '温室气体排放量',
+            '因子': '排放系数',
+            '装机容量': '发电设备额定容量',
+            '运行小时数': '设备年运行时间',
+            '发电量': '年度总发电量',
+            '熟料产量': '水泥熟料生产量',
+            '水泥产量': '水泥成品生产量',
+            '外购电力': '从电网购入的电量',
+            '外购热力': '从外部购入的热力量',
+            '天然气': '天然气使用量',
+            '煤炭': '煤炭消耗量',
+            '燃油': '燃油消耗量',
+            '柴油': '柴油消耗量',
+            '汽油': '汽油消耗量'
+        };
+        
+        for (const [key, desc] of Object.entries(descriptions)) {
+            if (fieldName.includes(key)) {
+                return desc;
+            }
+        }
+        return '';
     }
 
     /**
@@ -248,9 +384,28 @@ class FormGenerator {
         const sectionHeaders = this.container.querySelectorAll('.section-header');
         sectionHeaders.forEach(header => {
             header.addEventListener('click', (e) => {
-                const section = header.closest('.form-section');
-                section.classList.toggle('collapsed');
+                const section = header.closest('.form-section-exact');
+                const content = section.querySelector('.section-content');
+                const toggleIcon = header.querySelector('.toggle-icon');
+                
+                if (content.style.maxHeight && content.style.maxHeight !== '0px') {
+                    content.style.maxHeight = '0px';
+                    content.style.opacity = '0';
+                    toggleIcon.style.transform = 'rotate(0deg)';
+                } else {
+                    content.style.maxHeight = content.scrollHeight + 500 + 'px';
+                    content.style.opacity = '1';
+                    toggleIcon.style.transform = 'rotate(180deg)';
+                }
             });
+            
+            // 初始化展开状态
+            const section = header.closest('.form-section-exact');
+            const content = section.querySelector('.section-content');
+            const toggleIcon = header.querySelector('.toggle-icon');
+            content.style.maxHeight = content.scrollHeight + 500 + 'px';
+            content.style.opacity = '1';
+            toggleIcon.style.transform = 'rotate(180deg)';
         });
 
         // 输入变化事件

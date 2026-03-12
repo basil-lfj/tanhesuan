@@ -135,6 +135,41 @@ class DataLoader {
     }
 
     /**
+     * 获取电网类型列表
+     * @returns {Array<Object>} 电网类型列表
+     */
+    getElectricityGridTypes() {
+        const electricityCategory = this.categories.find(cat => cat.fuelCategory === '电力');
+        if (!electricityCategory) return [];
+        return electricityCategory.factors.map(factor => ({
+            value: factor.fuelType,
+            name: factor.fuelType,
+            factor: factor.factor,
+            unit: factor.unit,
+            description: factor.description || null
+        }));
+    }
+    
+    /**
+     * 获取电网排放因子
+     * @param {string} gridType 电网类型
+     * @returns {Object|null} 排放因子信息
+     */
+    getElectricityFactor(gridType) {
+        const electricityCategory = this.categories.find(cat => cat.fuelCategory === '电力');
+        if (!electricityCategory) return null;
+        
+        const factor = electricityCategory.factors.find(f => f.fuelType === gridType);
+        if (!factor) return null;
+        
+        return {
+            gasType: 'CO2',
+            fuelCategory: '电力',
+            ...factor
+        };
+    }
+
+    /**
      * 获取GWP值
      * @param {string} gasType 气体类型
      * @returns {number} GWP值

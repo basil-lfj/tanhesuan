@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1a4231",
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#151d1a",
+                        "mint-soft": "#e8f0ed",
+                        "sage-light": "#d1dbd6",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "Noto Sans SC", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #f6f8f7;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+        }
+        .custom-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%231a4231' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.75rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+        }
+    </style>
+</head>
+<body class="font-display text-slate-900 antialiased min-h-screen">
+<div class="flex flex-col lg:flex-row min-h-screen">
+<!-- Sidebar -->
+<aside class="w-full lg:w-72 bg-white/80 backdrop-blur-md border-r border-sage-light/30 p-8 flex flex-col justify-between sticky top-0 h-screen overflow-y-auto">
+<div class="space-y-12">
+<div class="flex items-center gap-3">
+<div class="size-12 rounded-xl bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-3xl">eco</span>
+</div>
+<div>
+<h2 class="font-bold text-lg tracking-tight text-primary">绿色伙伴</h2>
+<p class="text-xs text-primary/60 font-medium uppercase tracking-wider">Green Partner</p>
+</div>
+</div>
+<nav class="space-y-2">
+<a class="flex items-center gap-4 px-4 py-3 rounded-xl bg-mint-soft text-primary font-semibold transition-all" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>首页</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-xl text-primary/50 hover:bg-mint-soft/50 hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined">calculate</span>
+<span>碳核算</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-xl text-primary/50 hover:bg-mint-soft/50 hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined">bar_chart</span>
+<span>数据看板</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-xl text-primary/50 hover:bg-mint-soft/50 hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>账户设置</span>
+</a>
+</nav>
+</div>
+<div class="mt-auto pt-8">
+<div class="bg-primary/5 p-5 rounded-2xl border border-primary/10">
+<p class="text-sm font-medium text-primary/70">今日已减排</p>
+<p class="text-3xl font-black text-primary mt-1">2.4 <span class="text-sm font-normal">kg</span></p>
+<div class="mt-4 h-1.5 w-full bg-primary/10 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-2/3"></div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 p-6 lg:p-12 max-w-7xl mx-auto w-full">
+<!-- Header Section -->
+<header class="mb-16 max-w-2xl">
+<h1 class="text-5xl lg:text-6xl font-black text-primary tracking-tight leading-tight">
+                    碳排放计算器
+                </h1>
+<p class="mt-6 text-xl text-primary/60 leading-relaxed font-light">
+                    让每一份努力都清晰可见。通过专业的核算工具，精准追踪您的每一个绿色足迹。
+                </p>
+</header>
+<!-- Interactive Form Area -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-12">
+<!-- Left Column: Inputs -->
+<div class="xl:col-span-7 space-y-10">
+<!-- Selection Switcher -->
+<div class="space-y-4">
+<p class="text-sm font-bold text-primary uppercase tracking-widest">选择核算类别</p>
+<div class="flex gap-4 p-1.5 bg-mint-soft/50 rounded-2xl border border-sage-light/30 w-fit">
+<button class="px-8 py-3 rounded-xl bg-white text-primary font-bold shadow-sm ring-1 ring-primary/5">
+                                化石燃料燃烧
+                            </button>
+<button class="px-8 py-3 rounded-xl text-primary/60 font-medium hover:text-primary transition-colors">
+                                购入电力
+                            </button>
+</div>
+</div>
+<!-- Input Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="flex flex-col gap-3">
+<label class="text-sm font-bold text-primary/80 ml-1">燃烧物选择</label>
+<select class="custom-select w-full h-14 px-5 rounded-xl border-sage-light/40 bg-white/60 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-primary">
+<option value="">请选择燃烧物类型</option>
+<option>天然气</option>
+<option>液化石油气</option>
+<option>汽油</option>
+<option>柴油</option>
+</select>
+</div>
+<div class="flex flex-col gap-3">
+<label class="text-sm font-bold text-primary/80 ml-1">气体类型</label>
+<select class="custom-select w-full h-14 px-5 rounded-xl border-sage-light/40 bg-white/60 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-primary">
+<option value="">请选择气体类型</option>
+<option>二氧化碳 (CO₂)</option>
+<option>甲烷 (CH₄)</option>
+<option>氧化亚氮 (N₂O)</option>
+</select>
+</div>
+<div class="flex flex-col gap-3">
+<label class="text-sm font-bold text-primary/80 ml-1">排放场景</label>
+<select class="custom-select w-full h-14 px-5 rounded-xl border-sage-light/40 bg-white/60 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-primary">
+<option value="">请选择应用场景</option>
+<option>工业生产</option>
+<option>交通运输</option>
+<option>办公建筑</option>
+</select>
+</div>
+<div class="flex flex-col gap-3">
+<label class="text-sm font-bold text-primary/80 ml-1">燃料类型</label>
+<select class="custom-select w-full h-14 px-5 rounded-xl border-sage-light/40 bg-white/60 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-primary">
+<option value="">请细化燃料种类</option>
+<option>轻质燃料</option>
+<option>重质燃料</option>
+<option>生物质混合</option>
+</select>
+</div>
+<div class="flex flex-col gap-3 md:col-span-2">
+<label class="text-sm font-bold text-primary/80 ml-1">消耗量填写 (t/m³)</label>
+<div class="relative">
+<input class="w-full h-14 px-5 rounded-xl border-sage-light/40 bg-white/60 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-primary placeholder:text-primary/20" placeholder="0.00" type="number"/>
+<div class="absolute right-4 top-1/2 -translate-y-1/2 text-primary/40 font-medium">
+                                    单位/吨
+                                </div>
+</div>
+</div>
+</div>
+<!-- CTA -->
+<div class="pt-4">
+<button class="group flex items-center justify-center gap-3 w-full md:w-auto px-12 py-5 bg-primary text-white rounded-xl font-bold text-lg hover:shadow-2xl hover:shadow-primary/30 transition-all active:scale-[0.98]">
+<span>开始核算</span>
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Right Column: Visual/Illustration -->
+<div class="xl:col-span-5 flex flex-col gap-8">
+<div class="relative aspect-[4/5] rounded-[2rem] overflow-hidden bg-mint-soft border border-sage-light/20 shadow-2xl shadow-primary/5">
+<img alt="Lush green forest canopy from below" class="absolute inset-0 w-full h-full object-cover opacity-80 mix-blend-multiply" data-alt="Lush green forest canopy from below showing natural environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzFjYZQrLUY0jognbFplH4x6g-uG3XwMKh2-mK_126ffNHMMiA7ABXqaxSew_l9tNOYWXshv_cK_Uvew1jE1pMrs13eyf-Qp3ykMVa2tZLCNxmog1uxGbPiI-YFFFVtIafKa_Nsduefc8OI4BbOj39u3QIUGQCYD-mM6YOoWCYU3clOemRkRCJ2EVtYT6J74IGBJ3AQOVRh5Luv2Syk5av7rkv8PVuIeM8W8-y2omt2i-js5C7-Kk4FgBdAMqDzSmCW3L0PldnYo6H"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-transparent to-transparent flex flex-col justify-end p-10 text-white">
+<span class="material-symbols-outlined text-5xl mb-4">nature_people</span>
+<h3 class="text-2xl font-bold leading-tight">可持续的未来<br/>从精准数据开始</h3>
+<p class="mt-4 text-white/70 font-light leading-relaxed">
+                                我们采用 IPCC 国际标准算法，为您提供最权威的碳足迹分析报告。
+                            </p>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-6">
+<div class="p-6 rounded-3xl bg-white/40 border border-sage-light/30">
+<p class="text-xs font-bold text-primary/40 uppercase tracking-tighter">实时电网因子</p>
+<p class="mt-2 text-xl font-bold text-primary">0.5703</p>
+<p class="text-[10px] text-primary/60">tCO₂e/MWh</p>
+</div>
+<div class="p-6 rounded-3xl bg-white/40 border border-sage-light/30">
+<p class="text-xs font-bold text-primary/40 uppercase tracking-tighter">全球变暖潜势</p>
+<p class="mt-2 text-xl font-bold text-primary">GWP AR6</p>
+<p class="text-[10px] text-primary/60">最新评估报告标准</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Background Grain Overlay - Global -->
+<div class="fixed inset-0 pointer-events-none z-[100] opacity-20 contrast-150 mix-blend-overlay"></div>
+</body></html>
